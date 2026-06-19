@@ -383,10 +383,13 @@ This file format should look like this:
 
 STAR output data can be incorporated into the MultiQC report. 
 
-Navigate to your RNA_seq/align dir and then run multiqc
+Navigate to your RNA_seq/MultiQC dir and then run multiqc
 
 ```bash
-cd ~/RNA_seq/Align
+cd ~/RNA_seq/MultiQC
+
+module load MultiQC/1.24.1-foss-2023a-Python-3.11.6 
+
 multiqc .
 ```
 ![MultiQC after alignment](images/MQC_hisat2.png)
