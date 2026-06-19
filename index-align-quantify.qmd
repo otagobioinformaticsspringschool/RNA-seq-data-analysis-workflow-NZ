@@ -1,0 +1,569 @@
+---
+title: ""
+code-overflow: wrap
+---
+
+# Quantifying Gene Expression
+
+![](theme_images/alignment.png){width=80% fig-align="center"}
+
+
+In order to draw conclusions about gene expression from our reads, we need to first identify which region of the genome reads originated from and then quantify the number of reads from that region. There are many tools available to carry out quantification, and we will not cover the arguments for and against each tool. We encourage you to carry out a literature search, and discuss with experienced individuals in your field, before committing to a particular quantification procedure. Here we will give a brief overview of two approaches with considerably different underlying methodology, give an example tool for each, and then demonstrate one tool for the purpose of progressing to the next stage of our workflow.
+
+The first approach to read quantification involves aligning reads to the genome first, and then counting the number of reads that are aligned to certain genomic features (*e.g.,* exons). This method may generally be referred to as the 'count' method, but it is still a form of quantification, and the output is by default at the gene level.  
+
+The second approach, which we will not do today, involves creating transcript expression estimates via pseudoalignment, often referred to informally as 'pseudocounts'. In this method, reads are *not* aligned to the genome. Instead, they are pseudoaligned to kmers within the transcriptome and their abundance is estimated. While the output for these tools (e.g., Kallisto, Salmon) are by default at a transcript level, they can be converted to a gene level expression estimate.  
+
+In today's workflow we will demonstrate genome alignment and counting using STAR.
+
+Additional parameters for STAR in the [manual](https://github.com/alexdobin/STAR#manual) maintained in github. 
+
+## Alignment with STAR
+
+### Preparation of the genome
+
+When carrying out alignment, the first requirement is a genome which has been indexed. Indexing is a process to organise the genome so that our alignment algorithms can match reads to the genome easily, without having to scan the entire genome.
+
+Navigate to the Genome directory and view the contents. You should see two files, a .gtf and a .fna file. 
+
+```bash
+cd ~/RNA_seq/Genome
+
+ls 
+```
+
+The .gtf file (General Transfer Format) contains annotation information about the genome, such as gene names, feature type, coordinates *etc.,* all stored in a one-line-per-feature format, while the .fna (FASTA nucleic acid) file contains our genome sequence.
+
+We will now use STAR to index the genome using the `STAR --runMode genomeGenerate` command.
+ 
+The next three commands specify where our genome directory is, where our genome fasta file is and where our annotation file (sjdb = splice junction database). 
+
+The last two flags you will need to tailor to your own reads. 
+
+- `--sjdbOverhang` this number is your RNA-seq read length -1. Default 100; using the default often works fine regardless.   
+- `--genomeSAindexNbases` this is optional: 14 is the default. You may get a warning with a suggestion to use a different number (you should then modify and rerun your script)
+
+Run this code below, and lets consider the following scenario as its running:
+
+```bash
+module load STAR/2.7.10b-GCC-11.3.0-alpha
+```
+
+```bash
+genomedir=~/RNA_seq/Genome
+
+STAR \
+--runMode genomeGenerate \
+--genomeDir $genomedir \
+--genomeFastaFiles $genomedir/GCF_009762535.1_fNotCel1.pri_genomic.fna \
+--sjdbGTFfile $genomedir/GCF_009762535.1_fNotCel1.pri_genomic.gtf \
+--sjdbOverhang 124 \ 
+--genomeSAindexNbases 14 
+```
+
+
+
+##### EXERCISE 🧠🏋️‍♀️ (2 mins)
+
+Scenario: During the course of conducting your research project you have generated multiple RNA-seq datasets from the same species. You have previously generated an indexed genome for your species when you were working with 100bp paired-end reads. Your new samples are 150bp single-end reads. Can you use the same indexed genome files? What flag/s and argument/s do you need to change if not? 
+
+
+::: {.callout-tip collapse="true"}
+# SOLUTION
+
+You need to change the `--sjdbOverhang` flag and regenerate the genome index. With 150bp reads, this will need to be `--sjdbOverhang 149`. The paired-end/single-end-ness of the data does not matter -- a red herring!
+
+
+```bash
+genomedir=~/RNA_seq/Genome
+
+STAR \
+--runMode genomeGenerate \
+--genomeDir $genomedir \
+--genomeFastaFiles $genomedir/GCF_009762535.1_fNotCel1.pri_genomic.fna \
+--sjdbGTFfile $genomedir/GCF_009762535.1_fNotCel1.pri_genomic.gtf \
+--sjdbOverhang <int> \  # change
+--genomeSAindexNbases 14  # not change
+```
+
+:::
+
+
+#### Output
+
+We can now see many new files, which make up the indexed version of the genome.
+
+::: {.callout-note collapse="true" appearance="minimal"}
+# Output files -->
+
+```output
+chrLength.txt                                 
+chrNameLength.txt                             
+chrName.txt                                   
+chrStart.txt                                  
+exonGeTrInfo.tab                              
+exonInfo.tab   
+geneInfo.tab                                  
+Genome
+genomeParameters.txt 
+Log.out 
+SA
+SAindex
+sjdbInfo.txt
+sjdbList.fromGTF.out.tab
+sjdbList.out.tab
+transcriptInfo.tab
+```
+
+:::
+
+
+You can ignore most of these (unless you need to troubleshoot later), but you should check the last two lines of the Log.out file to confirm that the genome was indexed successfully.
+
+```bash
+tail -n 2 Log.out
+```
+```output
+Jun 10 15:17:54 ..... finished successfully
+DONE: Genome generation, EXITING
+```
+
+### Aligning reads to the genome
+
+Now that we have an indexed genome, we can align our sequences; a process also commonly referred to as mapping. To do this we will need to know:
+
+-   Where the sequence information is stored (*e.g.,* fastq files).
+
+-   What kind of sequencing file we have (*e.g.,* Single end or Paired end).
+
+-   Where the indexes and genome are stored.
+
+-   Where the mapping files will be stored.
+
+Once we have that information we are ready to align our sequences. First, navigate to the RNA_seq/align directory, and run `STAR --runMode alignReads` on one sample. We will use some shell variables to set our dirs and file names and the minimum flags we need run the alignment and write sorted BAM alignment output files. 
+
+Let's run the script (this will take approximately 4 minutes to run), and as it's going, talk about some of the flags we used:  
+
+```bash
+# load module
+module load STAR/2.7.10b-GCC-11.3.0-alpha
+
+# Set shell variables
+genomedir="../Genome"
+trimmeddir="../Trimmed"
+r1=$trimmeddir/SI16_1G_lib56_R1_trimmed.fq.gz
+r2=$trimmeddir/SI16_1G_lib56_R2_trimmed.fq.gz
+
+ # run STAR to align reads to the genome    
+STAR \
+--runMode alignReads \
+--genomeDir $genomedir \
+--readFilesIn $r1 $r2 \
+--readFilesCommand zcat \
+--outSAMtype BAM SortedByCoordinate \
+--outFileNamePrefix SI16_1G_ \
+--runThreadN 2 \
+--quantMode GeneCounts
+
+```
+
+Flags in this script:  
+
+
+- `--readFilesCommand zcat` – this flag with zcat argument allows STAR to process .gz files. Best to keep your reads as compressed files, but if they are not .gz then omit this flag.     
+- `--outSAMtype BAM SortedByCoordinate` – default is SAM, but you should always use BAM as the files are smaller. You can also chose unsorted (sorting allocates extra memory). Most downstream applications require BAM files to be sorted for efficiency. Read more about [SAM/BAM in the extra section below](#extra-converting-sam---bam).  
+
+- increasing threads to match how many you have available and whatever you set on your slurm script.  
+
+::: {.callout-tip appearance="simple" collapse="true"}
+# STAR alignment flags 
+
+STAR has many flags you can use during alignment; read the [STAR manual](https://github.com/alexdobin/STAR#manual) to find these.
+
+Some of the most common flags you may need to add or consider changing from the default value are:
+ 
+`--sjdbOverhang <int>` : This flag we saw earlier when we indexed. It is primarily an index flag, but if you did not use it during indexing you could use it here to specify your read length-1. Generally the default 100 works well and changing this makes minimal difference.   
+
+`--sjdbGTFfile /path/to/ann.gtf`: the annotations can be included on the fly at the mapping step, without including them at the genome generation (index) step. STAR can be run without annotations, but using annotations is highly recommended whenever they are available. STAR will extract splice junctions from this file and use them to greatly improve accuracy of the mapping.
+
+`--quantMode TranscriptomeSAM GeneCounts` : We used GeneCounts above, but you can also include TranscriptomeSAM option and STAR will output alignments translated into transcript coordinates in the Aligned.toTranscriptome.out.bam
+
+Other parameters you may want to consider are flags that allow you to:
+
+**Improve alignment around novel junctions:**   
+`--twopassMode Basic`  
+STAR is particularly good at detecting novel splice junctions. This flag does a first pass to discover splice junctions, then realigns using those junctions and is a good flag to add on its own.  
+There are other flags that can be further used to refine how STAR detects splice junctions (SJ), *e.g.:*  
+`--alignSJoverhangMin <int>`  
+`--alignSJDBoverhangMin <int>`  
+`--outSJfilter*` - this flag prefix refers to a group of flags for output filtering of splice junctions.    
+
+**Adjust for too much or too little multi-mapping:**   
+`--outFilterMultimapNmax <int>`   
+`--outFilterMultimapScoreRange <int>`  
+`--outSAMmultNmax <int>`  
+
+These are examples of flags that influence how STAR handles multi‑mapping reads, either at the read level (for example, how many loci a read may map to before STAR outputs no alignments for that read) or at the reporting level (for example, how many of the best‑scoring alignments are written to the SAM/BAM). In fragmented or highly repetitive genomes, you may want to adjust these parameters to be more conservative (allow fewer multi‑mappers) or less conservative (allow more multi‑mappers) if too many reads are being lost.
+
+**Adjust for mismatches:**  
+`--outFilterMismatchNmax <int>`   
+`--outFilterMismatchNoverLmax <float>`    
+`--outFilterMismatchNoverReadLmax <float>`    
+
+These are examples of flags that controls mismatch tolerance. Mismatch tolerance becomes important when your reference genome differs from your samples, for example, when using a related species’ genome, or an older or low‑quality genome assembly. Conversely, if your reference closely matches your samples, you can tighten mismatch thresholds to be more conservative and reduce spurious alignments.
+
+
+:::
+
+
+
+
+The resulting files should look something like this:
+
+```         
+SI16_1G_Aligned.sortedByCoord.out.bam
+SI16_1G_Log.final.out
+SI16_1G_Log.out
+SI16_1G_Log.progress.out
+SI16_1G_ReadsPerGene.out.tab
+SI16_1G_SJ.out.tab
+```
+
+To check it ran properly, run:
+
+```bash
+tail -n 1 SI16_1G_Log.out
+```
+
+The last line of the file should read:
+
+```output
+ALL DONE!
+```
+
+### Mapping statistics
+
+Summary statistics for the alignment are in the `Log.final.out` file. You can view this file using `less` to interactively explore the file, or `cat` to view all the file contents in your console. 
+
+
+::: {.callout-note collapse="true" appearance="minimal"}
+# Log.final.out file -->
+
+```output
+                                 Started job on |	Mar 22 10:09:19
+                             Started mapping on |	Mar 22 10:47:48
+                                    Finished on |	Mar 22 11:39:50
+       Mapping speed, Million of reads per hour |	12.92
+
+                          Number of input reads |	11208161
+                      Average input read length |	242
+                                    UNIQUE READS:
+                   Uniquely mapped reads number |	9936813
+                        Uniquely mapped reads % |	88.66%
+                          Average mapped length |	241.30
+                       Number of splices: Total |	9848601
+            Number of splices: Annotated (sjdb) |	9827918
+                       Number of splices: GT/AG |	9703013
+                       Number of splices: GC/AG |	67562
+                       Number of splices: AT/AC |	13063
+               Number of splices: Non-canonical |	64963
+                      Mismatch rate per base, % |	0.45%
+                         Deletion rate per base |	0.03%
+                        Deletion average length |	2.09
+                        Insertion rate per base |	0.03%
+                       Insertion average length |	1.74
+                             MULTI-MAPPING READS:
+        Number of reads mapped to multiple loci |	267008
+             % of reads mapped to multiple loci |	2.38%
+        Number of reads mapped to too many loci |	67199
+             % of reads mapped to too many loci |	0.60%
+                                  UNMAPPED READS:
+  Number of reads unmapped: too many mismatches |	0
+       % of reads unmapped: too many mismatches |	0.00%
+            Number of reads unmapped: too short |	910101
+                 % of reads unmapped: too short |	8.12%
+                Number of reads unmapped: other |	27040
+                     % of reads unmapped: other |	0.24%
+                                  CHIMERIC READS:
+                       Number of chimeric reads |	0
+                            % of chimeric reads |	0.00%
+
+```
+
+
+
+
+:::
+
+
+The main statistics you should check are:   
+
+**Uniquely mapped reads %**: We expect this to be quite high for a good alignment. There is no official cut-off, but around >85% is generally good. If this number is lower, it could be due to multi-mapping reads, which depending on how repetitive or polyploid the genome is, may be expected. Other culprits include poor read quality, contamination with reads from another species, or poor alignment to the reference genome. Some of this could be addressed with trimming or adjusting alignment parameters. 
+
+**Multi-mapping reads**: Generally you want this to be low, but as mentioned above, if you have a repetitive or highly polyploid genome this may be expected. There are two parameters to look at here:  
+*% of reads mapped to multiple loci* – multi-mapping reads. Not counted in default gene counts output. Can adjust flags during alignment to count these if desired, but this does get more complex. Read the section  '5.2.1 Multimappers' in the STAR manual.      
+*% of reads mapped to too many loci* – these reads exceeded the value given for the `--outFilterMultimapNmax` flag (or the default value of 10 if flag not specified during alignment) and these alignments are discarded.  
+
+**Unmapped reads**  
+All reads that did not map to the genome. This is broken up into three categories – too many mismatches, too short or other. In total you would expect these values to be small (*e.g.,* <5%). Mismatches could be handled by changing alignment flags (mentioned earlier), but if this number is particularly high (*e.g.,* >10%), you may need to consider whether the reference genome you are using is appropriate, or if there is some other biological or technical reason your reads have many base pair mismatches. Reads that are too short could be from over-trimming. You may need to filter your trimmed reads to remove any below a threshold (*e.g.,* discard all reads shorter than 36bp is a common cut-off; Trimmomatic has the option MINLEN).  
+
+
+##### DISCUSSION 🤔 (1 min)
+
+What do you think of the mapping statistics for the Log.final.out file provided above? Was this a good alignment?
+
+
+::: {.callout-tip collapse="true"}
+# SOLUTION
+
+Yes, this alignment looks pretty good. More than 85% of the reads uniquely mapped (88.66%), and there are few unmapped reads. There are a few reads that are too short at 8.12%, this might be worth checking how short these are on average and thinking about if filtering needs to be readjusted before aligning. You could do this by including the flag with argument `--outReadsUnmapped Fastx` during alignment, which will output unmapped and partially mapped (*i.e.,* mapped only one mate of a paired end read) reads in separate file(s), that you could then run FastQC on. 
+
+:::
+
+
+
+### Gene counts
+
+When we run a STAR alignment with the `--quantMode GeneCounts` flag, it generates a file called `ReadsPerGene.out.tab`. This file contains the number of reads that were assigned to each gene in the genome. The counts coincide with those produced by `htseq-count` with default parameters. You could alternatively run [htseq-count](https://htseq.readthedocs.io/en/master/htseqcount.html) separately on the sorted BAM files (Aligned.sortedByCoord.out.bam) to get the same counts, or you could choose to use a different counting tool such as `featureCounts` (featureCounts comes from the [Subread package](https://subread.sourceforge.net/), which can also be implemented in R using Rsubread). 
+
+
+
+You can view the first few lines of this file using the `head` command.
+
+```bash
+head SI16_1G_ReadsPerGene.out.tab
+```
+
+```output
+N_unmapped	1004352	1004352	1004352
+N_multimapping	267008	267008	267008
+N_noFeature	441161	9761099	474701
+N_ambiguous	163357	717	21355
+LOC117820358	0	0	0
+LOC117813751  723	0	723
+ccdc51	      241   92	241
+tma7	     3172	2	3262
+LOC117815572	3	0	3
+LOC117818779	0	0	0
+```
+
+The output contains 4 header rows and 4 columns. The number of rows in the file (minus headers) is the number of genes in genome (annotation file gtf gene_id). The exact same genes will be in every ReadsPerGene.out.tab for every sample – genes with no reads mapped to them will have 0s in the columns.
+
+The 4 columns are:  
+
+- column 1: gene ID  
+- column 2: counts for unstranded RNA-seq  
+- column 3: counts for the 1st read strand aligned with RNA (htseq-count option -s yes)  
+- column 4: counts for the 2nd read strand aligned with RNA (htseq-count option -s reverse)  
+
+
+##### DISCUSSION 🤔 (1 min)
+
+Which column do you think we should use for our data, or how could we figure it out?
+
+
+::: {.callout-tip collapse="true"}
+# SOLUTION
+
+These data were generated with the TruSeq Stranded library prep kit, which means that read 1 corresponds to the antisense strand, which is the first complementary DNA strand generated during library prep. Read 2 corresponds to the original mRNA sequence (sense strand). Read about [Illumina stranded RNA workflows here](https://knowledge.illumina.com/library-preparation/rna-library-prep/library-preparation-rna-library-prep-reference_material-list/000002238). What this means is we want the **reverse** option - so we should use the 4th column. However, if you are unsure which column to use for stranded data (3 or 4), look at the N_noFeature row and pick the column with the smallest number. You should also check the STAR manual (section '8 Counting number of reads per gene') for further description of these parameters and you should reaad the [htseq-count documentation](https://htseq.readthedocs.io/en/master/htseqcount.html) to determine the effect of the htseq-count -s yes/reverse flag. 
+
+:::
+
+Once you have generated all your alignments, you should then use either shell or R tools to make a new table with your gene IDs as the rows, the sample names as headers, and the values from whichever column you need to use. 
+
+This file format should look like this:
+
+![](figures/counts-table-example.png)
+
+> Avoid Excel! Many gene names get converted to dates in Excel. Best not to use it if you can. 
+
+
+
+### MultiQC 
+
+STAR output data can be incorporated into the MultiQC report. 
+
+Navigate to your RNA_seq/align dir and then run multiqc
+
+```bash
+cd ~/RNA_seq/Align
+multiqc .
+```
+![MultiQC after alignment](images/MQC_hisat2.png)
+
+You might notice that the report labels the summary files as "Bowtie2". This is because the outputs are identical to those generated by Bowtie2, and MultiQC recognises them as Bowtie2. 
+
+
+***Now we are ready to move on to differential gene expression analysis!*** 
+
+
+## Extra: Converting SAM <-> BAM 
+
+SAM files or 'Sequence Alignment Map' are tab-delimited text files containing information for each individual read and its alignment to the genome. SAM files are human-readable, in that you can open them in a text editor or use cat/head on these files in shell. SAM files are large, so the first thing we do with them is convert them to BAM (Binary Alignment Map) files: compressed, binary versions of the file which reduce time and can themselves be indexed for efficiency when we interact with them (BAM are not human-readable). 
+
+If you want to do use different tools for downstream analyses of alignments, you may need to do some converting of SAM to BAM files. For example, read summarisation tools such as `featureCounts` and `htseq-count` require BAM files as input for counting reads per gene.
+
+You can convert the SAM file to the BAM format using the samtools program with the view command. Use the `-S` flag to specify the input is a SAM file, and the `-b` flag to specify BAM as the output. Here is an example for loop to convert all SAMs to BAMs. 
+
+```bash
+module load SAMtools/1.23.1-GCC-12.3.0
+
+for filename in *.sam
+do
+base=$(basename ${filename} .sam)
+samtools view -S -b ${filename} -o ${base}.bam
+done
+```
+
+You'll also likely need to sort the BAM files, which mean future analysis steps are more efficient. From the samtools program use the sort command, with the `-o` flag to specify where the output file should go.
+
+```bash
+for filename in *.bam
+do
+base=$(basename ${filename} .bam)
+samtools sort -o ${base}_sorted.bam ${filename}
+done
+```
+
+To convert BAM to SAM:
+
+```bash
+module load SAMtools/1.23.1-GCC-12.3.0 # version on REANNZ
+
+for filename in *.bam
+do
+base=$(basename ${filename} .bam)
+samtools view -h ${filename} -o ${base}.sam
+done
+```
+
+
+## Extra: Read summarisation  
+
+Sequencing reads often need to be assigned to genomic features of interest after they are mapped to the reference genome. This process is often called read summarisation or read quantification. Read summarisation is required by a number of downstream analyses such as gene expression analysis and histone modification analysis. The output of read summarisation is a count table, in which the number of reads assigned to each feature in each library is recorded. In our case each feature is an exon. 
+
+In this workshop we used STAR with the flag `--quantMode GeneCounts`, which uses the software htseq-count to output reads, so we don't need to do this step separately. However it is possible to use a different software for read summarisation, such as the featureCounts tool, from the Subread package.
+
+FeatureCounts is generally faster than htseq-count, and is more efficient when you have many samples. The output is also a little more 'R-friendly' than the htseq-count output, but both can be manipulated in R to get them into the same format for downstream analyses. The paper for [featureCounts by Liao et al., 2014](https://academic.oup.com/nar/article/42/11/e108/1094278) compares the performance of featureCounts and htseq-count; these tools generally show good concordance but have nuanced differences for different applications. 
+
+The `featureCounts` command will require five different flags. Use the `-a` flag to specify the annotation file, in this case the .gtf file we used earlier. The `-o` flag names the output file (e.g., counts.txt), while the `-T` flag specifies the number of threads/CPUs used for mapping. The `-t` flag is used to control the feature type in the GTF annotation file, use exon (which is also the default). Finally, the `-g` flag specifies the attribute type in the GTF file. Use the `gene_id` option (again, the default). 
+
+```bash
+module load Subread/2.0.7-GCC-12.3.0 # version on REANNZ
+
+featureCounts -a /path/to/annotation.gtf -o counts.txt -T 2 -t exon -g gene_id /path/to/sorted.bam
+```
+
+These counts.txt are the equivalent to the ReadsPerGene.tab.out we generated earlier (slightly different ouptut format, but both contain the counts for how many reads mapped to each gene). 
+
+
+## Extra: Automating and optimising your workflow  
+
+Here we have been running each step of fastqc, trimming, indexing, and aligning directly on the command line. This is not always best practise, for a few reasons, and what you will likely need to do is translate this code into a **script**. For one, it is easier to reproduce and automate your workflow when everything you do is in a script. But perhaps more importantly, when working on a HPC environment, your direct command line inputs are operating on the head node or log in node. Many of these software used require more CPUs/memory than can be allocated on the head node and therefore you need to submit your job to the HPC job scheduler (*e.g.,* SLURM or PBS) to run the job more efficiently on allocated compute resources. 
+
+See here our GA workshop on [Bash Scripting and HPC Job Scheduler](https://genomicsaotearoa.github.io/BioinformaticsTrainingProgramme/portfolio.html#bash-script-hpc-job) for more details on how to prepare, run and optimise a SLURM script. 
+
+
+**Example only: Submitting STAR alignment to SLURM**
+
+Once we have confirmed the STAR alignment code works for our first sample, the next step would be to align all the samples to the genome. As this would take quite a while, we won't do that in this workshop and we will instead supply the outputs for all samples. We could do all the alignments with a *for loop*, but as we have many samples and *for loops* run one sample at a time, this is not the most efficient way to do this. We need to write a slurm script as an array job and submit it to the HPC job scheduler (*i.e.,* SLURM on REANNZ) to allocate CPUs and memory for the job. We won't be doing this in this workshop either, but you can see an example of a SLURM script below. 
+
+First, make a `samples.txt` file that contains the basename of the files. This way we can extract the prefix we want for the outfiles in a way that works nicely with an array job. 
+
+```bash
+ls ../Trimmed/*_R1_trimmed.fq.gz | xargs -n1 basename | sed 's/_R1_trimmed\.fq\.gz//' > samples.txt
+```
+Note: this script assume you are currently in your alignment dir (where you want the star alignment results to go), which is where the `samples.txt` file will also go, and that your trimmed read files are in a directory called `../Trimmed` relative to your current directory. 
+
+
+::: {.callout-note collapse="true" appearance="minimal"}
+# samples.txt example -->
+
+```bash
+cat samples.txt
+```
+
+```output
+SI16_1G_lib56
+SI16_21G_lib63
+SI16_22G_lib64
+SI16_23G_lib65
+SI16_2G_lib57
+SI16_3G_lib58
+SI18_15G_lib09
+SI18_16G_lib10
+SI18_18G_lib11
+SI18_22G_lib15
+SI18_30G_lib22
+SI18_35G_lib27
+SI18_36G_lib28
+SI18_48G_lib38
+SI18_52G_lib42
+```
+
+:::
+
+
+As an example, this below is what a slurm script may look like for running the STAR align step. Note the use of things like relative paths -- you need to adjust the paths to work from the directory in which your script is submitted from.
+
+Slurm scripts are text files, and use the .sl extension by convention. You can use `nano` to create a script.
+
+
+```bash
+nano star-align.sl 
+```
+
+Then paste in the below text into nano, save and exit. You will likely need to adjust the amount of memory, time and CPUs allocated for the job depending on the size of your data. 
+
+```bash
+#!/bin/bash
+
+#SBATCH --job-name=star_align_array
+#SBATCH --array=1-15 # adjust to number of samples you have
+#SBATCH -A nesiprojectID
+#SBATCH --output=logs/star_%A_%a.out
+#SBATCH --error=logs/star_%A_%a.err
+#SBATCH --mem=20G
+#SBATCH --cpus-per-task=8
+#SBATCH --time=05:00:00
+
+module load STAR/2.7.10b-GCC-11.3.0-alpha
+
+TRIMMEDDIR=/path/to/trimmed # contains your trimmed reads
+OUTDIR=/path/to/star_out # dir where you want your output files to go
+GENOMEDIR=/path/to/genome-files # contains your indexed genome
+
+mkdir -p $OUTDIR logs
+
+sample=$(sed -n "${SLURM_ARRAY_TASK_ID}p" samples.txt)
+
+r1=$TRIMMEDDIR/${sample}_R1_trimmed.fq.gz
+r2=$TRIMMEDDIR/${sample}_R2_trimmed.fq.gz
+
+STAR \
+  --runMode alignReads \
+  --runThreadN $SLURM_CPUS_PER_TASK \
+  --genomeDir $GENOMEDIR \
+  --readFilesIn $r1 $r2 \
+  --readFilesCommand zcat \
+  --outSAMtype BAM SortedByCoordinate \
+  --outFileNamePrefix $OUTDIR/${sample}_ \
+  --quantMode GeneCounts 
+
+```
+
+Now submit the following script to SLURM to align each sample to the genome. As this is set up as an array job, each sample will be aligned in parallel in its own job, which is much more efficient than running a *for loop*. 
+
+
+To submit the script, from your working directory you would type:
+
+```bash
+sbatch star-align.sl 
+```
+
+To monitor the progress of the job, you would type:
+
+```bash
+squeue --me
+```
+

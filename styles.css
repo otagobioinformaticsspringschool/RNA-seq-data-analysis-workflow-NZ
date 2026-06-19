@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=Mukta:wght@400;700&display=swap');
+
+
+/* General page styling */
+body {
+    background-color: #f7f9fc;  /* Very light blue background for a soft feel */
+    color: #333;                /* Dark text for readability */
+    font-family: 'Mukta', Helvetica Neue, Arial, sans-serif;  /* Font family for a clean, modern look */
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Section styling for visual separation */
+  section {
+    border: 1px solid #e0e0e0;  /* Light gray border for separation */
+    background-color: #ffffff;  /* White background for sections */
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);  /* Subtle shadow for depth */
+  }
+  
+  /* Heading styles with background highlight */
+h1, h2, h3 {
+    color: #444444;  /* Lighter medium grey for headers */
+    padding: 12px 8px 8px 12px; /* top right bottom left */
+    background-color: #e6f2e6;  /* Soft green background for heading highlights */
+    border-radius: 5px;
+    margin-top: 12px; /* Optional: adds space above headings */
+    margin-bottom: 12px; /* Optional: adds space below headings */
+}
+
+h4 {
+    margin-top: 12px;
+    margin-bottom: 8px;
+}
+
+.quarto-content, .content, .main {
+    max-width: 1800px; /* Increase from default (often 800px or 900px) */
+    width: 100%;        /* Allow it to expand with the window */
+    margin: 0 auto;    /* Center the content */
+}
+
+
+  /* Link styles */
+  a {
+    color: #3b5998;  /* Muted yellow color for links */
+    text-decoration: none;
+  }
+  
+  a:hover {
+    color: #3b5998;  /* Darker blue on hover for a subtle effect */
+    text-decoration: underline;
+  }
+  
+  /* Button styles with gradient and shadow */
+  button {
+    background: linear-gradient(to bottom, #e6f2e6, #c8e6c9);  /* Soft green gradient for buttons */
+    color: #215732;  /* Dark green text for contrast */
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 0px 2px 4px rgba(33, 87, 50, 0.08);  /* Subtle green shadow for depth */
+    transition: background 0.3s, transform 0.2s;
+}
+  
+  button:hover {
+    background: linear-gradient(to bottom, #c8e6c9, #b2d8b2);  /* Slightly darker green on hover */
+    transform: translateY(-2px);  /* Slight lift effect on hover */
+}
+
+/* Code block copy button - smaller but keeps your styling */
+div.sourceCode button.code-copy-button {
+    padding: 4px 10px;
+    font-size: 0.75em;
+    top: 4px;
+    right: 4px;
+}
+  
+/* Callout block styles */
+
+
+/* White background for all callouts */
+.callout {
+    background-color: #ffffff;
+}
+
+
+  /* Footer styling */
+/* Bottom banner container */
+.bottom-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between; /* Space between left and right */
+  align-items: center;
+  background-color: #e6f2e6;  /* Soft green background */
+  color: black;
+  padding: 8px 20px;
+  font-size: 0.9em;
+  z-index: 1000;
+}
+
+.banner-right {
+  font-style: italic;
+  text-align: right;
+}
+  
+  /* Table styles with improved visual interest */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);  /* Subtle shadow for the table */
+  }
+  
+  table th, table td {
+    border: 1px solid #3b5998;  /* Soft blue borders */
+    padding: 10px;
+    text-align: left;
+  }
+  
+  table th {
+    background-color: #f4d03f;  /* Muted yellow header background */
+    color: #3b5998;  /* Soft blue text */
+  }
+  
+  table tr:nth-child(even) {
+    background-color: #f7f9fc;  /* Light blue for alternating rows */
+  }
+  
+  /* Blockquote styles with subtle enhancement */
+  blockquote {
+    border-left: 5px solid #3b5998;  /* Soft blue border to emphasize blockquote */
+    background: #eaf1fb;  /* Light blue background */
+    padding: 15px;
+    margin: 20px 0;
+    color: #4a4a4a;
+    font-style: italic;
+  }
+  
+  /* Content box styling */
+  .content-box {
+    background-color: #ffffff;  /* White background for contrast */
+    border: 1px solid #e0e0e0;  /* Light gray border */
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+  }
+  
+  /* Navigation button styling */
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    background-color: #eaf1fb; /* Light blue background around the buttons */
+    padding: 8px 16px; /* Increased left/right padding to move buttons inward */
+    border-radius: 8px;
+}
+
+.nav-button {
+    background: linear-gradient(to bottom, #305080, #3b5998);  /* Dark blue gradient for buttons */
+    color: #fff;  /* White text for contrast */
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 0px 2px 4px rgba(33, 87, 50, 0.08);  /* Subtle shadow */
+    transition: background 0.3s, transform 0.2s;
+}
+
+.nav-button:hover {
+    background: linear-gradient(to bottom, #3b5998, #305080);  /* Reverse dark blue gradient on hover */
+    transform: translateY(-2px);
+}
+
+.prev-button {
+    margin-right: auto;
+}
+
+.next-button {
+    margin-left: auto;
+}
+
+/* Code wrapping */
+div.sourceCode pre {
+    padding-right: 40px;
+}
+
+div.sourceCode pre code {
+    white-space: pre-wrap;
+    word-break: break-all;
+}

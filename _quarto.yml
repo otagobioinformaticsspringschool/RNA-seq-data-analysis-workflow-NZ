@@ -1,0 +1,46 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "RNA-seq data analysis workflow"
+  favicon: theme_images/GA-image-black-favicon.png
+  open-graph: true # https://quarto.org/docs/websites/website-tools.html#open-graph
+  sidebar:
+    style: "docked"
+    contents:
+      - text: "Home"
+        href: index.qmd
+      - text: "Background"
+        href: background.qmd
+      - section: "Day One"  
+        contents:
+          - sequence-quality.qmd
+          - index-align-quantify.qmd
+          - episode_3.qmd
+      - section: "Day Two" 
+        contents:
+          - episode_4.qmd
+          - episode_5.qmd
+          - episode_6.qmd
+
+    tools:
+      - icon: github
+        text: Github
+        href: https://github.com/GenomicsAotearoa/RNA-seq-data-analysis-workflow
+
+format:
+  html:
+    mainfont: "Mukta"
+    monofont: "monospace"
+    fontsize: 20px
+    css: styles.css
+    navigation: true
+    page-navigation: true
+    toc: true
+    toc-location: right
+    toc-depth: 3
+    toc-title: "Contents"
+    code-copy: true
+    code-block-bg: true
+

@@ -1,0 +1,63 @@
+---
+title: ""
+---
+
+# RNA-seq Data Analysis
+
+![](theme_images/main_image.png){width=60% fig-align="center"}
+
+
+## Getting started with RNA-seq data analysis
+
+This workshop aims to get you started with analysing your own RNA-seq data by providing an example workflow. At each of the major steps in the workflow we will examine issues that could confound your analysis and consider how different available methods address these issues. 
+
+Rather than prescribing what methods you should use, this workshop aims to make the user aware of the biological and statistical challenges involved in analysing RNA-seq data and asks how different methods address those challenges. By the end of this workshop you should be familiar with the general workflow of RNA-seq analysis and be ready to ask informed questions about the specific methods you should select going forward. 
+
+The workshop includes a small example Illumina short read dataset which will be used by the workshop Instructor to demonstrate an analysis. Attendees may choose to follow along with the analysis in real time or they may choose to focus on note-taking. The workshop includes short exercises to highlight key messages and reinforce your understanding. 
+
+#### Background knowledge
+This workflow assumes you are familiar with transcriptomic and biological concepts. In particular, it assumes you are familar with the concept of sequencing libraries and with the data format (i.e., FASTA and FASTQ files). For more information on these topics, see the [Data Carpentry lesson](https://datacarpentry.github.io/wrangling-genomics/index.html) which describes the FASTQ format (i.e., files that contain reads and quality scores for the bases in each read) and [NGS basics by Illumina](https://sapac.illumina.com/science/technology/next-generation-sequencing/beginners.html), which describes the full process of sample to data, and further details on chosing an [NGS RNA library preparation method](https://sapac.illumina.com/techniques/sequencing/ngs-library-prep/rna.html), which describes different Illumina kits for prepping your RNA sample into a sequenceable library. 
+
+
+## Workshop timeline
+
+This workshop runs over two mornings, from 9am - 1pm. We will take 10 min breaks approximately once every hour.
+
+### Day 1
+
+An overview of RNA-seq data analysis workflows
+Quality assessment
+Adaptor trimming and filtering
+Mapping and counting methods
+Exploratory analysis
+
+### Day 2
+
+Concepts for identifying differentially expressed genes 
+Limma for differentially expressed genes
+DESeq2 for differentially expressed genes
+Over-representation analysis
+
+
+## Setup
+
+During the workshop, code will be run in real-time to demonstrate the analysis. This will be run on the REANNZ OpenOnDemand platform which already has all the required software and R packages installed. 
+
+
+
+## Attribution notice
+
+This workshop is an updated version on an existing version of [RNA-seq data analysis by Genomics Aotearoa and REANNZ (formerly NeSI)](https://genomicsaotearoa.github.io/RNA-seq-workshop-on-demand/). It incorporates, and takes inspiration from, various training materials produced by the [Harvard Bioinformatics Core](https://github.com/hbctraining) and from The Carpentries, specifically their [RNA-seq analysis with Bioconductor workshop](https://carpentries-incubator.github.io/bioc-rnaseq/index.html). 
+
+
+::: {style="background: #e6f2e6; text-align:center; padding: 1.5rem; border-radius: 8px;"}
+
+# {style="background: #e6f2e6; text-align:center;"}
+
+[![](theme_images/GA-Logo-Bioinformatics-Training-black.png){width=80%}](https://genomicsaotearoa.github.io/BioinformaticsTrainingProgramme/)
+
+Made with [❤️](https://docs.carpentries.org/policies/coc/) and [Quarto](https://genomicsaotearoa.github.io/reproducibility_with_git_and_quarto/quarto_overview.html)
+
+:::
+
+

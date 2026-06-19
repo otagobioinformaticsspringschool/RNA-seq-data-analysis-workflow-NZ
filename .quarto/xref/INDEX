@@ -1,0 +1,32 @@
+{
+  "index.qmd": {
+    "index.html": "7f340855"
+  },
+  "background.qmd": {
+    "background.html": "bb65ea2e"
+  },
+  "episode_1.qmd": {
+    "episode_1.html": "3821fb09"
+  },
+  "sequence-quality.qmd": {
+    "sequence-quality.html": "7f40fbd8"
+  },
+  "align.qmd": {
+    "align.html": "63c27a40"
+  },
+  "episode_6.qmd": {
+    "episode_6.html": "d44f02ed"
+  },
+  "episode_5.qmd": {
+    "episode_5.html": "9ae1412f"
+  },
+  "episode_4.qmd": {
+    "episode_4.html": "99c1441b"
+  },
+  "index-align-quantify.qmd": {
+    "index-align-quantify.html": "be34e6ea"
+  },
+  "episode_3.qmd": {
+    "episode_3.html": "dedc5f30"
+  }
+}

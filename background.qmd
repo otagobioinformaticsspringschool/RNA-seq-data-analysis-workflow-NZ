@@ -1,0 +1,69 @@
+---
+title: ""
+code-overflow: wrap
+---
+
+# The RNA-seq workflow
+
+::: {.callout-note}
+# Key points 🗝️  
+
+- What are the key steps in an RNA-seq data analysis workflow?   
+- What are the peculiar features of RNA-seq data, and how do we address these features to make sure our analysis is unbiased and accurate?   
+- What methods are available to handle RNA-seq data analysis?  
+:::
+
+
+
+
+## The RNA-seq workflow overview
+
+We will assume that the aim of our RNA-seq experiment is to identify a set of genes which are differentially expressed between two or more groups, and to derive biologically meaningful information from our gene list(s). 
+
+Assuming this is the case, there are many methods that can be applied to this type of analysis and this can be overwhelming. Here we will look at what we call the core workflow - the major steps that you will take to go from the raw FASTA files (the output from an RNA-seq experiment) to an informative list of differentially expressed genes. 
+
+### Core steps in a common workflow:
+1. Quality assessment of the raw data
+2. Adapter removal and cleanup
+3. Quantification of gene expression
+4. Identifying differentially expressed genes
+5. Over-representation analysis
+
+
+As you will see, for some steps there are multiple tools that take a functionally similar approach (*e.g.,* quality assessment and adapter removal). For other steps, especially for quantification and identification of differentially expressed genes, there are different methodologies available. These methodologies take different routes to address complex biological, computational and statistical questions. A key takeaway from this workshop is that it is not always possible to identify a "best" tool - *you must be willing and able to identify the strengths and weaknesses of available tools and decide, based on your question and experiment, which tool is most appropriate for you*. 
+
+Let's look at some peculiar features of RNA-seq data and identify the challenges these raise for us as data analysts. 
+
+## What are the main challenges or decision points?
+
+### Counting or quantifying
+
+This is not an exhaustive overview of RNA-seq data, but as a reminder, the raw data we receive in the form of FASTA files is a series of reads from *somewhere* in the genome. Each read is an indication, or measurement, of gene expression. We must take these reads, identify where in the genome they originated from and then make a measurement of how frequently we observed those reads. The more reads that are mapped back to a specific location in the genome, the more highly expressed that region (gene) is. 
+
+There are two major approaches to measure gene expression from reads: in the first method reads are aligned to a reference genome and are then 'counted' (e.g., using programs such as [featureCounts](https://subread.sourceforge.net/featureCounts.html) or [HTSeq](https://htseq.readthedocs.io/en/latest/htseqcount.html)), while in the second method reads are 'quantified' without the need to align to a reference (these are sometimes referred to as 'pseudocounts' or 'pseudoalignment'; example programs include [Salmon](https://combine-lab.github.io/salmon/) and [Kallisto](https://pachterlab.github.io/kallisto/about)). There are arguments for each of these types; one major point of difference is if you are after gene-level resolution (count method) or transcript-level resolution (quantify method), but a full discussion of these and other approaches is beyond the scope of this workshop. 
+
+### Library sizes and composition
+
+Due to myriad biological and technical effects, each sample will have differing numbers of total reads (different library sizes). When we attempt to compare gene expression across samples, these different library sizes can cause genes to be over- or under-expressed. Before we can compare samples we must correct for library size differences. 
+
+Additionally, we need to be aware of library composition. If a library has one (or a few) genes that are very highly expressed, they can be thought of as 'taking up' a high proportion of the total library of reads. If we compare this skewed library with another library, some genes may look down-regulated in the skewed library. Here is a great resource on [different ways to normalise counts](https://hbctraining.github.io/Intro-to-DGE/lessons/02_DGE_count_normalization.html), which can account for  library size and/or composition, produced by the [Harvard Chan Bioinformatics Core.](https://github.com/hbctraining/Intro-to-DGE)
+
+### Heteroskedasticity
+
+Heteroskedasticity describes a situation where variance changes with the mean. In RNA-seq data the level of variance associated with each gene is somewhat dependent on the mean expression level of the gene. This is an issue since some statistical approaches (specifically, the Poisson distribution) assume homoskedasticity (that is, that variance is not associated with the mean). 
+
+Two approaches to dealing with heteroskedasticity are common in the literature: transform the data to reduce (or remove) the mean-variance association or use a method that is robust to the mean-variance association ([DESeq2](https://doi.org/10.1186/s13059-014-0550-8) with the Negative Binomial distribution). 
+
+
+### Gene length
+
+Does gene length matter? You might be aware that if a gene is longer, it is more likely to have reads mapped to it. This is important to be aware of, but when we are identifying differentially expressed genes we are always comparing genes to themselves. Therefore, gene length is not a factor when identifying differentially expressed genes. 
+
+However, gene length does need to be taken into account when we carry out over-representation analysis.
+
+
+## Introduction to the dataset
+
+The example data in this workshop are from 
+
+

@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.31">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>index-align-quantify – RNA-seq data analysis workflow</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./episode_3.html" rel="next">
+<link href="./sequence-quality.html" rel="prev">
+<link href="./theme_images/GA-image-black-favicon.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-2b26f57d8318b6eba2cd7cd1feee4645.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="– RNA-seq data analysis workflow">
+<meta property="og:description" content="">
+<meta property="og:image" content="theme_images/alignment.png">
+<meta property="og:site_name" content="RNA-seq data analysis workflow">
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./sequence-quality.html">Day One</a></li><li class="breadcrumb-item"><a href="./index-align-quantify.html">Quantifying Gene Expression</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">RNA-seq data analysis workflow</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/GenomicsAotearoa/RNA-seq-data-analysis-workflow" title="Github" class="quarto-navigation-tool px-1" aria-label="Github"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Home</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./background.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Background</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Day One</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sequence-quality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sequence Quality - FastQC, MultiQC and Trimmomatic</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index-align-quantify.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Quantifying Gene Expression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./episode_3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Exploratory Analysis</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Day Two</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./episode_4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Identify Differentially Expressed Genes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./episode_5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Functional analysis</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./episode_6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Conclusions</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#quantifying-gene-expression" id="toc-quantifying-gene-expression" class="nav-link active" data-scroll-target="#quantifying-gene-expression">Quantifying Gene Expression</a>
+  <ul class="collapse">
+  <li><a href="#alignment-with-star" id="toc-alignment-with-star" class="nav-link" data-scroll-target="#alignment-with-star">Alignment with STAR</a>
+  <ul class="collapse">
+  <li><a href="#preparation-of-the-genome" id="toc-preparation-of-the-genome" class="nav-link" data-scroll-target="#preparation-of-the-genome">Preparation of the genome</a></li>
+  <li><a href="#aligning-reads-to-the-genome" id="toc-aligning-reads-to-the-genome" class="nav-link" data-scroll-target="#aligning-reads-to-the-genome">Aligning reads to the genome</a></li>
+  <li><a href="#mapping-statistics" id="toc-mapping-statistics" class="nav-link" data-scroll-target="#mapping-statistics">Mapping statistics</a></li>
+  <li><a href="#gene-counts" id="toc-gene-counts" class="nav-link" data-scroll-target="#gene-counts">Gene counts</a></li>
+  <li><a href="#multiqc" id="toc-multiqc" class="nav-link" data-scroll-target="#multiqc">MultiQC</a></li>
+  </ul></li>
+  <li><a href="#extra-converting-sam---bam" id="toc-extra-converting-sam---bam" class="nav-link" data-scroll-target="#extra-converting-sam---bam">Extra: Converting SAM &lt;-&gt; BAM</a></li>
+  <li><a href="#extra-read-summarisation" id="toc-extra-read-summarisation" class="nav-link" data-scroll-target="#extra-read-summarisation">Extra: Read summarisation</a></li>
+  <li><a href="#extra-automating-and-optimising-your-workflow" id="toc-extra-automating-and-optimising-your-workflow" class="nav-link" data-scroll-target="#extra-automating-and-optimising-your-workflow">Extra: Automating and optimising your workflow</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./sequence-quality.html">Day One</a></li><li class="breadcrumb-item"><a href="./index-align-quantify.html">Quantifying Gene Expression</a></li></ol></nav></header>
+
+
+
+
+<section id="quantifying-gene-expression" class="level1">
+<h1>Quantifying Gene Expression</h1>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="theme_images/alignment.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p>In order to draw conclusions about gene expression from our reads, we need to first identify which region of the genome reads originated from and then quantify the number of reads from that region. There are many tools available to carry out quantification, and we will not cover the arguments for and against each tool. We encourage you to carry out a literature search, and discuss with experienced individuals in your field, before committing to a particular quantification procedure. Here we will give a brief overview of two approaches with considerably different underlying methodology, give an example tool for each, and then demonstrate one tool for the purpose of progressing to the next stage of our workflow.</p>
+<p>The first approach to read quantification involves aligning reads to the genome first, and then counting the number of reads that are aligned to certain genomic features (<em>e.g.,</em> exons). This method may generally be referred to as the ‘count’ method, but it is still a form of quantification, and the output is by default at the gene level.</p>
+<p>The second approach, which we will not do today, involves creating transcript expression estimates via pseudoalignment, often referred to informally as ‘pseudocounts’. In this method, reads are <em>not</em> aligned to the genome. Instead, they are pseudoaligned to kmers within the transcriptome and their abundance is estimated. While the output for these tools (e.g., Kallisto, Salmon) are by default at a transcript level, they can be converted to a gene level expression estimate.</p>
+<p>In today’s workflow we will demonstrate genome alignment and counting using STAR.</p>
+<p>Additional parameters for STAR in the <a href="https://github.com/alexdobin/STAR#manual">manual</a> maintained in github.</p>
+<section id="alignment-with-star" class="level2">
+<h2 class="anchored" data-anchor-id="alignment-with-star">Alignment with STAR</h2>
+<section id="preparation-of-the-genome" class="level3">
+<h3 class="anchored" data-anchor-id="preparation-of-the-genome">Preparation of the genome</h3>
+<p>When carrying out alignment, the first requirement is a genome which has been indexed. Indexing is a process to organise the genome so that our alignment algorithms can match reads to the genome easily, without having to scan the entire genome.</p>
+<p>Navigate to the Genome directory and view the contents. You should see two files, a .gtf and a .fna file.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/RNA_seq/Genome</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The .gtf file (General Transfer Format) contains annotation information about the genome, such as gene names, feature type, coordinates <em>etc.,</em> all stored in a one-line-per-feature format, while the .fna (FASTA nucleic acid) file contains our genome sequence.</p>
+<p>We will now use STAR to index the genome using the <code>STAR --runMode genomeGenerate</code> command.</p>
+<p>The next three commands specify where our genome directory is, where our genome fasta file is and where our annotation file (sjdb = splice junction database).</p>
+<p>The last two flags you will need to tailor to your own reads.</p>
+<ul>
+<li><code>--sjdbOverhang</code> this number is your RNA-seq read length -1. Default 100; using the default often works fine regardless.<br>
+</li>
+<li><code>--genomeSAindexNbases</code> this is optional: 14 is the default. You may get a warning with a suggestion to use a different number (you should then modify and rerun your script)</li>
+</ul>
+<p>Run this code below, and lets consider the following scenario as its running:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load STAR/2.7.10b-GCC-11.3.0-alpha</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="va">genomedir</span><span class="op">=</span>~/RNA_seq/Genome</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">STAR</span> <span class="dt">\</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>--runMode genomeGenerate <span class="dt">\</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>--genomeDir <span class="va">$genomedir</span> <span class="dt">\</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>--genomeFastaFiles <span class="va">$genomedir</span>/GCF_009762535.1_fNotCel1.pri_genomic.fna <span class="dt">\</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>--sjdbGTFfile <span class="va">$genomedir</span>/GCF_009762535.1_fNotCel1.pri_genomic.gtf <span class="dt">\</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>--sjdbOverhang 124 <span class="dt">\ </span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="ex">--genomeSAindexNbases</span> 14 </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="exercise-2-mins" class="level5">
+<h5 class="anchored" data-anchor-id="exercise-2-mins">EXERCISE 🧠🏋️‍♀️ (2 mins)</h5>
+<p>Scenario: During the course of conducting your research project you have generated multiple RNA-seq datasets from the same species. You have previously generated an indexed genome for your species when you were working with 100bp paired-end reads. Your new samples are 150bp single-end reads. Can you use the same indexed genome files? What flag/s and argument/s do you need to change if not?</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+SOLUTION
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>You need to change the <code>--sjdbOverhang</code> flag and regenerate the genome index. With 150bp reads, this will need to be <code>--sjdbOverhang 149</code>. The paired-end/single-end-ness of the data does not matter – a red herring!</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">genomedir</span><span class="op">=</span>~/RNA_seq/Genome</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">STAR</span> <span class="dt">\</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>--runMode genomeGenerate <span class="dt">\</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>--genomeDir <span class="va">$genomedir</span> <span class="dt">\</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>--genomeFastaFiles <span class="va">$genomedir</span>/GCF_009762535.1_fNotCel1.pri_genomic.fna <span class="dt">\</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>--sjdbGTFfile <span class="va">$genomedir</span>/GCF_009762535.1_fNotCel1.pri_genomic.gtf <span class="dt">\</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>--sjdbOverhang <span class="op">&lt;</span>int<span class="op">&gt;</span> <span class="dt">\ </span> <span class="co"># change</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="ex">--genomeSAindexNbases</span> 14  <span class="co"># not change</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="output" class="level4">
+<h4 class="anchored" data-anchor-id="output">Output</h4>
+<p>We can now see many new files, which make up the indexed version of the genome.</p>
+<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Output files –&gt;
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<pre class="output"><code>chrLength.txt                                 
+chrNameLength.txt                             
+chrName.txt                                   
+chrStart.txt                                  
+exonGeTrInfo.tab                              
+exonInfo.tab   
+geneInfo.tab                                  
+Genome
+genomeParameters.txt 
+Log.out 
+SA
+SAindex
+sjdbInfo.txt
+sjdbList.fromGTF.out.tab
+sjdbList.out.tab
+transcriptInfo.tab</code></pre>
+</div>
+</div>
+</div>
+<p>You can ignore most of these (unless you need to troubleshoot later), but you should check the last two lines of the Log.out file to confirm that the genome was indexed successfully.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> <span class="at">-n</span> 2 Log.out</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="output"><code>Jun 10 15:17:54 ..... finished successfully
+DONE: Genome generation, EXITING</code></pre>
+</section>
+</section>
+<section id="aligning-reads-to-the-genome" class="level3">
+<h3 class="anchored" data-anchor-id="aligning-reads-to-the-genome">Aligning reads to the genome</h3>
+<p>Now that we have an indexed genome, we can align our sequences; a process also commonly referred to as mapping. To do this we will need to know:</p>
+<ul>
+<li><p>Where the sequence information is stored (<em>e.g.,</em> fastq files).</p></li>
+<li><p>What kind of sequencing file we have (<em>e.g.,</em> Single end or Paired end).</p></li>
+<li><p>Where the indexes and genome are stored.</p></li>
+<li><p>Where the mapping files will be stored.</p></li>
+</ul>
+<p>Once we have that information we are ready to align our sequences. First, navigate to the RNA_seq/align directory, and run <code>STAR --runMode alignReads</code> on one sample. We will use some shell variables to set our dirs and file names and the minimum flags we need run the alignment and write sorted BAM alignment output files.</p>
+<p>Let’s run the script (this will take approximately 4 minutes to run), and as it’s going, talk about some of the flags we used:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load module</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load STAR/2.7.10b-GCC-11.3.0-alpha</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Set shell variables</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="va">genomedir</span><span class="op">=</span><span class="st">"../Genome"</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="va">trimmeddir</span><span class="op">=</span><span class="st">"../Trimmed"</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="va">r1</span><span class="op">=</span><span class="va">$trimmeddir</span>/SI16_1G_lib56_R1_trimmed.fq.gz</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="va">r2</span><span class="op">=</span><span class="va">$trimmeddir</span>/SI16_1G_lib56_R2_trimmed.fq.gz</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a> <span class="co"># run STAR to align reads to the genome    </span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="ex">STAR</span> <span class="dt">\</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>--runMode alignReads <span class="dt">\</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>--genomeDir <span class="va">$genomedir</span> <span class="dt">\</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>--readFilesIn <span class="va">$r1</span> <span class="va">$r2</span> <span class="dt">\</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>--readFilesCommand zcat <span class="dt">\</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>--outSAMtype BAM SortedByCoordinate <span class="dt">\</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>--outFileNamePrefix SI16_1G_ <span class="dt">\</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>--runThreadN 2 <span class="dt">\</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>--quantMode GeneCounts</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Flags in this script:</p>
+<ul>
+<li><p><code>--readFilesCommand zcat</code> – this flag with zcat argument allows STAR to process .gz files. Best to keep your reads as compressed files, but if they are not .gz then omit this flag.<br>
+</p></li>
+<li><p><code>--outSAMtype BAM SortedByCoordinate</code> – default is SAM, but you should always use BAM as the files are smaller. You can also chose unsorted (sorting allocates extra memory). Most downstream applications require BAM files to be sorted for efficiency. Read more about <a href="#extra-converting-sam---bam">SAM/BAM in the extra section below</a>.</p></li>
+<li><p>increasing threads to match how many you have available and whatever you set on your slurm script.</p></li>
+</ul>
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+STAR alignment flags
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>STAR has many flags you can use during alignment; read the <a href="https://github.com/alexdobin/STAR#manual">STAR manual</a> to find these.</p>
+<p>Some of the most common flags you may need to add or consider changing from the default value are:</p>
+<p><code>--sjdbOverhang &lt;int&gt;</code> : This flag we saw earlier when we indexed. It is primarily an index flag, but if you did not use it during indexing you could use it here to specify your read length-1. Generally the default 100 works well and changing this makes minimal difference.</p>
+<p><code>--sjdbGTFfile /path/to/ann.gtf</code>: the annotations can be included on the fly at the mapping step, without including them at the genome generation (index) step. STAR can be run without annotations, but using annotations is highly recommended whenever they are available. STAR will extract splice junctions from this file and use them to greatly improve accuracy of the mapping.</p>
+<p><code>--quantMode TranscriptomeSAM GeneCounts</code> : We used GeneCounts above, but you can also include TranscriptomeSAM option and STAR will output alignments translated into transcript coordinates in the Aligned.toTranscriptome.out.bam</p>
+<p>Other parameters you may want to consider are flags that allow you to:</p>
+<p><strong>Improve alignment around novel junctions:</strong><br>
+<code>--twopassMode Basic</code><br>
+STAR is particularly good at detecting novel splice junctions. This flag does a first pass to discover splice junctions, then realigns using those junctions and is a good flag to add on its own.<br>
+There are other flags that can be further used to refine how STAR detects splice junctions (SJ), <em>e.g.:</em><br>
+<code>--alignSJoverhangMin &lt;int&gt;</code><br>
+<code>--alignSJDBoverhangMin &lt;int&gt;</code><br>
+<code>--outSJfilter*</code> - this flag prefix refers to a group of flags for output filtering of splice junctions.</p>
+<p><strong>Adjust for too much or too little multi-mapping:</strong><br>
+<code>--outFilterMultimapNmax &lt;int&gt;</code><br>
+<code>--outFilterMultimapScoreRange &lt;int&gt;</code><br>
+<code>--outSAMmultNmax &lt;int&gt;</code></p>
+<p>These are examples of flags that influence how STAR handles multi‑mapping reads, either at the read level (for example, how many loci a read may map to before STAR outputs no alignments for that read) or at the reporting level (for example, how many of the best‑scoring alignments are written to the SAM/BAM). In fragmented or highly repetitive genomes, you may want to adjust these parameters to be more conservative (allow fewer multi‑mappers) or less conservative (allow more multi‑mappers) if too many reads are being lost.</p>
+<p><strong>Adjust for mismatches:</strong><br>
+<code>--outFilterMismatchNmax &lt;int&gt;</code><br>
+<code>--outFilterMismatchNoverLmax &lt;float&gt;</code><br>
+<code>--outFilterMismatchNoverReadLmax &lt;float&gt;</code></p>
+<p>These are examples of flags that controls mismatch tolerance. Mismatch tolerance becomes important when your reference genome differs from your samples, for example, when using a related species’ genome, or an older or low‑quality genome assembly. Conversely, if your reference closely matches your samples, you can tighten mismatch thresholds to be more conservative and reduce spurious alignments.</p>
+</div>
+</div>
+</div>
+<p>The resulting files should look something like this:</p>
+<pre><code>SI16_1G_Aligned.sortedByCoord.out.bam
+SI16_1G_Log.final.out
+SI16_1G_Log.out
+SI16_1G_Log.progress.out
+SI16_1G_ReadsPerGene.out.tab
+SI16_1G_SJ.out.tab</code></pre>
+<p>To check it ran properly, run:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> <span class="at">-n</span> 1 SI16_1G_Log.out</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The last line of the file should read:</p>
+<pre class="output"><code>ALL DONE!</code></pre>
+</section>
+<section id="mapping-statistics" class="level3">
+<h3 class="anchored" data-anchor-id="mapping-statistics">Mapping statistics</h3>
+<p>Summary statistics for the alignment are in the <code>Log.final.out</code> file. You can view this file using <code>less</code> to interactively explore the file, or <code>cat</code> to view all the file contents in your console.</p>
+<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Log.final.out file –&gt;
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<pre class="output"><code>                                 Started job on |   Mar 22 10:09:19
+                             Started mapping on |   Mar 22 10:47:48
+                                    Finished on |   Mar 22 11:39:50
+       Mapping speed, Million of reads per hour |   12.92
+
+                          Number of input reads |   11208161
+                      Average input read length |   242
+                                    UNIQUE READS:
+                   Uniquely mapped reads number |   9936813
+                        Uniquely mapped reads % |   88.66%
+                          Average mapped length |   241.30
+                       Number of splices: Total |   9848601
+            Number of splices: Annotated (sjdb) |   9827918
+                       Number of splices: GT/AG |   9703013
+                       Number of splices: GC/AG |   67562
+                       Number of splices: AT/AC |   13063
+               Number of splices: Non-canonical |   64963
+                      Mismatch rate per base, % |   0.45%
+                         Deletion rate per base |   0.03%
+                        Deletion average length |   2.09
+                        Insertion rate per base |   0.03%
+                       Insertion average length |   1.74
+                             MULTI-MAPPING READS:
+        Number of reads mapped to multiple loci |   267008
+             % of reads mapped to multiple loci |   2.38%
+        Number of reads mapped to too many loci |   67199
+             % of reads mapped to too many loci |   0.60%
+                                  UNMAPPED READS:
+  Number of reads unmapped: too many mismatches |   0
+       % of reads unmapped: too many mismatches |   0.00%
+            Number of reads unmapped: too short |   910101
+                 % of reads unmapped: too short |   8.12%
+                Number of reads unmapped: other |   27040
+                     % of reads unmapped: other |   0.24%
+                                  CHIMERIC READS:
+                       Number of chimeric reads |   0
+                            % of chimeric reads |   0.00%
+</code></pre>
+</div>
+</div>
+</div>
+<p>The main statistics you should check are:</p>
+<p><strong>Uniquely mapped reads %</strong>: We expect this to be quite high for a good alignment. There is no official cut-off, but around &gt;85% is generally good. If this number is lower, it could be due to multi-mapping reads, which depending on how repetitive or polyploid the genome is, may be expected. Other culprits include poor read quality, contamination with reads from another species, or poor alignment to the reference genome. Some of this could be addressed with trimming or adjusting alignment parameters.</p>
+<p><strong>Multi-mapping reads</strong>: Generally you want this to be low, but as mentioned above, if you have a repetitive or highly polyploid genome this may be expected. There are two parameters to look at here:<br>
+<em>% of reads mapped to multiple loci</em> – multi-mapping reads. Not counted in default gene counts output. Can adjust flags during alignment to count these if desired, but this does get more complex. Read the section ‘5.2.1 Multimappers’ in the STAR manual.<br>
+<em>% of reads mapped to too many loci</em> – these reads exceeded the value given for the <code>--outFilterMultimapNmax</code> flag (or the default value of 10 if flag not specified during alignment) and these alignments are discarded.</p>
+<p><strong>Unmapped reads</strong><br>
+All reads that did not map to the genome. This is broken up into three categories – too many mismatches, too short or other. In total you would expect these values to be small (<em>e.g.,</em> &lt;5%). Mismatches could be handled by changing alignment flags (mentioned earlier), but if this number is particularly high (<em>e.g.,</em> &gt;10%), you may need to consider whether the reference genome you are using is appropriate, or if there is some other biological or technical reason your reads have many base pair mismatches. Reads that are too short could be from over-trimming. You may need to filter your trimmed reads to remove any below a threshold (<em>e.g.,</em> discard all reads shorter than 36bp is a common cut-off; Trimmomatic has the option MINLEN).</p>
+<section id="discussion-1-min" class="level5">
+<h5 class="anchored" data-anchor-id="discussion-1-min">DISCUSSION 🤔 (1 min)</h5>
+<p>What do you think of the mapping statistics for the Log.final.out file provided above? Was this a good alignment?</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+SOLUTION
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Yes, this alignment looks pretty good. More than 85% of the reads uniquely mapped (88.66%), and there are few unmapped reads. There are a few reads that are too short at 8.12%, this might be worth checking how short these are on average and thinking about if filtering needs to be readjusted before aligning. You could do this by including the flag with argument <code>--outReadsUnmapped Fastx</code> during alignment, which will output unmapped and partially mapped (<em>i.e.,</em> mapped only one mate of a paired end read) reads in separate file(s), that you could then run FastQC on.</p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="gene-counts" class="level3">
+<h3 class="anchored" data-anchor-id="gene-counts">Gene counts</h3>
+<p>When we run a STAR alignment with the <code>--quantMode GeneCounts</code> flag, it generates a file called <code>ReadsPerGene.out.tab</code>. This file contains the number of reads that were assigned to each gene in the genome. The counts coincide with those produced by <code>htseq-count</code> with default parameters. You could alternatively run <a href="https://htseq.readthedocs.io/en/master/htseqcount.html">htseq-count</a> separately on the sorted BAM files (Aligned.sortedByCoord.out.bam) to get the same counts, or you could choose to use a different counting tool such as <code>featureCounts</code> (featureCounts comes from the <a href="https://subread.sourceforge.net/">Subread package</a>, which can also be implemented in R using Rsubread).</p>
+<p>You can view the first few lines of this file using the <code>head</code> command.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> SI16_1G_ReadsPerGene.out.tab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="output"><code>N_unmapped  1004352 1004352 1004352
+N_multimapping  267008  267008  267008
+N_noFeature 441161  9761099 474701
+N_ambiguous 163357  717 21355
+LOC117820358    0   0   0
+LOC117813751  723   0   723
+ccdc51        241   92  241
+tma7         3172   2   3262
+LOC117815572    3   0   3
+LOC117818779    0   0   0</code></pre>
+<p>The output contains 4 header rows and 4 columns. The number of rows in the file (minus headers) is the number of genes in genome (annotation file gtf gene_id). The exact same genes will be in every ReadsPerGene.out.tab for every sample – genes with no reads mapped to them will have 0s in the columns.</p>
+<p>The 4 columns are:</p>
+<ul>
+<li>column 1: gene ID<br>
+</li>
+<li>column 2: counts for unstranded RNA-seq<br>
+</li>
+<li>column 3: counts for the 1st read strand aligned with RNA (htseq-count option -s yes)<br>
+</li>
+<li>column 4: counts for the 2nd read strand aligned with RNA (htseq-count option -s reverse)</li>
+</ul>
+<section id="discussion-1-min-1" class="level5">
+<h5 class="anchored" data-anchor-id="discussion-1-min-1">DISCUSSION 🤔 (1 min)</h5>
+<p>Which column do you think we should use for our data, or how could we figure it out?</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+SOLUTION
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>These data were generated with the TruSeq Stranded library prep kit, which means that read 1 corresponds to the antisense strand, which is the first complementary DNA strand generated during library prep. Read 2 corresponds to the original mRNA sequence (sense strand). Read about <a href="https://knowledge.illumina.com/library-preparation/rna-library-prep/library-preparation-rna-library-prep-reference_material-list/000002238">Illumina stranded RNA workflows here</a>. What this means is we want the <strong>reverse</strong> option - so we should use the 4th column. However, if you are unsure which column to use for stranded data (3 or 4), look at the N_noFeature row and pick the column with the smallest number. You should also check the STAR manual (section ‘8 Counting number of reads per gene’) for further description of these parameters and you should reaad the <a href="https://htseq.readthedocs.io/en/master/htseqcount.html">htseq-count documentation</a> to determine the effect of the htseq-count -s yes/reverse flag.</p>
+</div>
+</div>
+</div>
+<p>Once you have generated all your alignments, you should then use either shell or R tools to make a new table with your gene IDs as the rows, the sample names as headers, and the values from whichever column you need to use.</p>
+<p>This file format should look like this:</p>
+<p><img src="figures/counts-table-example.png" class="img-fluid"></p>
+<blockquote class="blockquote">
+<p>Avoid Excel! Many gene names get converted to dates in Excel. Best not to use it if you can.</p>
+</blockquote>
+</section>
+</section>
+<section id="multiqc" class="level3">
+<h3 class="anchored" data-anchor-id="multiqc">MultiQC</h3>
+<p>STAR output data can be incorporated into the MultiQC report.</p>
+<p>Navigate to your RNA_seq/align dir and then run multiqc</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/RNA_seq/Align</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">multiqc</span> .</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/MQC_hisat2.png" class="img-fluid figure-img"></p>
+<figcaption>MultiQC after alignment</figcaption>
+</figure>
+</div>
+<p>You might notice that the report labels the summary files as “Bowtie2”. This is because the outputs are identical to those generated by Bowtie2, and MultiQC recognises them as Bowtie2.</p>
+<p><strong><em>Now we are ready to move on to differential gene expression analysis!</em></strong></p>
+</section>
+</section>
+<section id="extra-converting-sam---bam" class="level2">
+<h2 class="anchored" data-anchor-id="extra-converting-sam---bam">Extra: Converting SAM &lt;-&gt; BAM</h2>
+<p>SAM files or ‘Sequence Alignment Map’ are tab-delimited text files containing information for each individual read and its alignment to the genome. SAM files are human-readable, in that you can open them in a text editor or use cat/head on these files in shell. SAM files are large, so the first thing we do with them is convert them to BAM (Binary Alignment Map) files: compressed, binary versions of the file which reduce time and can themselves be indexed for efficiency when we interact with them (BAM are not human-readable).</p>
+<p>If you want to do use different tools for downstream analyses of alignments, you may need to do some converting of SAM to BAM files. For example, read summarisation tools such as <code>featureCounts</code> and <code>htseq-count</code> require BAM files as input for counting reads per gene.</p>
+<p>You can convert the SAM file to the BAM format using the samtools program with the view command. Use the <code>-S</code> flag to specify the input is a SAM file, and the <code>-b</code> flag to specify BAM as the output. Here is an example for loop to convert all SAMs to BAMs.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load SAMtools/1.23.1-GCC-12.3.0</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> filename <span class="kw">in</span> <span class="pp">*</span>.sam</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="va">base</span><span class="op">=</span><span class="va">$(</span><span class="fu">basename</span> <span class="va">${filename}</span> .sam<span class="va">)</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> view <span class="at">-S</span> <span class="at">-b</span> <span class="va">${filename}</span> <span class="at">-o</span> <span class="va">${base}</span>.bam</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You’ll also likely need to sort the BAM files, which mean future analysis steps are more efficient. From the samtools program use the sort command, with the <code>-o</code> flag to specify where the output file should go.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> filename <span class="kw">in</span> <span class="pp">*</span>.bam</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="va">base</span><span class="op">=</span><span class="va">$(</span><span class="fu">basename</span> <span class="va">${filename}</span> .bam<span class="va">)</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> sort <span class="at">-o</span> <span class="va">${base}</span>_sorted.bam <span class="va">${filename}</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To convert BAM to SAM:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load SAMtools/1.23.1-GCC-12.3.0 <span class="co"># version on REANNZ</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> filename <span class="kw">in</span> <span class="pp">*</span>.bam</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="va">base</span><span class="op">=</span><span class="va">$(</span><span class="fu">basename</span> <span class="va">${filename}</span> .bam<span class="va">)</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="ex">samtools</span> view <span class="at">-h</span> <span class="va">${filename}</span> <span class="at">-o</span> <span class="va">${base}</span>.sam</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="extra-read-summarisation" class="level2">
+<h2 class="anchored" data-anchor-id="extra-read-summarisation">Extra: Read summarisation</h2>
+<p>Sequencing reads often need to be assigned to genomic features of interest after they are mapped to the reference genome. This process is often called read summarisation or read quantification. Read summarisation is required by a number of downstream analyses such as gene expression analysis and histone modification analysis. The output of read summarisation is a count table, in which the number of reads assigned to each feature in each library is recorded. In our case each feature is an exon.</p>
+<p>In this workshop we used STAR with the flag <code>--quantMode GeneCounts</code>, which uses the software htseq-count to output reads, so we don’t need to do this step separately. However it is possible to use a different software for read summarisation, such as the featureCounts tool, from the Subread package.</p>
+<p>FeatureCounts is generally faster than htseq-count, and is more efficient when you have many samples. The output is also a little more ‘R-friendly’ than the htseq-count output, but both can be manipulated in R to get them into the same format for downstream analyses. The paper for <a href="https://academic.oup.com/nar/article/42/11/e108/1094278">featureCounts by Liao et al., 2014</a> compares the performance of featureCounts and htseq-count; these tools generally show good concordance but have nuanced differences for different applications.</p>
+<p>The <code>featureCounts</code> command will require five different flags. Use the <code>-a</code> flag to specify the annotation file, in this case the .gtf file we used earlier. The <code>-o</code> flag names the output file (e.g., counts.txt), while the <code>-T</code> flag specifies the number of threads/CPUs used for mapping. The <code>-t</code> flag is used to control the feature type in the GTF annotation file, use exon (which is also the default). Finally, the <code>-g</code> flag specifies the attribute type in the GTF file. Use the <code>gene_id</code> option (again, the default).</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load Subread/2.0.7-GCC-12.3.0 <span class="co"># version on REANNZ</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="ex">featureCounts</span> <span class="at">-a</span> /path/to/annotation.gtf <span class="at">-o</span> counts.txt <span class="at">-T</span> 2 <span class="at">-t</span> exon <span class="at">-g</span> gene_id /path/to/sorted.bam</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>These counts.txt are the equivalent to the ReadsPerGene.tab.out we generated earlier (slightly different ouptut format, but both contain the counts for how many reads mapped to each gene).</p>
+</section>
+<section id="extra-automating-and-optimising-your-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="extra-automating-and-optimising-your-workflow">Extra: Automating and optimising your workflow</h2>
+<p>Here we have been running each step of fastqc, trimming, indexing, and aligning directly on the command line. This is not always best practise, for a few reasons, and what you will likely need to do is translate this code into a <strong>script</strong>. For one, it is easier to reproduce and automate your workflow when everything you do is in a script. But perhaps more importantly, when working on a HPC environment, your direct command line inputs are operating on the head node or log in node. Many of these software used require more CPUs/memory than can be allocated on the head node and therefore you need to submit your job to the HPC job scheduler (<em>e.g.,</em> SLURM or PBS) to run the job more efficiently on allocated compute resources.</p>
+<p>See here our GA workshop on <a href="https://genomicsaotearoa.github.io/BioinformaticsTrainingProgramme/portfolio.html#bash-script-hpc-job">Bash Scripting and HPC Job Scheduler</a> for more details on how to prepare, run and optimise a SLURM script.</p>
+<p><strong>Example only: Submitting STAR alignment to SLURM</strong></p>
+<p>Once we have confirmed the STAR alignment code works for our first sample, the next step would be to align all the samples to the genome. As this would take quite a while, we won’t do that in this workshop and we will instead supply the outputs for all samples. We could do all the alignments with a <em>for loop</em>, but as we have many samples and <em>for loops</em> run one sample at a time, this is not the most efficient way to do this. We need to write a slurm script as an array job and submit it to the HPC job scheduler (<em>i.e.,</em> SLURM on REANNZ) to allocate CPUs and memory for the job. We won’t be doing this in this workshop either, but you can see an example of a SLURM script below.</p>
+<p>First, make a <code>samples.txt</code> file that contains the basename of the files. This way we can extract the prefix we want for the outfiles in a way that works nicely with an array job.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> ../Trimmed/<span class="pp">*</span>_R1_trimmed.fq.gz <span class="kw">|</span> <span class="fu">xargs</span> <span class="at">-n1</span> basename <span class="kw">|</span> <span class="fu">sed</span> <span class="st">'s/_R1_trimmed\.fq\.gz//'</span> <span class="op">&gt;</span> samples.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Note: this script assume you are currently in your alignment dir (where you want the star alignment results to go), which is where the <code>samples.txt</code> file will also go, and that your trimmed read files are in a directory called <code>../Trimmed</code> relative to your current directory.</p>
+<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+samples.txt example –&gt;
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> samples.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="output"><code>SI16_1G_lib56
+SI16_21G_lib63
+SI16_22G_lib64
+SI16_23G_lib65
+SI16_2G_lib57
+SI16_3G_lib58
+SI18_15G_lib09
+SI18_16G_lib10
+SI18_18G_lib11
+SI18_22G_lib15
+SI18_30G_lib22
+SI18_35G_lib27
+SI18_36G_lib28
+SI18_48G_lib38
+SI18_52G_lib42</code></pre>
+</div>
+</div>
+</div>
+<p>As an example, this below is what a slurm script may look like for running the STAR align step. Note the use of things like relative paths – you need to adjust the paths to work from the directory in which your script is submitted from.</p>
+<p>Slurm scripts are text files, and use the .sl extension by convention. You can use <code>nano</code> to create a script.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> star-align.sl </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then paste in the below text into nano, save and exit. You will likely need to adjust the amount of memory, time and CPUs allocated for the job depending on the size of your data.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --job-name=star_align_array</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --array=1-15 # adjust to number of samples you have</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH -A nesiprojectID</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --output=logs/star_%A_%a.out</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --error=logs/star_%A_%a.err</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --mem=20G</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --cpus-per-task=8</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --time=05:00:00</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load STAR/2.7.10b-GCC-11.3.0-alpha</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="va">TRIMMEDDIR</span><span class="op">=</span>/path/to/trimmed <span class="co"># contains your trimmed reads</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="va">OUTDIR</span><span class="op">=</span>/path/to/star_out <span class="co"># dir where you want your output files to go</span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="va">GENOMEDIR</span><span class="op">=</span>/path/to/genome-files <span class="co"># contains your indexed genome</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">$OUTDIR</span> logs</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a><span class="va">sample</span><span class="op">=</span><span class="va">$(</span><span class="fu">sed</span> <span class="at">-n</span> <span class="st">"</span><span class="va">${SLURM_ARRAY_TASK_ID}</span><span class="st">p"</span> samples.txt<span class="va">)</span></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="va">r1</span><span class="op">=</span><span class="va">$TRIMMEDDIR</span>/<span class="va">${sample}</span>_R1_trimmed.fq.gz</span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a><span class="va">r2</span><span class="op">=</span><span class="va">$TRIMMEDDIR</span>/<span class="va">${sample}</span>_R2_trimmed.fq.gz</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a><span class="ex">STAR</span> <span class="dt">\</span></span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">--runMode</span> alignReads <span class="dt">\</span></span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">--runThreadN</span> <span class="va">$SLURM_CPUS_PER_TASK</span> <span class="dt">\</span></span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">--genomeDir</span> <span class="va">$GENOMEDIR</span> <span class="dt">\</span></span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">--readFilesIn</span> <span class="va">$r1</span> <span class="va">$r2</span> <span class="dt">\</span></span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">--readFilesCommand</span> zcat <span class="dt">\</span></span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">--outSAMtype</span> BAM SortedByCoordinate <span class="dt">\</span></span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">--outFileNamePrefix</span> <span class="va">$OUTDIR</span>/<span class="va">${sample}</span>_ <span class="dt">\</span></span>
+<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">--quantMode</span> GeneCounts </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now submit the following script to SLURM to align each sample to the genome. As this is set up as an array job, each sample will be aligned in parallel in its own job, which is much more efficient than running a <em>for loop</em>.</p>
+<p>To submit the script, from your working directory you would type:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> star-align.sl </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To monitor the progress of the job, you would type:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">squeue</span> <span class="at">--me</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./sequence-quality.html" class="pagination-link" aria-label="Sequence Quality - FastQC, MultiQC and Trimmomatic">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Sequence Quality - FastQC, MultiQC and Trimmomatic</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./episode_3.html" class="pagination-link" aria-label="Exploratory Analysis">
+        <span class="nav-page-text">Exploratory Analysis</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
