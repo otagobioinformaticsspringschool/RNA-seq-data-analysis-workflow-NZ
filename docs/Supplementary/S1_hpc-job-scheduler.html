@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>RNA-seq data analysis workflow</title>
+<title>s1_hpc-job-scheduler – RNA-seq data analysis workflow</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,29 +20,63 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./background.html" rel="next">
-<link href="./notes.html" rel="prev">
-<link href="./theme_images/GA-image-black-favicon.png" rel="icon" type="image/png">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-182fece1ef6b8713be5fac70a3243d43.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../episode_6.html" rel="prev">
+<link href="../theme_images/GA-image-black-favicon.png" rel="icon" type="image/png">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-2b26f57d8318b6eba2cd7cd1feee4645.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -72,10 +106,9 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="– RNA-seq data analysis workflow">
 <meta property="og:description" content="">
-<meta property="og:image" content="theme_images/main_image.png">
 <meta property="og:site_name" content="RNA-seq data analysis workflow">
 </head>
 
@@ -88,7 +121,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Home</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Supplementary/S1_hpc-job-scheduler.html">Supplementary</a></li><li class="breadcrumb-item"><a href="../Supplementary/S1_hpc-job-scheduler.html">Working with a HPC Job Scheduler</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -103,7 +136,7 @@ ul.task-list li input[type="checkbox"] {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">RNA-seq data analysis workflow</a> 
+      <a href="../">RNA-seq data analysis workflow</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/GenomicsAotearoa/RNA-seq-data-analysis-workflow" title="Github" class="quarto-navigation-tool px-1" aria-label="Github"><i class="bi bi-github"></i></a>
 </div>
@@ -118,19 +151,19 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./notes.html" class="sidebar-item-text sidebar-link">
+  <a href="../notes.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Notes</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Home</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./background.html" class="sidebar-item-text sidebar-link">
+  <a href="../background.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Background</span></a>
   </div>
 </li>
@@ -145,19 +178,19 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sequence-quality.html" class="sidebar-item-text sidebar-link">
+  <a href="../sequence-quality.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Sequence Quality - FastQC, MultiQC and Trimmomatic</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index-align-quantify.html" class="sidebar-item-text sidebar-link">
+  <a href="../index-align-quantify.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Quantifying Gene Expression</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./exploratory.html" class="sidebar-item-text sidebar-link">
+  <a href="../exploratory.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Exploratory Analysis</span></a>
   </div>
 </li>
@@ -174,19 +207,19 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./episode_4.html" class="sidebar-item-text sidebar-link">
+  <a href="../episode_4.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Identify Differentially Expressed Genes</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./episode_5.html" class="sidebar-item-text sidebar-link">
+  <a href="../episode_5.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Functional analysis</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./episode_6.html" class="sidebar-item-text sidebar-link">
+  <a href="../episode_6.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Conclusions</span></a>
   </div>
 </li>
@@ -203,7 +236,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Supplementary/S1_hpc-job-scheduler.html" class="sidebar-item-text sidebar-link">
+  <a href="../Supplementary/S1_hpc-job-scheduler.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Working with a HPC Job Scheduler</span></a>
   </div>
 </li>
@@ -219,75 +252,118 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Contents</h2>
    
   <ul>
-  <li><a href="#rna-seq-data-analysis" id="toc-rna-seq-data-analysis" class="nav-link active" data-scroll-target="#rna-seq-data-analysis">RNA-seq Data Analysis</a>
-  <ul>
-  <li><a href="#getting-started-with-rna-seq-data-analysis" id="toc-getting-started-with-rna-seq-data-analysis" class="nav-link" data-scroll-target="#getting-started-with-rna-seq-data-analysis">Getting started with RNA-seq data analysis</a>
-  <ul class="collapse">
-  <li><a href="#background-knowledge" id="toc-background-knowledge" class="nav-link" data-scroll-target="#background-knowledge">Background knowledge</a></li>
-  </ul></li>
-  <li><a href="#workshop-timeline" id="toc-workshop-timeline" class="nav-link" data-scroll-target="#workshop-timeline">Workshop timeline</a>
-  <ul class="collapse">
-  <li><a href="#day-1" id="toc-day-1" class="nav-link" data-scroll-target="#day-1">Day 1</a></li>
-  <li><a href="#day-2" id="toc-day-2" class="nav-link" data-scroll-target="#day-2">Day 2</a></li>
-  </ul></li>
-  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a></li>
-  <li><a href="#attribution-notice" id="toc-attribution-notice" class="nav-link" data-scroll-target="#attribution-notice">Attribution notice</a></li>
-  </ul></li>
-  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
+  <li><a href="#working-with-a-hpc-job-scheduler" id="toc-working-with-a-hpc-job-scheduler" class="nav-link active" data-scroll-target="#working-with-a-hpc-job-scheduler">Working with a HPC Job Scheduler</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Supplementary/S1_hpc-job-scheduler.html">Supplementary</a></li><li class="breadcrumb-item"><a href="../Supplementary/S1_hpc-job-scheduler.html">Working with a HPC Job Scheduler</a></li></ol></nav></header>
 
 
 
 
-<section id="rna-seq-data-analysis" class="level1">
-<h1>RNA-seq Data Analysis</h1>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="theme_images/main_image.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
-</figure>
+<section id="working-with-a-hpc-job-scheduler" class="level1">
+<h1>Working with a HPC Job Scheduler</h1>
+<p>In this workshop, we have been running each step of fastqc, trimming, indexing, and aligning directly on the command line. This is not always best practise, for a few reasons, and what you will likely need to do is translate this code into a <strong>script</strong>. For one, it is easier to reproduce and automate your workflow when everything you do is in a script. But perhaps more importantly, when working on a HPC environment, your direct command line inputs are operating on the head node or log in node. Many of these software used require more CPUs/memory than can be allocated on the head node and therefore you need to submit your job to the HPC job scheduler (<em>e.g.,</em> SLURM or PBS) to run the job more efficiently on allocated compute resources.</p>
+<p>See here our GA workshop on <a href="https://genomicsaotearoa.github.io/BioinformaticsTrainingProgramme/portfolio.html#bash-script-hpc-job">Bash Scripting and HPC Job Scheduler</a> for more details on how to prepare, run and optimise a SLURM script.</p>
+<p><strong>Example only: Submitting STAR alignment to SLURM</strong></p>
+<p>Once we have confirmed the STAR alignment code works for our first sample, the next step would be to align all the samples to the genome. As this would take quite a while, we won’t do that in this workshop and we will instead supply the outputs for all samples. We could do all the alignments with a <em>for loop</em>, but as we have many samples and <em>for loops</em> run one sample at a time, this is not the most efficient way to do this. We need to write a slurm script as an array job and submit it to the HPC job scheduler (<em>i.e.,</em> SLURM on REANNZ) to allocate CPUs and memory for the job. We won’t be doing this in this workshop either, but you can see an example of a SLURM script below.</p>
+<p>First, make a <code>samples.txt</code> file that contains the basename of the files. This way we can extract the prefix we want for the outfiles in a way that works nicely with an array job.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> path/to/Trimmed/<span class="pp">*</span>_R1_trimmed.fq.gz <span class="kw">|</span> <span class="fu">xargs</span> <span class="at">-n1</span> basename <span class="kw">|</span> <span class="fu">sed</span> <span class="st">'s/_R1_trimmed\.fq\.gz//'</span> <span class="op">&gt;</span> samples.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-<section id="getting-started-with-rna-seq-data-analysis" class="level2">
-<h2 class="anchored" data-anchor-id="getting-started-with-rna-seq-data-analysis">Getting started with RNA-seq data analysis</h2>
-<p>This workshop aims to get you started with analysing your own RNA-seq data by providing an example workflow. At each of the major steps in the workflow we will examine issues that could confound your analysis and consider how different available methods address these issues.</p>
-<p>Rather than prescribing what methods you should use, this workshop aims to make the user aware of the biological and statistical challenges involved in analysing RNA-seq data and asks how different methods address those challenges. By the end of this workshop you should be familiar with the general workflow of RNA-seq analysis and be ready to ask informed questions about the specific methods you should select going forward.</p>
-<p>The workshop includes a small example Illumina short read dataset which will be used by the workshop Instructor to demonstrate an analysis. Attendees may choose to follow along with the analysis in real time or they may choose to focus on note-taking. The workshop includes short exercises to highlight key messages and reinforce your understanding.</p>
-<section id="background-knowledge" class="level4">
-<h4 class="anchored" data-anchor-id="background-knowledge">Background knowledge</h4>
-<p>This workflow assumes you are familiar with transcriptomic and biological concepts. In particular, it assumes you are familar with the concept of sequencing libraries and with the data format (i.e., FASTA and FASTQ files). For more information on these topics, see the <a href="https://datacarpentry.github.io/wrangling-genomics/index.html">Data Carpentry lesson</a> which describes the FASTQ format (i.e., files that contain reads and quality scores for the bases in each read) and <a href="https://sapac.illumina.com/science/technology/next-generation-sequencing/beginners.html">NGS basics by Illumina</a>, which describes the full process of sample to data, and further details on chosing an <a href="https://sapac.illumina.com/techniques/sequencing/ngs-library-prep/rna.html">NGS RNA library preparation method</a>, which describes different Illumina kits for prepping your RNA sample into a sequenceable library.</p>
-</section>
-</section>
-<section id="workshop-timeline" class="level2">
-<h2 class="anchored" data-anchor-id="workshop-timeline">Workshop timeline</h2>
-<p>This workshop runs over two mornings, from 9am - 1pm. We will take 10 min breaks approximately once every hour.</p>
-<section id="day-1" class="level3">
-<h3 class="anchored" data-anchor-id="day-1">Day 1</h3>
-<p>An overview of RNA-seq data analysis workflows Quality assessment Adaptor trimming and filtering Mapping and counting methods Exploratory analysis</p>
-</section>
-<section id="day-2" class="level3">
-<h3 class="anchored" data-anchor-id="day-2">Day 2</h3>
-<p>Concepts for identifying differentially expressed genes Limma for differentially expressed genes DESeq2 for differentially expressed genes Over-representation analysis</p>
-</section>
-</section>
-<section id="setup" class="level2">
-<h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<p>During the workshop, code will be run in real-time to demonstrate the analysis. This will be run on the REANNZ OpenOnDemand platform which already has all the required software and R packages installed.</p>
-</section>
-<section id="attribution-notice" class="level2">
-<h2 class="anchored" data-anchor-id="attribution-notice">Attribution notice</h2>
-<p>This workshop is an updated version on an existing version of <a href="https://genomicsaotearoa.github.io/RNA-seq-workshop-on-demand/">RNA-seq data analysis by Genomics Aotearoa and REANNZ (formerly NeSI)</a>. It incorporates, and takes inspiration from, various training materials produced by the <a href="https://github.com/hbctraining">Harvard Bioinformatics Core</a> and from The Carpentries, specifically their <a href="https://carpentries-incubator.github.io/bioc-rnaseq/index.html">RNA-seq analysis with Bioconductor workshop</a>.</p>
-</section>
-</section>
-<section id="section" class="level1" style="background: #e6f2e6; text-align:center;">
-<h1 style="background: #e6f2e6; text-align:center;"></h1>
-<p><a href="https://genomicsaotearoa.github.io/BioinformaticsTrainingProgramme/"><img src="theme_images/GA-Logo-Bioinformatics-Training-black.png" class="img-fluid" style="width:80.0%"></a></p>
-<p>Made with <a href="https://docs.carpentries.org/policies/coc/">❤️</a> and <a href="https://genomicsaotearoa.github.io/reproducibility_with_git_and_quarto/quarto_overview.html">Quarto</a></p>
-</section>
+<div class="callout-title-container flex-fill">
+EDIT
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+<p>Note: this script assume you are currently in your alignment dir (where you want the star alignment results to go), which is where the <code>samples.txt</code> file will also go, and that your trimmed read files are in a directory called <code>../Trimmed</code> relative to your current directory.</p>
+<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+samples.txt example –&gt;
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> samples.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="output"><code>SI16_1G_lib56
+SI16_21G_lib63
+SI16_22G_lib64
+SI16_23G_lib65
+SI16_2G_lib57
+SI16_3G_lib58
+SI18_15G_lib09
+SI18_16G_lib10
+SI18_18G_lib11
+SI18_22G_lib15
+SI18_30G_lib22
+SI18_35G_lib27
+SI18_36G_lib28
+SI18_48G_lib38
+SI18_52G_lib42</code></pre>
+</div>
+</div>
+</div>
+<p>As an example, this below is what a slurm script may look like for running the STAR align step. Note the use of things like relative paths – you need to adjust the paths to work from the directory in which your script is submitted from.</p>
+<p>Slurm scripts are text files, and use the .sl extension by convention. You can use <code>nano</code> to create a script.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> star-align.sl </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Then paste in the below text into nano, save and exit. You may need to adjust the amount of memory, time and CPUs allocated for the job depending on the size of your data. As this is set up as an array job, each sample will be aligned in parallel in its own job (each with the amount of memory and CPUs specified), which is much more efficient than running a <em>for loop</em>.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --job-name=star_align_array</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --array=1-15 # adjust to number of samples you have</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH -A nesiprojectID</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --output=logs/star_%A_%a.out</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --error=logs/star_%A_%a.err</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --mem=20G</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --cpus-per-task=8</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --time=05:00:00</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load STAR/2.7.10b-GCC-11.3.0-alpha <span class="co"># current module version on REANNZ</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Set dir paths</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="va">TRIMMEDDIR</span><span class="op">=</span>/path/to/trimmed <span class="co"># contains your trimmed reads</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="va">OUTDIR</span><span class="op">=</span>/path/to/star_out <span class="co"># dir where you want your output files to go</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="va">GENOMEDIR</span><span class="op">=</span>/path/to/genome-files <span class="co"># contains your indexed genome</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Make logs dir for slurm out and err files</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">$OUTDIR</span> logs</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Set shell variables</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="va">sample</span><span class="op">=</span><span class="va">$(</span><span class="fu">sed</span> <span class="at">-n</span> <span class="st">"</span><span class="va">${SLURM_ARRAY_TASK_ID}</span><span class="st">p"</span> samples.txt<span class="va">)</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="va">r1</span><span class="op">=</span><span class="va">$TRIMMEDDIR</span>/<span class="va">${sample}</span>_R1_trimmed.fq.gz</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="va">r2</span><span class="op">=</span><span class="va">$TRIMMEDDIR</span>/<span class="va">${sample}</span>_R2_trimmed.fq.gz</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="ex">STAR</span> <span class="dt">\</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">--runMode</span> alignReads <span class="dt">\</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">--runThreadN</span> <span class="va">$SLURM_CPUS_PER_TASK</span> <span class="dt">\</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">--genomeDir</span> <span class="va">$GENOMEDIR</span> <span class="dt">\</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">--readFilesIn</span> <span class="va">$r1</span> <span class="va">$r2</span> <span class="dt">\</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">--readFilesCommand</span> zcat <span class="dt">\</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">--outSAMtype</span> BAM SortedByCoordinate <span class="dt">\</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">--outFileNamePrefix</span> <span class="va">$OUTDIR</span>/<span class="va">${sample}</span>_ <span class="dt">\</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">--quantMode</span> GeneCounts </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now submit the following script to SLURM to align each sample to the genome.</p>
+<p>To submit the script, from your working directory you would type:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> star-align.sl </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To monitor the progress of the job, you would type:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">squeue</span> <span class="at">--me</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and/or</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sacct</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -691,14 +767,11 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./notes.html" class="pagination-link" aria-label="Notes">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Notes</span>
+      <a href="../episode_6.html" class="pagination-link" aria-label="Conclusions">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Conclusions</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./background.html" class="pagination-link" aria-label="Background">
-        <span class="nav-page-text">Background</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->

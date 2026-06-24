@@ -66,7 +66,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./episode_5.html" rel="next">
-<link href="./episode_3.html" rel="prev">
+<link href="./exploratory.html" rel="prev">
 <link href="./theme_images/GA-image-black-favicon.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -153,6 +153,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Home</span></a>
   </div>
@@ -186,7 +192,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./episode_3.html" class="sidebar-item-text sidebar-link">
+  <a href="./exploratory.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Exploratory Analysis</span></a>
   </div>
 </li>
@@ -221,6 +227,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Supplementary</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Supplementary/S1_hpc-job-scheduler.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Working with a HPC Job Scheduler</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -232,24 +255,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#identify-differentially-expressed-genes" id="toc-identify-differentially-expressed-genes" class="nav-link active" data-scroll-target="#identify-differentially-expressed-genes">Identify Differentially Expressed Genes</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#t-tests-and-p-values" id="toc-t-tests-and-p-values" class="nav-link" data-scroll-target="#t-tests-and-p-values">T-tests and p-values</a>
   <ul class="collapse">
+  <li><a href="#exercise-with-the-above-formula-in-mind-what-impact-would-heteroscedasticity-have-when-you-are-attempting-to-identify-differentially-expressed-genes" id="toc-exercise-with-the-above-formula-in-mind-what-impact-would-heteroscedasticity-have-when-you-are-attempting-to-identify-differentially-expressed-genes" class="nav-link" data-scroll-target="#exercise-with-the-above-formula-in-mind-what-impact-would-heteroscedasticity-have-when-you-are-attempting-to-identify-differentially-expressed-genes"><strong>Exercise:</strong> With the above formula in mind, what impact would heteroscedasticity have when you are attempting to identify differentially expressed genes?</a></li>
   <li><a href="#interpreting-p-values" id="toc-interpreting-p-values" class="nav-link" data-scroll-target="#interpreting-p-values">Interpreting p-values</a></li>
-  <li><a href="#types-of-errors" id="toc-types-of-errors" class="nav-link" data-scroll-target="#types-of-errors">Types of errors</a></li>
+  <li><a href="#types-of-errors" id="toc-types-of-errors" class="nav-link" data-scroll-target="#types-of-errors">Types of errors</a>
+  <ul class="collapse">
+  <li><a href="#exercise-note-down-some-key-features-of-your-experiment.-are-you-more-inclined-to-use-fwer-or-fdr-which-is-more-appropriate-for-your-data-and-your-experimental-situation" id="toc-exercise-note-down-some-key-features-of-your-experiment.-are-you-more-inclined-to-use-fwer-or-fdr-which-is-more-appropriate-for-your-data-and-your-experimental-situation" class="nav-link" data-scroll-target="#exercise-note-down-some-key-features-of-your-experiment.-are-you-more-inclined-to-use-fwer-or-fdr-which-is-more-appropriate-for-your-data-and-your-experimental-situation"><strong>Exercise:</strong> Note down some key features of your experiment. Are you more inclined to use FWER or FDR? Which is more appropriate for your data and your experimental situation?</a></li>
+  </ul></li>
   <li><a href="#modifying-the-t-test-for-rna-seq" id="toc-modifying-the-t-test-for-rna-seq" class="nav-link" data-scroll-target="#modifying-the-t-test-for-rna-seq">Modifying the t-test for RNA-seq</a></li>
   </ul></li>
   <li><a href="#identifying-differentially-expressed-genes-using-limma" id="toc-identifying-differentially-expressed-genes-using-limma" class="nav-link" data-scroll-target="#identifying-differentially-expressed-genes-using-limma">Identifying differentially expressed genes using LIMMA</a>
   <ul class="collapse">
   <li><a href="#the-design-matrix" id="toc-the-design-matrix" class="nav-link" data-scroll-target="#the-design-matrix">The design matrix</a></li>
-  <li><a href="#addressing-heteroscedasticity-with-limma" id="toc-addressing-heteroscedasticity-with-limma" class="nav-link" data-scroll-target="#addressing-heteroscedasticity-with-limma">Addressing heteroscedasticity with Limma</a></li>
-  <li><a href="#detecting-differentially-expressed-genes" id="toc-detecting-differentially-expressed-genes" class="nav-link" data-scroll-target="#detecting-differentially-expressed-genes">Detecting differentially expressed genes</a></li>
+  <li><a href="#addressing-heteroscedasticity-with-limma" id="toc-addressing-heteroscedasticity-with-limma" class="nav-link" data-scroll-target="#addressing-heteroscedasticity-with-limma">Addressing heteroscedasticity with Limma</a>
+  <ul class="collapse">
+  <li><a href="#the-impacts-of-voom" id="toc-the-impacts-of-voom" class="nav-link" data-scroll-target="#the-impacts-of-voom">The impacts of voom</a></li>
+  </ul></li>
+  <li><a href="#detecting-differentially-expressed-genes" id="toc-detecting-differentially-expressed-genes" class="nav-link" data-scroll-target="#detecting-differentially-expressed-genes">Detecting differentially expressed genes</a>
+  <ul class="collapse">
+  <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise"><strong>Exercise</strong></a></li>
+  </ul></li>
   <li><a href="#volcano-plots" id="toc-volcano-plots" class="nav-link" data-scroll-target="#volcano-plots">Volcano plots</a></li>
   <li><a href="#differentially-expressed-genes-stored" id="toc-differentially-expressed-genes-stored" class="nav-link" data-scroll-target="#differentially-expressed-genes-stored">Differentially expressed genes stored</a></li>
   </ul></li>
   <li><a href="#identifying-differentially-expressed-genes-using-deseq2" id="toc-identifying-differentially-expressed-genes-using-deseq2" class="nav-link" data-scroll-target="#identifying-differentially-expressed-genes-using-deseq2">Identifying differentially expressed genes using DESeq2</a>
   <ul class="collapse">
-  <li><a href="#the-deseq2-object" id="toc-the-deseq2-object" class="nav-link" data-scroll-target="#the-deseq2-object">The DESeq2 object</a></li>
+  <li><a href="#the-deseq2-object" id="toc-the-deseq2-object" class="nav-link" data-scroll-target="#the-deseq2-object">The DESeq2 object</a>
+  <ul class="collapse">
+  <li><a href="#exercise-identify-method-for-multiple-testing-corrections" id="toc-exercise-identify-method-for-multiple-testing-corrections" class="nav-link" data-scroll-target="#exercise-identify-method-for-multiple-testing-corrections"><strong>Exercise:</strong> Identify method for multiple testing corrections</a></li>
+  </ul></li>
   <li><a href="#differentially-expressed-gene-lists" id="toc-differentially-expressed-gene-lists" class="nav-link" data-scroll-target="#differentially-expressed-gene-lists">Differentially expressed gene lists</a></li>
   </ul></li>
   </ul></li>
@@ -1024,7 +1060,7 @@ A note on formatting the coldata and design matrix
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./episode_3.html" class="pagination-link" aria-label="Exploratory Analysis">
+      <a href="./exploratory.html" class="pagination-link" aria-label="Exploratory Analysis">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Exploratory Analysis</span>
       </a>          
   </div>

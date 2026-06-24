@@ -1,0 +1,13 @@
+---
+title: "Notes"
+---
+
+::: {.callout-note collapse="false"}
+## Summarised experiment objects - a special complex object type in R for biologists
+
+It's worth noting that many newer R packages and workflows will require (or at least strongly encourage) you to use a "summarised experiment object". If a vector is a one-dimensional data storage object, and a matrix is a two-dimensional data storage object, you can think of a summarised experiment object as a three-dimensional way of storing data. In a summarised experiment object where you have the genes on the y axis and the samples on the x axis with counts as the observations, the z axis could be a second matrix storing different observations. Summarised experiment objects can stack multiple data types in this way and build up a complex (but tidy) array of data. Summarised experiment objects are powerful but can be harder to mentally conceptualise and require more complex code to interact with the data they store.
+
+[Summarised experiment objects](https://carpentries-incubator.github.io/bioc-intro/60-next-steps.html#next-steps) are covered in the Carpentries Introduction to Data Analysis with R workshop.
+
+![The summarised experiment object, image from the Carpentries Incubator Introduction to Data Analysis with R workshop.](images/carpentriesSummarisedExperiment.svg)
+:::

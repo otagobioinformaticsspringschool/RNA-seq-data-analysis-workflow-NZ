@@ -153,6 +153,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./notes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Notes</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Home</span></a>
   </div>
@@ -186,7 +192,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./episode_3.html" class="sidebar-item-text sidebar-link">
+  <a href="./exploratory.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Exploratory Analysis</span></a>
   </div>
 </li>
@@ -221,6 +227,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Supplementary</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Supplementary/S1_hpc-job-scheduler.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Working with a HPC Job Scheduler</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -232,13 +255,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#functional-analysis" id="toc-functional-analysis" class="nav-link active" data-scroll-target="#functional-analysis">Functional analysis</a>
-  <ul class="collapse">
+  <ul>
   <li><a href="#annotation" id="toc-annotation" class="nav-link" data-scroll-target="#annotation">Annotation</a></li>
   <li><a href="#over-representation-analysis" id="toc-over-representation-analysis" class="nav-link" data-scroll-target="#over-representation-analysis">Over-representation Analysis</a>
   <ul class="collapse">
   <li><a href="#the-hypergeometric-distribution" id="toc-the-hypergeometric-distribution" class="nav-link" data-scroll-target="#the-hypergeometric-distribution">The hypergeometric distribution</a></li>
   <li><a href="#caveats" id="toc-caveats" class="nav-link" data-scroll-target="#caveats">Caveats</a></li>
-  <li><a href="#goseq" id="toc-goseq" class="nav-link" data-scroll-target="#goseq">GOseq</a></li>
+  <li><a href="#goseq" id="toc-goseq" class="nav-link" data-scroll-target="#goseq">GOseq</a>
+  <ul class="collapse">
+  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology">Methodology</a></li>
+  </ul></li>
   <li><a href="#closing-thoughts-on-goseq" id="toc-closing-thoughts-on-goseq" class="nav-link" data-scroll-target="#closing-thoughts-on-goseq">Closing thoughts on GOseq</a></li>
   </ul></li>
   <li><a href="#gene-set-enrichment-analysis-and-clusterprofiler" id="toc-gene-set-enrichment-analysis-and-clusterprofiler" class="nav-link" data-scroll-target="#gene-set-enrichment-analysis-and-clusterprofiler">Gene set enrichment analysis and clusterProfiler</a>

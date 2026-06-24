@@ -54,6 +54,35 @@ Heteroskedasticity describes a situation where variance changes with the mean. I
 
 Two approaches to dealing with heteroskedasticity are common in the literature: transform the data to reduce (or remove) the mean-variance association or use a method that is robust to the mean-variance association ([DESeq2](https://doi.org/10.1186/s13059-014-0550-8) with the Negative Binomial distribution). 
 
+## Heteroskedasticity
+
+[Heteroskedasticity](https://en.wikipedia.org/wiki/Homoscedasticity_and_heteroscedasticity) is "heterogeneity of variance". If the variance we observe is non-uniform across a range of values, we can describe the dataset as heteroskedastic. In RNA-seq, this means that variance depends on the mean expression of the gene. Wikipedia has a useful example:
+
+*"A classic example of heteroscedasticity is that of income versus expenditure on meals. A wealthy person may eat inexpensive food sometimes and expensive food at other times. A poor person will almost always eat inexpensive food. Therefore, people with higher incomes exhibit greater variability in expenditures on food."* 
+
+
+
+#### **Exercise:** 
+Given the above example, do you expect genes with higher expression to have higher or lower variance than genes with low expression? That is, which will have higher variance - genes with high average expression or genes with low average expression?
+
+::: {.callout-note collapse="true"}
+## Solution
+This can be a surprisingly complex question to answer, and depends on how we think about variance. If a gene has a high mean expression (*e.g.,* say 1000), then we can expect that the standard deviation will be a reasonably high number (*e.g.,* let's say 20). If a gene has low mean expression (e.g., 10), then the standard deviation will be small (*e.g.,* 2). So, it is true to say that for genes with higher average expression, the standard deviation is greater.
+
+However, we also need to think about magnitude of variance, which we can do using the numbers from our above imaginary examples. For the gene with a mean expression of 1000 and sd of 20, going from 1000 to 1020 is not a big change (i.e., 1.02 fold change). For the gene with the low mean expression, going from 10 to 12 *is* a large change (i.e., 1.2 fold change).
+
+Our assumption then is that a large fold change, regardless of the actual read count change for that gene, has a meaningful biological effect. 
+
+:::
+
+
+
+
+This [write-up](https://github.com/friedue/Notes/blob/master/RNA_heteroskedasticity.md) gives an in-depth explanation of heteroskedasticity and how we can think about it.
+
+We will look more at heteroskedasticity when we begin to identify differentially expressed genes, but for now it is important to be aware of the concept.
+
+
 
 ### Gene length
 

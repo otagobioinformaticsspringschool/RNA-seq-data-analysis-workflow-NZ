@@ -9,6 +9,8 @@ website:
   sidebar:
     style: "docked"
     contents:
+      - text: "Notes"
+        href: notes.qmd
       - text: "Home"
         href: index.qmd
       - text: "Background"
@@ -17,12 +19,16 @@ website:
         contents:
           - sequence-quality.qmd
           - index-align-quantify.qmd
-          - episode_3.qmd
+          - exploratory.qmd
       - section: "Day Two" 
         contents:
           - episode_4.qmd
           - episode_5.qmd
           - episode_6.qmd
+      - section: "Supplementary" 
+        contents:
+          - Supplementary/S1_hpc-job-scheduler.qmd
+
 
     tools:
       - icon: github
@@ -39,7 +45,7 @@ format:
     page-navigation: true
     toc: true
     toc-location: right
-    toc-depth: 3
+    toc-depth: 4
     toc-title: "Contents"
     code-copy: true
     code-block-bg: true

@@ -28,5 +28,17 @@
   },
   "episode_3.qmd": {
     "episode_3.html": "dedc5f30"
+  },
+  "Supplementary/S1_hpc-job-schedular.qmd": {
+    "S1_hpc-job-schedular.html": "eeb67abc"
+  },
+  "Supplementary/S1_hpc-job-scheduler.qmd": {
+    "S1_hpc-job-scheduler.html": "817fe9ca"
+  },
+  "exploratory.qmd": {
+    "exploratory.html": "7f4263db"
+  },
+  "notes.qmd": {
+    "notes.html": "2439c983"
   }
 }

@@ -68,9 +68,23 @@ After trimming reads, you should run FastQC again to compare how the average qua
 
 Open both (R1 and R2) of the html files for the SI16_1G sample. Most of the summary statistics pass for these files (green tick on the left). Look at the **Per base sequence content** for both reads. 
 
-1. Why does one fail and one have a warning? Read the [FastQC documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) and find the cut-offs that determine how these categories are assigned.
+::: {.callout-note collapse="true" appearance="simple"}
+# For reference: R1 and R2 'Per base sequence content' images -->
 
-2. What is a likely explanation for the fail and warning for both reads? *Hint: there's a pattern you can see in both of the fastqc plots for these read files.*
+![R1 Per base sequence content](figures/R1_perbaseseqcontent.png)
+
+![R2 Per base sequence content](figures/R2_perbaseseqcontent.png)
+
+
+:::
+
+
+1. Why does one fail and one have a warning? Read the [FastQC documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) (Click on '3 Analysis Modules') and find the cut-offs that determine how these categories are assigned.
+
+2. What is a likely explanation for the fail and warning for both reads? *Hint: there's a pattern you can see at the 5` end in both of the fastqc plots for these read files.*
+
+
+
 
 
 ::: {.callout-tip collapse="true"}
@@ -78,14 +92,14 @@ Open both (R1 and R2) of the html files for the SI16_1G sample. Most of the summ
 
 1. The fastqc documentation says warnings are issued if the difference in A/T/G/C is greater than 10% in any position and a failure if greater than 20%. The difference must be greater than 20% for the reads in the R1 file and between 10-20% for the reads in the R2 file. 
 
-2. Biased fragmentation. Both read files show A/T/G/C bias in positions 1-12 across the reads. This is an inherent bias in almost all RNAseq data, due to random hexamer priming during library prep. Aligners such as STAR which we will use today are designed for these sorts of data and automatically account for this bias, so you do not need to do any extra processing to address this bias. 
+2. Biased fragmentation. Both read files show A/T/G/C bias in base pair positions 1-12 across the reads. This is an inherent bias in almost all RNAseq data, due to random hexamer priming during library prep. Aligners such as STAR which we will use today are designed for these sorts of data and automatically account for this bias, so you do not need to do any extra processing to address this bias. 
 
 
 :::
 
 ##### EXERCISE 🧠🏋️‍♀️ (5 mins)
 
-The FastQC documentation also shows an example of Bad Illumina Data. Navigate to and [open this report.](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/bad_sequence_fastqc.html)
+The [FastQC documentation](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) also shows an example of Bad Illumina Data. Navigate to it from the website or [open the report here.](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/bad_sequence_fastqc.html)
 
 1. Compare the **Per base sequence quality** of the bad data to our data. What do you notice that's different? 
 
@@ -96,11 +110,11 @@ The FastQC documentation also shows an example of Bad Illumina Data. Navigate to
 ::: {.callout-tip collapse="true"}
 # SOLUTION
 
-1. The bad data shows much greater spread in quality scores across base positions. The boxplots extend well down into the low Q score range, particularly toward the 3' end of reads. In our data, quality remains consistently high across all positions, with very tight boxplots sitting in the green throughout.
+1. The bad data shows much greater spread in quality scores across base positions. The boxplots extend well down into the low Q score range (red range is Q0-Q20, indicating poor quality), particularly toward the 3' end of reads. In our data, quality remains consistently high across all positions, with very tight boxplots sitting in the green area (Q28+, very good quality) throughout.
 
 2. The 'Per sequence quality scores' category allows you to see if there are a subset of reads that have universally low quality values. The bad data shows a bimodal distribution, with a smaller peak (less reads) around Q17 and a larger peak (more reads) around Q30. The documentation says a warning or fail will only be issued based on the most frequently observed mean quality, so the bad data gets a pass because the most frequently observed mean quality is ~Q30. Our data does not show the bimodal distribution pattern and virtually all reads show a mean quality of ~Q36 (definitely a pass!). 
 
-3. Short answer: maybe. The 'Per sequence quality scores' shows there are a large number of reads with high average quality. Read trimming and filtering may retain most of these reads and discard the lower quality reads. If enough reads are retained after this, it may be possible to continue with downstream analysis (whether or not you have 'enough' reads is not trivial to determine, we will be covering this in our [Genomic Data Carpentry (Aoteroa edition)](https://genomicsaotearoa.github.io/BioinformaticsTrainingProgramme/portfolio.html#genomic-data-carpentry-nz) workshop, which is under construction). Reads that have some good bases and some bad bases (as viewed in our 'Per base sequence quality' plots) may be trimmed down, but if they become too short they will be discarded. We will see soon the effect of trimming on read length distribution.  
+3. Short answer: Maybe. The 'Per sequence quality scores' shows there are a large number of reads with high average quality. Read trimming and filtering may retain most of these reads and discard the lower quality reads. If enough reads are retained after this, it may be possible to continue with downstream analysis (whether or not you have 'enough' reads is not trivial to determine, we will be covering this in our [Genomic Data Carpentry (Aoteroa edition)](https://genomicsaotearoa.github.io/BioinformaticsTrainingProgramme/portfolio.html#genomic-data-carpentry-nz) workshop, which is under construction). Reads that have some good bases and some bad bases (as viewed in our 'Per base sequence quality' plots) may be trimmed down, but if they become too short they will be discarded. We will see soon the effect of trimming on read length distribution.  
 
 :::
 
@@ -141,7 +155,7 @@ In this section we will perform read cleaning using Trimmomatic. Trimmomatic wil
 
 ### Adapter trimming
 
-Adapters are short, known sequences that become embedded in your reads as part of the sequencing process. Before we work with our reads we want to remove these adaptors. Because adapters are manually added to the sequencing reaction, we should know exactly what these sequences are. In our examples, we have libraries generated with the Illumina TruSeq library prep kit, which uses standard Illumina adapter sequences. 
+Adapters are short, known sequences that can become embedded in your reads as part of the sequencing process. Before we work with our reads we want to remove these adaptors. Because adapters are manually added to the sequencing reaction, we should know exactly what these sequences are. In our examples, we have libraries generated with the Illumina TruSeq library prep kit, which uses standard [Illumina adapter sequences](https://sapac.support.illumina.com/downloads/illumina-adapter-sequences-document-1000000002694.html). 
 
 If you do not have access to information about what adapters were used in your sequence, some software can detect certain adaptors (*e.g.,* [Trimmomatic](http://www.usadellab.org/cms/?page=trimmomatic), which has a library of Illumina adapter sequences - these will be screened against reads and if a match is detected, those adapters will be trimmed). 
 
