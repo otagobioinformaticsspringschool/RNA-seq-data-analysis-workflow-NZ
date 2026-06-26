@@ -1,9 +1,6 @@
 ---
 title: ""
 code-overflow: wrap
-knitr:
-  opts_chunk:
-    eval: false
 ---
 
 # Identify Differentially Expressed Genes
@@ -24,11 +21,22 @@ Here we are taking the difference between the means of the two groups and then d
 
 If the difference in means is **LARGE** relative to the variance, the test statistic will be large (indicating significance). If the difference between the means is **small** relative to the variance, the test statistic will be small, indicating the difference is probably not significant (*i.e.,* the difference we observe is in-line with the variance we observe).
 
-#### **Exercise:** With the above formula in mind, what impact would heteroscedasticity have when you are attempting to identify differentially expressed genes?
+##### 🧠🏋️‍♀️ **EXERCISE** (1 min)
 
-Once we have a test statistic we will calculate a p-value. The p-value is an indication of how likely we were to observe the given difference in means (or a more extreme difference) *if there is truly no difference between the means*. That is, how likely are we to see this difference due to random chance?
+With the above formula in mind, what impact would *heteroscedasticity* have when you are attempting to identify differentially expressed genes?
+
+
+::: {.callout-tip collapse="true"}
+# SOLUTION
+Heteroscedasticity would violate the assumption of equal variances that the t-statistic relies on, meaning the standard error ${SE(\hat{\mu}_1 - \hat{\mu}_2)}$ no longer appropriately captures the variability between groups. This would produce unreliable test statistics and therefore untrustworthy p-values. Therefore you could no longer confidently determine whether an observed difference in gene expression between groups was genuine or simply due to chance.
+
+:::
+
+
 
 ### Interpreting p-values
+
+Once we have a test statistic we will calculate a p-value. The p-value is an indication of how likely we were to observe the given difference in means (or a more extreme difference) *if there is truly no difference between the means*. That is, how likely are we to see this difference due to random chance?
 
 How do we interpret the p-value? We will specify a threshold (usually 0.05), and say that if a p-value is less than this threshold we will consider it a significant result. If the p-value is lower than the threshold we set, we will reject the null hypothesis (that the groups are identical) and accept the alternative (that there is a difference between the groups). The threshold we set is our level of "risk" that this event happened by chance alone.
 
@@ -50,7 +58,19 @@ When we select a p-value threshold of 0.05, we are accepting the fact that 5% of
 
 -   False Discovery Rate control (FDR), also called the Benjamini and Hochberg correction, is less conservative than FWER. This approach will identify more significant events, but expect a greater number of false positives. Use this approach if you are more concerned about missing something valuable and can afford a few false positives.
 
-#### **Exercise:** Note down some key features of your experiment. Are you more inclined to use FWER or FDR? Which is more appropriate for your data and your experimental situation?
+##### 🧠🏋️‍♀️ **EXERCISE**  (3 mins)
+Note down some key features of your experiment. Are you more inclined to use FWER or FDR? Which is more appropriate for your data and your experimental situation?
+
+::: {.callout-tip}
+# Food for thought
+
+- Are you working with clinical samples, where the stakes are higher if you implicate the wrong gene in disease?  
+- Are you investigating trends in expression or looking for specific genes?   
+- How radical is your treatment or conditions used in your epxeriment? Do you have any assumptions about how perturbed or different you expect gene epxression to be between sample groups?  
+- How many biological replicates do you have? Smaller sample sizes reduce statistical power, making you more prone to Type II errors regardless of which correction you apply.
+
+
+:::
 
 ### Modifying the t-test for RNA-seq
 
@@ -62,9 +82,18 @@ Since this issue is caused by an artificially low standard error due to low samp
 
 Limma involves data transformation and log scales to account for the data being in a non-normal distribution.
 
-Limma will create one of the special objects mentioned earlier in this workshop to store data. For Limma, this will be called a Digital Gene Expression object (DGE object). We will use the edgeR package to create this DGE object using three functions from the `edgeR` package -- `DGEList()`, `calcNormFactors()` and `cpm()`.
+Limma will create one of the special objects mentioned earlier in this workshop to store data. For Limma, this will be called a Digital Gene Expression object (DGE object). We will use the edgeR package to create this DGE object using three functions from the `edgeR` package -- `DGEList()`, `normLibSizes()` and `cpm()`.
 
 Load the libraries required for running limma, create a dge object where we specify counts (here you specify the matrix that contains your counts, in our case our object is already called counts). Then calculate normalisation factors, which will be used to adjust for library size differences, and calculate the log CPM. logCPM is, for each gene, how many counts there were per million reads. Because we are taking the log of this value, we will use the prior.counts=3 argument to add 3 to all read counts. This prevents any errors due to attempting to take the log of 0.
+
+```{r}
+#| echo: false
+
+library(tidyverse)
+coldata <- read.table("/Users/vanch93p/Library/CloudStorage/OneDrive-UniversityofOtago/GenomicsAotearoa/Workshops_GA/testing-new-content/RNAseq-new-content/rnaseq-spotty/data-files/coldata.txt", sep="\t", header=TRUE)
+counts  <- read.table("/Users/vanch93p/Library/CloudStorage/OneDrive-UniversityofOtago/GenomicsAotearoa/Workshops_GA/testing-new-content/RNAseq-new-content/rnaseq-spotty/data-files/counts.txt",  sep="\t", header=TRUE, row.names=1)
+
+```
 
 ```{r}
 #| message: false
@@ -75,7 +104,6 @@ Load the libraries required for running limma, create a dge object where we spec
 library(limma)
 library(edgeR)
 library(dplyr)
-load("counts.RData")
 ```
 
 `DGEList()` creates a Digital Gene Expression object from your count matrix. This is edgeR's core data structure and stores your counts along with sample and gene information.
@@ -83,12 +111,12 @@ load("counts.RData")
 dge <- DGEList(counts=counts)
 ```
 
-`calcNormFactors()` calculates TMM (Trimmed Mean of M-values) normalisation factors for each sample. These account for differences in library size and composition between samples, ensuring counts are comparable across samples. TMM is the default method used in calcNormFactors() and you can specify different methods (try `?calcNormFactors()`), but TMM is good for pairwise comparisons between two groups of samples (most RNAseq experiments). See here a general guide on understanding [count normalisation from HBC training](https://hbctraining.github.io/Intro-to-DGE/lessons/02_DGE_count_normalization.html). 
+`normLibSizes()` calculates TMM (Trimmed Mean of M-values) normalisation factors for each sample. These account for differences in library size and composition between samples, ensuring counts are comparable across samples. TMM is the default method used in normLibSizes() and you can specify different methods (try `?normLibSizes()`), but TMM is good for pairwise comparisons between two groups of samples (most RNAseq experiments). See here a general guide on understanding [count normalisation from HBC training](https://hbctraining.github.io/Intro-to-DGE/lessons/02_DGE_count_normalization.html). 
 
 
 
 ```{r}
-dge <- calcNormFactors(dge)
+dge <- normLibSizes(dge)
 ```
 
 Here we take a peek at the transformed counts using `cpm()`. This converts raw counts to log counts per million (log-CPM). The `prior.count=3` argument adds 3 to all counts before log transformation — this prevents errors from taking the log of zero, and also reduces the influence of very lowly expressed genes. Soon we will use the `voom()` function to address heteroscedasticity -- but we will use our `dge`{style="color:black"} object, as voom will perform its own log-CPM transformation internally, and additionally estimate precision weights for each gene (to account for heteroscedasticity). 
@@ -104,14 +132,21 @@ head(logCPM, 3)
 We use the design matrix to specify our different groups. Initially we will just look at a simple design, where we will specify wt and mutant. However, you can also include other information *e.g.,* if your two sample groups were comprised of male and females and you had reason to suspect there might be sex-dependent factors involved.
 
 ```{r}
-conds <- c("WT","WT","WT","MT","MT","MT")
+head(coldata)
 
-design <- model.matrix(~conds)
+design <- model.matrix(~histology, data = coldata)
+
 
 design
 ```
 
-If you have your metadata in a dataframe (see note in DESeq2 section on coldata files and design matrix), you can alternatively specify your design as such: `design <- model.matrix(~conds, data = metadata_df)`.  
+::: {.callout-warning}
+# CHECK
+Currently design not looking correct - comapre in Rstudio. miht be different counts/coldata loaded. 
+
+think samples need to be in the same order a counts df
+
+:::
 
 
 ### Addressing heteroscedasticity with Limma
@@ -121,6 +156,7 @@ Limma has a function called voom which we can use to address heteroscedasticity 
 Create an object, `v`{style="color:black"}, by calling the voom function on the Digital Gene Expression (dge) object. The v object will be used in later analyses. We will add information about our experimental setup by specifying the design object, and we will also call `plot = TRUE` to generate a plot showing the heteroscedasticity.
 
 ```{r}
+
 v <- voom(dge, design, plot = TRUE)
 ```
 
@@ -131,20 +167,25 @@ Importantly, other than changing the mean-variance relationship, voom does not c
 #### The impacts of voom
 
 ```{r}
+
+# Demo only
+
+# Original counts, log transformed
+boxplot(as.matrix(log2(counts +1)) ~ col(counts), 
+        ylab = "Counts", 
+        xlab = "Samples", 
+        names = colnames(counts), 
+        main = "Log counts of samples (original)")
+
+# Voom corrected log transformed counts
 boxplot(v$E ~ col(v$E), ylab = "Counts", xlab = "Samples", main = "Log counts after voom")
+
+
 ```
 
 We can see that log counts in the voom object (that is, counts after voom has been applied to create a stable mean-variance relationship) have not drastically changed from when we plotted them earlier.
 
-We can also visualise the data in the form of density plots:
-
-```{r}
-lineColour <- ifelse(conds=="MT", "red", "blue")
-lineColour
-
-plot(density(v$E[,1]), ylim=c(0,0.3), col=lineColour[1])
-for(i in 2:ncol(v$E)) lines(density(v$E[,i]), col=lineColour[i])
-```
+Voom should stabilise mean-variance without removing differecnes between sample groups
 
 We can see that voom has not removed the differences between our sample groups.
 
@@ -157,6 +198,7 @@ Quantile normalisation is one method you can use to remove differences between s
 Now that we have reached this point in the analysis, identifying differentially expressed genes is relatively simple in terms of the code we run. We will use the `lmFit()` command to fit a linear model for every gene using our v (voom) object and the design matrix, then use the `eBayes()` function on the linear model to perform Empirical Bayes shrinkage estimation and return moderated test statistics.
 
 ```{r}
+
 fit <- lmFit(v, design)
 
 fit <- (eBayes(fit))
@@ -165,6 +207,8 @@ fit <- (eBayes(fit))
 The fit object is complex to look at. We will use the topTable function to retrieve the useful information (gene name, logFC, adjusted p values), and then filter for significant genes only. We will also save the topTable object (tt) for use in the next episode.
 
 ```{r}
+
+
 tt <- topTable(fit, coef=ncol(design), n=nrow(counts))
 
 head(tt)
@@ -175,7 +219,7 @@ sum(tt$adj.P.Val < 0.05)
 sum(tt$adj.P.Val < 0.01)
 # 4566 genes with an adjusted p-value less than 0.01.
 
-save(tt, file="tt.RData")
+#save(tt, file="tt.RData")
 ```
 
 #### **Exercise**
@@ -195,6 +239,8 @@ Genes will be coloured based on whether they are up (red) or down (blue) regulat
 This plot is an important "sanity check". We can logically check that our significant genes (in red) are those with both a p-value \< 0.05 and a log2 fold change greater than 1 (which is equivalent to a doubling or halving of gene expression). If we observe red marked dots in the center or bottom of the plot, we could recognise an error has occurred.
 
 ```{r message=FALSE}
+#| eval: false
+
 library(dplyr)
 library(limma)
 library(edgeR)
@@ -224,6 +270,8 @@ plot_data$category <- ifelse(plot_data$adj.P.Val <= pval_threshold,
 ```
 
 ```{r}
+#| eval: false
+
 # Create the volcano plot using ggplot2
 ggplot(plot_data, aes(x = logFC, y = negLogPval, color = category)) +
   geom_point(alpha = 0.6, size = 1.5) +
@@ -247,12 +295,14 @@ ggplot(plot_data, aes(x = logFC, y = negLogPval, color = category)) +
 
 ```{r}
 # Save the plot (optional)
-ggsave("volcano_plot.png", width = 10, height = 8, dpi = 300)
+#ggsave("volcano_plot.png", width = 10, height = 8, dpi = 300)
 ```
 
 We can also produce an interactive volcano plot with the ggigraph package.
 
 ```{r}
+#| eval: false
+
 # Create the ggplot object
 p <- ggplot(plot_data, aes(x = logFC, y = negLogPval, color = category, text = ID)) +
   geom_point(alpha = 0.6, size = 2) +
@@ -275,6 +325,8 @@ p <- ggplot(plot_data, aes(x = logFC, y = negLogPval, color = category, text = I
 ```
 
 ```{r}
+#| eval: false
+
 # Convert ggplot to an interactive plotly object
 interactive_plot <- ggplotly(p, tooltip = c("text", "x", "y", "color"))
 
@@ -293,6 +345,8 @@ interactive_plot
 Let's make an object to store all the information for our list of significantly differentially expressed genes. We will use a threshold of an adjusted p-value \< 0.05 and a logFC \> 1. We will return to this object later, but for now we will move on and identify differentially expressed genes using a different method.
 
 ```{r}
+#| eval: false
+
 sigGenesLimma <- which(tt$adj.P.Val <= 0.05 & (abs(tt$logFC) > 1))
 length(sigGenesLimma)
 # 1891
@@ -312,10 +366,14 @@ Note that if your data is stored in another format the DESeq2 function we will u
 
 ```{r}
 #| output: false
+#| eval: false
+
 library(DESeq2)
 ```
 
 ```{r}
+#| eval: false
+
 dds <- DESeqDataSetFromMatrix(countData = counts, 
                               colData = data.frame(conds=factor(conds)), 
                               design = formula(~conds))
@@ -329,6 +387,8 @@ In this example, we have turned our conditions we created earlier during limma a
 
 ```{r}
 #| echo: false
+#| eval: false
+
 
 metadata_df <- data.frame(
   sample_id = c("SRR014335", "SRR014336", "SRR014337", "SRR014339", "SRR014340", "SRR014341"),
@@ -347,6 +407,8 @@ The design matrix can be pulled directly from the data provided to the `colData`
 For example, if we used the data frame above, we could first factorise our `conds` column as so:
 
 ```{r}
+#| eval: false
+
 metadata_df <- metadata_df %>%
   mutate(conds = factor(conds))
 ```
@@ -354,6 +416,8 @@ metadata_df <- metadata_df %>%
 Then re-write the dds code as:
 
 ```{r}
+#| eval: false
+
 dds <- DESeqDataSetFromMatrix(countData = counts, 
                               colData = metadata_df, 
                               design = ~conds)
@@ -369,12 +433,16 @@ Alternatively, use `design = ~1` to fit an intercept-only model (no condition ef
 Raw counts can be retrieved from our `dds` object using the function `counts()` from the DESeq2 package. 
 
 ```{r}
+#| eval: false
+
 counts(dds) %>% head()
 ```
 
 Now fit the DESeq2 generalised linear model to the data.
 
 ```{r}
+#| eval: false
+
 dds <- DESeq(dds)
 ```
 
@@ -389,6 +457,8 @@ Note the outputs from running this function. What are these outputs?
 We will now create a new object, res, to store the results in. We can access those results using either the head function or the summary function, which will give us slightly different information - both are valid and useful ways of familiarising yourself with the data.
 
 ```{r}
+#| eval: false
+
 res <- DESeq2::results(dds)
 
 res %>% head()
@@ -401,6 +471,8 @@ The res object contains information for all genes tested. It is practical to cre
 We will remove any rows that have NAs in the results object, then pull out only those with an adjusted p-value less than 0.05.
 
 ```{r}
+#| eval: false
+
 res <- na.omit(res)
 
 # Keep all rows in the res object if the adjusted p-value < 0.05
@@ -425,6 +497,8 @@ To recap, we've now produced two lists of differentially expressed genes - one p
 These numbers are very similar, but what's the actual overlap between these two groups? A venn diagram is an easy way to visualise the relationship between the two groups. First, load the gplots library which we will use for making venn diagrams. Create an object, which we will call setlist, that lists the two gene sets (in our case, this will be the rownames of the objects we created with Limma and DESeq2). Finally, use the `venn()` function to create a venn diagram.
 
 ```{r, message=FALSE}
+#| eval: false
+
 # BiocManager::install("gplots")
 library(gplots)
 
@@ -441,6 +515,6 @@ This is very strong concordance between our two methods and gives us high confid
 For simplicity, we will take the list of genes identified by limma. We will save the R object, and then see in the next episode how we can derive meaningful biological information from this long list of genes.
 
 ```{r}
-save(sigGenesLimma, file = 'topTable.RData')
+#save(sigGenesLimma, file = 'topTable.RData')
 ```
 

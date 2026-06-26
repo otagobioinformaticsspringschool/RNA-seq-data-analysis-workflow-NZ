@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>episode_4 – RNA-seq data analysis workflow</title>
+<title>dge – RNA-seq data analysis workflow</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -106,6 +106,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 <meta property="og:title" content="– RNA-seq data analysis workflow">
@@ -123,7 +152,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./episode_4.html">Day Two</a></li><li class="breadcrumb-item"><a href="./episode_4.html">Identify Differentially Expressed Genes</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./dge.html">Day Two</a></li><li class="breadcrumb-item"><a href="./dge.html">Identify Differentially Expressed Genes</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -209,7 +238,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./episode_4.html" class="sidebar-item-text sidebar-link active">
+  <a href="./dge.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Identify Differentially Expressed Genes</span></a>
   </div>
 </li>
@@ -258,12 +287,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#t-tests-and-p-values" id="toc-t-tests-and-p-values" class="nav-link" data-scroll-target="#t-tests-and-p-values">T-tests and p-values</a>
   <ul class="collapse">
-  <li><a href="#exercise-with-the-above-formula-in-mind-what-impact-would-heteroscedasticity-have-when-you-are-attempting-to-identify-differentially-expressed-genes" id="toc-exercise-with-the-above-formula-in-mind-what-impact-would-heteroscedasticity-have-when-you-are-attempting-to-identify-differentially-expressed-genes" class="nav-link" data-scroll-target="#exercise-with-the-above-formula-in-mind-what-impact-would-heteroscedasticity-have-when-you-are-attempting-to-identify-differentially-expressed-genes"><strong>Exercise:</strong> With the above formula in mind, what impact would heteroscedasticity have when you are attempting to identify differentially expressed genes?</a></li>
   <li><a href="#interpreting-p-values" id="toc-interpreting-p-values" class="nav-link" data-scroll-target="#interpreting-p-values">Interpreting p-values</a></li>
-  <li><a href="#types-of-errors" id="toc-types-of-errors" class="nav-link" data-scroll-target="#types-of-errors">Types of errors</a>
-  <ul class="collapse">
-  <li><a href="#exercise-note-down-some-key-features-of-your-experiment.-are-you-more-inclined-to-use-fwer-or-fdr-which-is-more-appropriate-for-your-data-and-your-experimental-situation" id="toc-exercise-note-down-some-key-features-of-your-experiment.-are-you-more-inclined-to-use-fwer-or-fdr-which-is-more-appropriate-for-your-data-and-your-experimental-situation" class="nav-link" data-scroll-target="#exercise-note-down-some-key-features-of-your-experiment.-are-you-more-inclined-to-use-fwer-or-fdr-which-is-more-appropriate-for-your-data-and-your-experimental-situation"><strong>Exercise:</strong> Note down some key features of your experiment. Are you more inclined to use FWER or FDR? Which is more appropriate for your data and your experimental situation?</a></li>
-  </ul></li>
+  <li><a href="#types-of-errors" id="toc-types-of-errors" class="nav-link" data-scroll-target="#types-of-errors">Types of errors</a></li>
   <li><a href="#modifying-the-t-test-for-rna-seq" id="toc-modifying-the-t-test-for-rna-seq" class="nav-link" data-scroll-target="#modifying-the-t-test-for-rna-seq">Modifying the t-test for RNA-seq</a></li>
   </ul></li>
   <li><a href="#identifying-differentially-expressed-genes-using-limma" id="toc-identifying-differentially-expressed-genes-using-limma" class="nav-link" data-scroll-target="#identifying-differentially-expressed-genes-using-limma">Identifying differentially expressed genes using LIMMA</a>
@@ -293,7 +318,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./episode_4.html">Day Two</a></li><li class="breadcrumb-item"><a href="./episode_4.html">Identify Differentially Expressed Genes</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./dge.html">Day Two</a></li><li class="breadcrumb-item"><a href="./dge.html">Identify Differentially Expressed Genes</a></li></ol></nav></header>
 
 
 
@@ -314,12 +339,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Here we are taking the difference between the means of the two groups and then dividing that difference by some measure of variability - in this case, dividing by the standard error.</p>
 <p>If the difference in means is <strong>LARGE</strong> relative to the variance, the test statistic will be large (indicating significance). If the difference between the means is <strong>small</strong> relative to the variance, the test statistic will be small, indicating the difference is probably not significant (<em>i.e.,</em> the difference we observe is in-line with the variance we observe).</p>
-<section id="exercise-with-the-above-formula-in-mind-what-impact-would-heteroscedasticity-have-when-you-are-attempting-to-identify-differentially-expressed-genes" class="level4">
-<h4 class="anchored" data-anchor-id="exercise-with-the-above-formula-in-mind-what-impact-would-heteroscedasticity-have-when-you-are-attempting-to-identify-differentially-expressed-genes"><strong>Exercise:</strong> With the above formula in mind, what impact would heteroscedasticity have when you are attempting to identify differentially expressed genes?</h4>
-<p>Once we have a test statistic we will calculate a p-value. The p-value is an indication of how likely we were to observe the given difference in means (or a more extreme difference) <em>if there is truly no difference between the means</em>. That is, how likely are we to see this difference due to random chance?</p>
+<section id="exercise-1-min" class="level5">
+<h5 class="anchored" data-anchor-id="exercise-1-min">🧠🏋️‍♀️ <strong>EXERCISE</strong> (1 min)</h5>
+<p>With the above formula in mind, what impact would <em>heteroscedasticity</em> have when you are attempting to identify differentially expressed genes?</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+SOLUTION
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Heteroscedasticity would violate the assumption of equal variances that the t-statistic relies on, meaning the standard error <span class="math inline">\({SE(\hat{\mu}_1 - \hat{\mu}_2)}\)</span> no longer appropriately captures the variability between groups. This would produce unreliable test statistics and therefore untrustworthy p-values. Therefore you could no longer confidently determine whether an observed difference in gene expression between groups was genuine or simply due to chance.</p>
+</div>
+</div>
+</div>
 </section>
 <section id="interpreting-p-values" class="level3">
 <h3 class="anchored" data-anchor-id="interpreting-p-values">Interpreting p-values</h3>
+<p>Once we have a test statistic we will calculate a p-value. The p-value is an indication of how likely we were to observe the given difference in means (or a more extreme difference) <em>if there is truly no difference between the means</em>. That is, how likely are we to see this difference due to random chance?</p>
 <p>How do we interpret the p-value? We will specify a threshold (usually 0.05), and say that if a p-value is less than this threshold we will consider it a significant result. If the p-value is lower than the threshold we set, we will reject the null hypothesis (that the groups are identical) and accept the alternative (that there is a difference between the groups). The threshold we set is our level of “risk” that this event happened by chance alone.</p>
 <p>When we declare that a result with a p-value of less than 0.05 is significant, we are saying that <em>we believe the difference to be true</em> since, if there was truly <strong>no</strong> difference, <strong>such a result would happen less than 5% of the time</strong>.</p>
 <p>A useful mental analogy is to consider flipping a coin. We know that for a fair coin, the odds of getting heads is 50:50. Still, if we get four heads in a row it doesn’t worry us - it’s entirely plausible given the variation we expect. But if we get 50 heads in a row, while we know it’s statistically <em>possible</em>, we know it’s very unlikely to see such an extreme result. If we got to 100 heads in a row, we might instead start to question the fairness of the coin - we would reject the null hypothesis that the odds of heads and tails is identical.</p>
@@ -336,8 +378,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Family-wise Error Rate (FWER), also called the Bonferroni and Holm corrections, is a highly stringent procedure. This approach will give the minimal possible number of false positives, but will miss some true positives. Good if false positives are particularly costly (<em>e.g.,</em> if you are providing someone with a severe medical diagnosis).</p></li>
 <li><p>False Discovery Rate control (FDR), also called the Benjamini and Hochberg correction, is less conservative than FWER. This approach will identify more significant events, but expect a greater number of false positives. Use this approach if you are more concerned about missing something valuable and can afford a few false positives.</p></li>
 </ul>
-<section id="exercise-note-down-some-key-features-of-your-experiment.-are-you-more-inclined-to-use-fwer-or-fdr-which-is-more-appropriate-for-your-data-and-your-experimental-situation" class="level4">
-<h4 class="anchored" data-anchor-id="exercise-note-down-some-key-features-of-your-experiment.-are-you-more-inclined-to-use-fwer-or-fdr-which-is-more-appropriate-for-your-data-and-your-experimental-situation"><strong>Exercise:</strong> Note down some key features of your experiment. Are you more inclined to use FWER or FDR? Which is more appropriate for your data and your experimental situation?</h4>
+<section id="exercise-3-mins" class="level5">
+<h5 class="anchored" data-anchor-id="exercise-3-mins">🧠🏋️‍♀️ <strong>EXERCISE</strong> (3 mins)</h5>
+<p>Note down some key features of your experiment. Are you more inclined to use FWER or FDR? Which is more appropriate for your data and your experimental situation?</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Food for thought
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Are you working with clinical samples, where the stakes are higher if you implicate the wrong gene in disease?<br>
+</li>
+<li>Are you investigating trends in expression or looking for specific genes?<br>
+</li>
+<li>How radical is your treatment or conditions used in your epxeriment? Do you have any assumptions about how perturbed or different you expect gene epxression to be between sample groups?<br>
+</li>
+<li>How many biological replicates do you have? Smaller sample sizes reduce statistical power, making you more prone to Type II errors regardless of which correction you apply.</li>
+</ul>
+</div>
+</div>
 </section>
 </section>
 <section id="modifying-the-t-test-for-rna-seq" class="level3">
@@ -349,67 +413,169 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="identifying-differentially-expressed-genes-using-limma" class="level2">
 <h2 class="anchored" data-anchor-id="identifying-differentially-expressed-genes-using-limma">Identifying differentially expressed genes using LIMMA</h2>
 <p>Limma involves data transformation and log scales to account for the data being in a non-normal distribution.</p>
-<p>Limma will create one of the special objects mentioned earlier in this workshop to store data. For Limma, this will be called a Digital Gene Expression object (DGE object). We will use the edgeR package to create this DGE object using three functions from the <code>edgeR</code> package – <code>DGEList()</code>, <code>calcNormFactors()</code> and <code>cpm()</code>.</p>
+<p>Limma will create one of the special objects mentioned earlier in this workshop to store data. For Limma, this will be called a Digital Gene Expression object (DGE object). We will use the edgeR package to create this DGE object using three functions from the <code>edgeR</code> package – <code>DGEList()</code>, <code>normLibSizes()</code> and <code>cpm()</code>.</p>
 <p>Load the libraries required for running limma, create a dge object where we specify counts (here you specify the matrix that contains your counts, in our case our object is already called counts). Then calculate normalisation factors, which will be used to adjust for library size differences, and calculate the log CPM. logCPM is, for each gene, how many counts there were per million reads. Because we are taking the log of this value, we will use the prior.counts=3 argument to add 3 to all read counts. This prevents any errors due to attempting to take the log of 0.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># BiocManager::install("limma")</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># BiocManager::install("edgeR")</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># BiocManager::install("DESeq2")</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(limma)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(edgeR)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"counts.RData"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.2.1     ✔ readr     2.2.0
+✔ forcats   1.0.1     ✔ stringr   1.6.0
+✔ ggplot2   4.0.3     ✔ tibble    3.3.1
+✔ lubridate 1.9.5     ✔ tidyr     1.3.2
+✔ purrr     1.2.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># BiocManager::install("limma")</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># BiocManager::install("edgeR")</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># BiocManager::install("DESeq2")</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(limma)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(edgeR)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><code>DGEList()</code> creates a Digital Gene Expression object from your count matrix. This is edgeR’s core data structure and stores your counts along with sample and gene information.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dge <span class="ot">&lt;-</span> <span class="fu">DGEList</span>(<span class="at">counts=</span>counts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dge <span class="ot">&lt;-</span> <span class="fu">DGEList</span>(<span class="at">counts=</span>counts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><code>calcNormFactors()</code> calculates TMM (Trimmed Mean of M-values) normalisation factors for each sample. These account for differences in library size and composition between samples, ensuring counts are comparable across samples. TMM is the default method used in calcNormFactors() and you can specify different methods (try <code>?calcNormFactors()</code>), but TMM is good for pairwise comparisons between two groups of samples (most RNAseq experiments). See here a general guide on understanding <a href="https://hbctraining.github.io/Intro-to-DGE/lessons/02_DGE_count_normalization.html">count normalisation from HBC training</a>.</p>
+<p><code>normLibSizes()</code> calculates TMM (Trimmed Mean of M-values) normalisation factors for each sample. These account for differences in library size and composition between samples, ensuring counts are comparable across samples. TMM is the default method used in normLibSizes() and you can specify different methods (try <code>?normLibSizes()</code>), but TMM is good for pairwise comparisons between two groups of samples (most RNAseq experiments). See here a general guide on understanding <a href="https://hbctraining.github.io/Intro-to-DGE/lessons/02_DGE_count_normalization.html">count normalisation from HBC training</a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dge <span class="ot">&lt;-</span> <span class="fu">calcNormFactors</span>(dge)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>dge <span class="ot">&lt;-</span> <span class="fu">normLibSizes</span>(dge)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Here we take a peek at the transformed counts using <code>cpm()</code>. This converts raw counts to log counts per million (log-CPM). The <code>prior.count=3</code> argument adds 3 to all counts before log transformation — this prevents errors from taking the log of zero, and also reduces the influence of very lowly expressed genes. Soon we will use the <code>voom()</code> function to address heteroscedasticity – but we will use our <code style="color:black">dge</code> object, as voom will perform its own log-CPM transformation internally, and additionally estimate precision weights for each gene (to account for heteroscedasticity).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>logCPM <span class="ot">&lt;-</span> <span class="fu">cpm</span>(dge, <span class="at">log=</span><span class="cn">TRUE</span>, <span class="at">prior.count=</span><span class="dv">3</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(logCPM, <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>logCPM <span class="ot">&lt;-</span> <span class="fu">cpm</span>(dge, <span class="at">log=</span><span class="cn">TRUE</span>, <span class="at">prior.count=</span><span class="dv">3</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(logCPM, <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              SI16_21G  SI16_23G  SI18_30G  SI18_48G  SI18_52G  SI16_22G
+LOC117820358 -1.745668 -1.745668 -1.745668 -1.745668 -1.745668 -1.745668
+LOC117813751 -1.745668 -1.745668 -1.745668 -1.745668 -1.745668 -0.396939
+ccdc51        2.636568  2.615389  3.259466  2.799155  3.665195  2.474228
+              SI18_15G  SI18_16G  SI18_18G  SI18_22G   SI16_1G   SI16_2G
+LOC117820358 -1.745668 -1.745668 -1.745668 -1.745668 -1.745668 -1.745668
+LOC117813751 -1.745668 -1.745668 -1.745668 -1.745668  5.787829  4.777218
+ccdc51        4.011476  3.881009  4.038616  4.101756  4.218357  3.856667
+               SI16_3G  SI18_47G  SI18_49G
+LOC117820358 -1.745668 -1.745668 -1.745668
+LOC117813751  4.652893  2.671568  1.512202
+ccdc51        3.220906  3.094261  3.047987</code></pre>
+</div>
 </div>
 <section id="the-design-matrix" class="level3">
 <h3 class="anchored" data-anchor-id="the-design-matrix">The design matrix</h3>
 <p>We use the design matrix to specify our different groups. Initially we will just look at a simple design, where we will specify wt and mutant. However, you can also include other information <em>e.g.,</em> if your two sample groups were comprised of male and females and you had reason to suspect there might be sex-dependent factors involved.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>conds <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"WT"</span>,<span class="st">"WT"</span>,<span class="st">"WT"</span>,<span class="st">"MT"</span>,<span class="st">"MT"</span>,<span class="st">"MT"</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span>conds)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>design</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(coldata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    sample batchname condition histology timepoint adj.timepoint length.mm
+1  SI16_1G      SI16         T       TPM         0             0       225
+2 SI16_21G      SI16         C         F        50             0       172
+3 SI16_22G      SI16         T        MT        50            20       178
+4 SI16_23G      SI16         C         F        50             0       173
+5  SI16_2G      SI16         T       TPM         0             0       220
+6  SI16_3G      SI16         T       TPM         0             0       215
+  weight.g
+1    175.7
+2     72.6
+3     80.0
+4     68.9
+5    165.8
+6    130.3</code></pre>
 </div>
-<p>If you have your metadata in a dataframe (see note in DESeq2 section on coldata files and design matrix), you can alternatively specify your design as such: <code>design &lt;- model.matrix(~conds, data = metadata_df)</code>.</p>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>design <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span>histology, <span class="at">data =</span> coldata)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>design</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   (Intercept) histologyMT histologyTPM
+1            1           0            1
+2            1           0            0
+3            1           1            0
+4            1           0            0
+5            1           0            1
+6            1           0            1
+7            1           1            0
+8            1           1            0
+9            1           1            0
+10           1           1            0
+11           1           0            0
+12           1           0            1
+13           1           0            0
+14           1           0            1
+15           1           0            0
+attr(,"assign")
+[1] 0 1 1
+attr(,"contrasts")
+attr(,"contrasts")$histology
+[1] "contr.treatment"</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+CHECK
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Currently design not looking correct - comapre in Rstudio. miht be different counts/coldata loaded.</p>
+<p>think samples need to be in the same order a counts df</p>
+</div>
+</div>
 </section>
 <section id="addressing-heteroscedasticity-with-limma" class="level3">
 <h3 class="anchored" data-anchor-id="addressing-heteroscedasticity-with-limma">Addressing heteroscedasticity with Limma</h3>
 <p>Limma has a function called voom which we can use to address heteroscedasticity (a case where mean and variance are not independent). Voom will estimate the strength of the relationship between mean and variance and calculate “precision weights” for each gene. These are then used to normalise the data during the identification of differentially expressed genes.</p>
 <p>Create an object, <code style="color:black">v</code>, by calling the voom function on the Digital Gene Expression (dge) object. The v object will be used in later analyses. We will add information about our experimental setup by specifying the design object, and we will also call <code>plot = TRUE</code> to generate a plot showing the heteroscedasticity.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>v <span class="ot">&lt;-</span> <span class="fu">voom</span>(dge, design, <span class="at">plot =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>v <span class="ot">&lt;-</span> <span class="fu">voom</span>(dge, design, <span class="at">plot =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="dge_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
 </div>
 <p>This plot highlights an earlier point about heteroscedasticity. For genes with low expression, the variance (here the square root of the standard deviation) is highly variable. Because the variance is dependent on the mean, we describe this data as heteroscedastic. Our v (voom) object contains information relating to the curve line (red) and makes an adjustment factor, so that the data will have a uniform relationship between the mean and variance.</p>
 <p>Importantly, other than changing the mean-variance relationship, voom does not cause significant changes to the underlying data.</p>
 <section id="the-impacts-of-voom" class="level4">
 <h4 class="anchored" data-anchor-id="the-impacts-of-voom">The impacts of voom</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(v<span class="sc">$</span>E <span class="sc">~</span> <span class="fu">col</span>(v<span class="sc">$</span>E), <span class="at">ylab =</span> <span class="st">"Counts"</span>, <span class="at">xlab =</span> <span class="st">"Samples"</span>, <span class="at">main =</span> <span class="st">"Log counts after voom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Demo only</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Original counts, log transformed</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(<span class="fu">as.matrix</span>(<span class="fu">log2</span>(counts <span class="sc">+</span><span class="dv">1</span>)) <span class="sc">~</span> <span class="fu">col</span>(counts), </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">"Counts"</span>, </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">"Samples"</span>, </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">names =</span> <span class="fu">colnames</span>(counts), </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">main =</span> <span class="st">"Log counts of samples (original)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="dge_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Voom corrected log transformed counts</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(v<span class="sc">$</span>E <span class="sc">~</span> <span class="fu">col</span>(v<span class="sc">$</span>E), <span class="at">ylab =</span> <span class="st">"Counts"</span>, <span class="at">xlab =</span> <span class="st">"Samples"</span>, <span class="at">main =</span> <span class="st">"Log counts after voom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="dge_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
 </div>
 <p>We can see that log counts in the voom object (that is, counts after voom has been applied to create a stable mean-variance relationship) have not drastically changed from when we plotted them earlier.</p>
-<p>We can also visualise the data in the form of density plots:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>lineColour <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(conds<span class="sc">==</span><span class="st">"MT"</span>, <span class="st">"red"</span>, <span class="st">"blue"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>lineColour</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">density</span>(v<span class="sc">$</span>E[,<span class="dv">1</span>]), <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="fl">0.3</span>), <span class="at">col=</span>lineColour[<span class="dv">1</span>])</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">ncol</span>(v<span class="sc">$</span>E)) <span class="fu">lines</span>(<span class="fu">density</span>(v<span class="sc">$</span>E[,i]), <span class="at">col=</span>lineColour[i])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<p>Voom should stabilise mean-variance without removing differecnes between sample groups</p>
 <p>We can see that voom has not removed the differences between our sample groups.</p>
 <p>What if we wanted to remove these differences? Remember, we (probably) cannot be certain as to whether these differences are biological or technical. In cases like this it can be good to run your analysis multiple ways - first without removing the differences, and then after removing the differences. If a decision like this causes your results to change drastically then you need to be aware of the impact your choices are having so that you can make an informed decision about how to investigate further.</p>
 <p>Quantile normalisation is one method you can use to remove differences between sample groups, but note that quantile normalisation is a drastic intervention and should not be undertaken without a real need.</p>
@@ -419,23 +585,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="detecting-differentially-expressed-genes">Detecting differentially expressed genes</h3>
 <p>Now that we have reached this point in the analysis, identifying differentially expressed genes is relatively simple in terms of the code we run. We will use the <code>lmFit()</code> command to fit a linear model for every gene using our v (voom) object and the design matrix, then use the <code>eBayes()</code> function on the linear model to perform Empirical Bayes shrinkage estimation and return moderated test statistics.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lmFit</span>(v, design)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> (<span class="fu">eBayes</span>(fit))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lmFit</span>(v, design)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> (<span class="fu">eBayes</span>(fit))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The fit object is complex to look at. We will use the topTable function to retrieve the useful information (gene name, logFC, adjusted p values), and then filter for significant genes only. We will also save the topTable object (tt) for use in the next episode.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>tt <span class="ot">&lt;-</span> <span class="fu">topTable</span>(fit, <span class="at">coef=</span><span class="fu">ncol</span>(design), <span class="at">n=</span><span class="fu">nrow</span>(counts))</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(tt)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(tt<span class="sc">$</span>adj.P.Val <span class="sc">&lt;</span> <span class="fl">0.05</span>)</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 5140 genes with an adjusted p-value less than 0.05. </span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(tt<span class="sc">$</span>adj.P.Val <span class="sc">&lt;</span> <span class="fl">0.01</span>)</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 4566 genes with an adjusted p-value less than 0.01.</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(tt, <span class="at">file=</span><span class="st">"tt.RData"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>tt <span class="ot">&lt;-</span> <span class="fu">topTable</span>(fit, <span class="at">coef=</span><span class="fu">ncol</span>(design), <span class="at">n=</span><span class="fu">nrow</span>(counts))</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(tt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                logFC   AveExpr        t     P.Value adj.P.Val         B
+LOC117828718 1.355847 -3.492778 2.648504 0.017285334 0.9999436 -4.513617
+LOC117829650 1.355847 -3.224128 2.570744 0.020267269 0.9999436 -4.517811
+LOC117809664 1.283203 -3.728278 2.707786 0.015299179 0.9999436 -4.521355
+LOC117815295 1.117127 -3.809771 2.484813 0.024130903 0.9999436 -4.522465
+LOC117823705 1.117127 -3.809771 2.484813 0.024130903 0.9999436 -4.522465
+LOC117806838 1.685274 -3.500180 3.028227 0.007839125 0.9999436 -4.522634</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(tt<span class="sc">$</span>adj.P.Val <span class="sc">&lt;</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 5140 genes with an adjusted p-value less than 0.05. </span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(tt<span class="sc">$</span>adj.P.Val <span class="sc">&lt;</span> <span class="fl">0.01</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 4566 genes with an adjusted p-value less than 0.01.</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co">#save(tt, file="tt.RData")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="exercise" class="level4">
 <h4 class="anchored" data-anchor-id="exercise"><strong>Exercise</strong></h4>
@@ -450,101 +630,101 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Genes will be coloured based on whether they are up (red) or down (blue) regulated.</p>
 <p>This plot is an important “sanity check”. We can logically check that our significant genes (in red) are those with both a p-value &lt; 0.05 and a log2 fold change greater than 1 (which is equivalent to a doubling or halving of gene expression). If we observe red marked dots in the center or bottom of the plot, we could recognise an error has occurred.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(limma)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(edgeR)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggiraph)</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plotly)</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Define significance thresholds</span></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>pval_threshold <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>fc_threshold <span class="ot">&lt;-</span> <span class="dv">1</span>  <span class="co"># log2 fold change threshold</span></span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a data frame for plotting</span></span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">logFC =</span> tt<span class="sc">$</span>logFC,</span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">negLogPval =</span> <span class="sc">-</span><span class="fu">log10</span>(tt<span class="sc">$</span>P.Value),</span>
-<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">adj.P.Val =</span> tt<span class="sc">$</span>adj.P.Val,</span>
-<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">ID =</span> <span class="fu">rownames</span>(tt)  <span class="co"># Assuming row names are gene IDs</span></span>
-<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a column to categorize genes</span></span>
-<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>plot_data<span class="sc">$</span>category <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(plot_data<span class="sc">$</span>adj.P.Val <span class="sc">&lt;=</span> pval_threshold,</span>
-<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">ifelse</span>(plot_data<span class="sc">$</span>logFC <span class="sc">&gt;=</span> fc_threshold, <span class="st">"Upregulated"</span>,</span>
-<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>                                    <span class="fu">ifelse</span>(plot_data<span class="sc">$</span>logFC <span class="sc">&lt;=</span> <span class="sc">-</span>fc_threshold, <span class="st">"Downregulated"</span>, <span class="st">"Passes P-value cut off"</span>)),</span>
-<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>                             <span class="st">"Not Significant"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(limma)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(edgeR)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggiraph)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plotly)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Define significance thresholds</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>pval_threshold <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>fc_threshold <span class="ot">&lt;-</span> <span class="dv">1</span>  <span class="co"># log2 fold change threshold</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a data frame for plotting</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">logFC =</span> tt<span class="sc">$</span>logFC,</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">negLogPval =</span> <span class="sc">-</span><span class="fu">log10</span>(tt<span class="sc">$</span>P.Value),</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">adj.P.Val =</span> tt<span class="sc">$</span>adj.P.Val,</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">ID =</span> <span class="fu">rownames</span>(tt)  <span class="co"># Assuming row names are gene IDs</span></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a column to categorize genes</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>plot_data<span class="sc">$</span>category <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(plot_data<span class="sc">$</span>adj.P.Val <span class="sc">&lt;=</span> pval_threshold,</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">ifelse</span>(plot_data<span class="sc">$</span>logFC <span class="sc">&gt;=</span> fc_threshold, <span class="st">"Upregulated"</span>,</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>                                    <span class="fu">ifelse</span>(plot_data<span class="sc">$</span>logFC <span class="sc">&lt;=</span> <span class="sc">-</span>fc_threshold, <span class="st">"Downregulated"</span>, <span class="st">"Passes P-value cut off"</span>)),</span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>                             <span class="st">"Not Significant"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the volcano plot using ggplot2</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(plot_data, <span class="fu">aes</span>(<span class="at">x =</span> logFC, <span class="at">y =</span> negLogPval, <span class="at">color =</span> category)) <span class="sc">+</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Upregulated"</span> <span class="ot">=</span> <span class="st">"red"</span>, <span class="st">"Downregulated"</span> <span class="ot">=</span> <span class="st">"blue"</span>, <span class="st">"Not Significant"</span> <span class="ot">=</span> <span class="st">"grey20"</span>, <span class="st">"Passes P-value cut off"</span> <span class="ot">=</span> <span class="st">"grey"</span>)) <span class="sc">+</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="sc">-</span>fc_threshold, fc_threshold), <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="sc">-</span><span class="fu">log10</span>(pval_threshold), <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Volcano Plot of Differential Gene Expression"</span>,</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(<span class="st">"Thresholds: |log2FC| &gt;"</span>, fc_threshold, <span class="st">"and adjusted p-value &lt;"</span>, pval_threshold),</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"log2 Fold Change"</span>,</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"-log10(p-value)"</span>,</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Differential Expression"</span></span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span>,</span>
-<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">16</span>),</span>
-<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">12</span>)</span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the volcano plot using ggplot2</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(plot_data, <span class="fu">aes</span>(<span class="at">x =</span> logFC, <span class="at">y =</span> negLogPval, <span class="at">color =</span> category)) <span class="sc">+</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">size =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Upregulated"</span> <span class="ot">=</span> <span class="st">"red"</span>, <span class="st">"Downregulated"</span> <span class="ot">=</span> <span class="st">"blue"</span>, <span class="st">"Not Significant"</span> <span class="ot">=</span> <span class="st">"grey20"</span>, <span class="st">"Passes P-value cut off"</span> <span class="ot">=</span> <span class="st">"grey"</span>)) <span class="sc">+</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="sc">-</span>fc_threshold, fc_threshold), <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="sc">-</span><span class="fu">log10</span>(pval_threshold), <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Volcano Plot of Differential Gene Expression"</span>,</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(<span class="st">"Thresholds: |log2FC| &gt;"</span>, fc_threshold, <span class="st">"and adjusted p-value &lt;"</span>, pval_threshold),</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"log2 Fold Change"</span>,</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"-log10(p-value)"</span>,</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Differential Expression"</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span>,</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">16</span>),</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">12</span>)</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the plot (optional)</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"volcano_plot.png"</span>, <span class="at">width =</span> <span class="dv">10</span>, <span class="at">height =</span> <span class="dv">8</span>, <span class="at">dpi =</span> <span class="dv">300</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the plot (optional)</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co">#ggsave("volcano_plot.png", width = 10, height = 8, dpi = 300)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can also produce an interactive volcano plot with the ggigraph package.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the ggplot object</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(plot_data, <span class="fu">aes</span>(<span class="at">x =</span> logFC, <span class="at">y =</span> negLogPval, <span class="at">color =</span> category, <span class="at">text =</span> ID)) <span class="sc">+</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Upregulated"</span> <span class="ot">=</span> <span class="st">"red"</span>, <span class="st">"Downregulated"</span> <span class="ot">=</span> <span class="st">"blue"</span>, <span class="st">"Not Significant"</span> <span class="ot">=</span> <span class="st">"grey20"</span>, <span class="st">"Passes P-value cut off"</span> <span class="ot">=</span> <span class="st">"grey"</span>)) <span class="sc">+</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="sc">-</span>fc_threshold, fc_threshold), <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="sc">-</span><span class="fu">log10</span>(pval_threshold), <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Interactive Volcano Plot of Differential Gene Expression"</span>,</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(<span class="st">"Thresholds: |log2FC| &gt;"</span>, fc_threshold, <span class="st">"and adjusted p-value &lt;"</span>, pval_threshold),</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"log2 Fold Change"</span>,</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"-log10(p-value)"</span>,</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Differential Expression"</span></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span>,</span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">16</span>),</span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">12</span>)</span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the ggplot object</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(plot_data, <span class="fu">aes</span>(<span class="at">x =</span> logFC, <span class="at">y =</span> negLogPval, <span class="at">color =</span> category, <span class="at">text =</span> ID)) <span class="sc">+</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Upregulated"</span> <span class="ot">=</span> <span class="st">"red"</span>, <span class="st">"Downregulated"</span> <span class="ot">=</span> <span class="st">"blue"</span>, <span class="st">"Not Significant"</span> <span class="ot">=</span> <span class="st">"grey20"</span>, <span class="st">"Passes P-value cut off"</span> <span class="ot">=</span> <span class="st">"grey"</span>)) <span class="sc">+</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="sc">-</span>fc_threshold, fc_threshold), <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="sc">-</span><span class="fu">log10</span>(pval_threshold), <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Interactive Volcano Plot of Differential Gene Expression"</span>,</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">paste</span>(<span class="st">"Thresholds: |log2FC| &gt;"</span>, fc_threshold, <span class="st">"and adjusted p-value &lt;"</span>, pval_threshold),</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"log2 Fold Change"</span>,</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"-log10(p-value)"</span>,</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Differential Expression"</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span>,</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">16</span>),</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">12</span>)</span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert ggplot to an interactive plotly object</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>interactive_plot <span class="ot">&lt;-</span> <span class="fu">ggplotly</span>(p, <span class="at">tooltip =</span> <span class="fu">c</span>(<span class="st">"text"</span>, <span class="st">"x"</span>, <span class="st">"y"</span>, <span class="st">"color"</span>))</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Customize hover text</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>interactive_plot <span class="ot">&lt;-</span> interactive_plot <span class="sc">%&gt;%</span> </span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layout</span>(<span class="at">hoverlabel =</span> <span class="fu">list</span>(<span class="at">bgcolor =</span> <span class="st">"white"</span>),</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">hovermode =</span> <span class="st">"closest"</span>)</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the interactive plot</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>interactive_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert ggplot to an interactive plotly object</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>interactive_plot <span class="ot">&lt;-</span> <span class="fu">ggplotly</span>(p, <span class="at">tooltip =</span> <span class="fu">c</span>(<span class="st">"text"</span>, <span class="st">"x"</span>, <span class="st">"y"</span>, <span class="st">"color"</span>))</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Customize hover text</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>interactive_plot <span class="ot">&lt;-</span> interactive_plot <span class="sc">%&gt;%</span> </span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layout</span>(<span class="at">hoverlabel =</span> <span class="fu">list</span>(<span class="at">bgcolor =</span> <span class="st">"white"</span>),</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">hovermode =</span> <span class="st">"closest"</span>)</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the interactive plot</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>interactive_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="differentially-expressed-genes-stored" class="level3">
 <h3 class="anchored" data-anchor-id="differentially-expressed-genes-stored">Differentially expressed genes stored</h3>
 <p>Let’s make an object to store all the information for our list of significantly differentially expressed genes. We will use a threshold of an adjusted p-value &lt; 0.05 and a logFC &gt; 1. We will return to this object later, but for now we will move on and identify differentially expressed genes using a different method.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>sigGenesLimma <span class="ot">&lt;-</span> <span class="fu">which</span>(tt<span class="sc">$</span>adj.P.Val <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">&amp;</span> (<span class="fu">abs</span>(tt<span class="sc">$</span>logFC) <span class="sc">&gt;</span> <span class="dv">1</span>))</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(sigGenesLimma)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1891</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>sigGenesLimma <span class="ot">&lt;-</span> tt[sigGenesLimma, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>sigGenesLimma <span class="ot">&lt;-</span> <span class="fu">which</span>(tt<span class="sc">$</span>adj.P.Val <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">&amp;</span> (<span class="fu">abs</span>(tt<span class="sc">$</span>logFC) <span class="sc">&gt;</span> <span class="dv">1</span>))</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(sigGenesLimma)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1891</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>sigGenesLimma <span class="ot">&lt;-</span> tt[sigGenesLimma, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
@@ -556,15 +736,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The DESeq2 package requires a specific data storage object called a “DESeq Data Set” or DDS object. The DDS object contains not just the count data, but also the design matrix we created earlier (which is used to specify groups for comparison). This object can be created using a function from the DESeq2 package and requires that we specify a source of count data (as a matrix), column data (column names, mutant and wildtype), and a design matrix (the same one we used for Limma above). Once we have created the dds object, we can view the data stored within using the counts function.</p>
 <p>Note that if your data is stored in another format the DESeq2 function we will use to import data can be modified to work on other data formats <em>e.g.,</em> a summarisedExperimentObject.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DESeq2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DESeq2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dds <span class="ot">&lt;-</span> <span class="fu">DESeqDataSetFromMatrix</span>(<span class="at">countData =</span> counts, </span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>                              <span class="at">colData =</span> <span class="fu">data.frame</span>(<span class="at">conds=</span><span class="fu">factor</span>(conds)), </span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>                              <span class="at">design =</span> <span class="fu">formula</span>(<span class="sc">~</span>conds))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>dds <span class="ot">&lt;-</span> <span class="fu">DESeqDataSetFromMatrix</span>(<span class="at">countData =</span> counts, </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>                              <span class="at">colData =</span> <span class="fu">data.frame</span>(<span class="at">conds=</span><span class="fu">factor</span>(conds)), </span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>                              <span class="at">design =</span> <span class="fu">formula</span>(<span class="sc">~</span>conds))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="callout callout-style-simple callout-note callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -573,21 +753,21 @@ A note on formatting the coldata and design matrix
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>In this example, we have turned our conditions we created earlier during limma analysis into a long format dataframe. In practise, you should set up your metadata in a sample metadata table (e.g., start in excel and save as either a csv or tsv file before importing into RStudio), with one row per sample and one column for each metadata variable. This way, you can have a single dataframe in R that contains all possible metadata you may have for your samples (e.g., sex, age, tissue, treatments) and can use whichever parameters are required for your design comparison when you create your dds object. It is best this file also lists your sample types, in the same order as the columns in your counts file, to avoid accidentally matching the wrong metadata to the wrong sample. See below for how you would format this for these samples:</p>
 <p>(Note the 1-6 row numbers are an output here from R - you should not number your rows in your table).</p>
 <p>The design matrix can be pulled directly from the data provided to the <code>colData</code> argument. You may need to factorise the columns first, but otherwise you may get a warning from <code>DESeqDataSetFromMatrix()</code> saying some variables are characters, converting to factors. Numeric columns will likely error and must be first factorised.</p>
 <p>For example, if we used the data frame above, we could first factorise our <code>conds</code> column as so:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>metadata_df <span class="ot">&lt;-</span> metadata_df <span class="sc">%&gt;%</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">conds =</span> <span class="fu">factor</span>(conds))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>metadata_df <span class="ot">&lt;-</span> metadata_df <span class="sc">%&gt;%</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">conds =</span> <span class="fu">factor</span>(conds))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Then re-write the dds code as:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>dds <span class="ot">&lt;-</span> <span class="fu">DESeqDataSetFromMatrix</span>(<span class="at">countData =</span> counts, </span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>                              <span class="at">colData =</span> metadata_df, </span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                              <span class="at">design =</span> <span class="sc">~</span>conds)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>dds <span class="ot">&lt;-</span> <span class="fu">DESeqDataSetFromMatrix</span>(<span class="at">countData =</span> counts, </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>                              <span class="at">colData =</span> metadata_df, </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>                              <span class="at">design =</span> <span class="sc">~</span>conds)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Alternatively, use <code>design = ~1</code> to fit an intercept-only model (no condition effect), useful for normalisation or transformation steps where group comparisons aren’t needed.</p>
 </div>
@@ -595,11 +775,11 @@ A note on formatting the coldata and design matrix
 </div>
 <p>Raw counts can be retrieved from our <code>dds</code> object using the function <code>counts()</code> from the DESeq2 package.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">counts</span>(dds) <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">counts</span>(dds) <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now fit the DESeq2 generalised linear model to the data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>dds <span class="ot">&lt;-</span> <span class="fu">DESeq</span>(dds)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>dds <span class="ot">&lt;-</span> <span class="fu">DESeq</span>(dds)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Note the outputs from running this function. What are these outputs?</p>
 <ul>
@@ -609,25 +789,25 @@ A note on formatting the coldata and design matrix
 </ul>
 <p>We will now create a new object, res, to store the results in. We can access those results using either the head function or the summary function, which will give us slightly different information - both are valid and useful ways of familiarising yourself with the data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> DESeq2<span class="sc">::</span><span class="fu">results</span>(dds)</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>res <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>res <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> DESeq2<span class="sc">::</span><span class="fu">results</span>(dds)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>res <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>res <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The res object contains information for all genes tested. It is practical to create a new object that contains only the genes we consider differentially expressed based on the thresholds (p-value, logFC) and methods (e.g., multiple testing adjustment) that suit our situation.</p>
 <p>We will remove any rows that have NAs in the results object, then pull out only those with an adjusted p-value less than 0.05.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(res)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep all rows in the res object if the adjusted p-value &lt; 0.05</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>resPadj <span class="ot">&lt;-</span> res[res<span class="sc">$</span>padj <span class="sc">&lt;=</span> <span class="fl">0.05</span> , ]</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>resPadjLogFC <span class="ot">&lt;-</span> res[res<span class="sc">$</span>padj <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">&amp;</span> <span class="fu">abs</span>(res<span class="sc">$</span>log2FoldChange) <span class="sc">&gt;</span> <span class="dv">1</span>,]</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Get dimensions</span></span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>resPadj <span class="sc">%&gt;%</span> <span class="fu">dim</span>() <span class="co"># should be 4811 x 6</span></span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>resPadjLogFC <span class="sc">%&gt;%</span> <span class="fu">dim</span>() <span class="co"># should be 1830 x 6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(res)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep all rows in the res object if the adjusted p-value &lt; 0.05</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>resPadj <span class="ot">&lt;-</span> res[res<span class="sc">$</span>padj <span class="sc">&lt;=</span> <span class="fl">0.05</span> , ]</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>resPadjLogFC <span class="ot">&lt;-</span> res[res<span class="sc">$</span>padj <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">&amp;</span> <span class="fu">abs</span>(res<span class="sc">$</span>log2FoldChange) <span class="sc">&gt;</span> <span class="dv">1</span>,]</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Get dimensions</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>resPadj <span class="sc">%&gt;%</span> <span class="fu">dim</span>() <span class="co"># should be 4811 x 6</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>resPadjLogFC <span class="sc">%&gt;%</span> <span class="fu">dim</span>() <span class="co"># should be 1830 x 6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="exercise-identify-method-for-multiple-testing-corrections" class="level4">
 <h4 class="anchored" data-anchor-id="exercise-identify-method-for-multiple-testing-corrections"><strong>Exercise:</strong> Identify method for multiple testing corrections</h4>
@@ -639,18 +819,18 @@ A note on formatting the coldata and design matrix
 <p>To recap, we’ve now produced two lists of differentially expressed genes - one produced with the Limma method (called sigGenesLimma), one with DESeq2 (called resPadjLogFC). In both cases we used the same threshold for statistical significance (adjusted p-value &lt; 0.05, using the FDR correction) and biological significance (logFC more than 1 or less than negative 1, which is equivalent to a doubling or halving gene expression). In our run-through, Limma identified 1,891 differentially expressed genes, while DESeq2 identified 1,830 genes.</p>
 <p>These numbers are very similar, but what’s the actual overlap between these two groups? A venn diagram is an easy way to visualise the relationship between the two groups. First, load the gplots library which we will use for making venn diagrams. Create an object, which we will call setlist, that lists the two gene sets (in our case, this will be the rownames of the objects we created with Limma and DESeq2). Finally, use the <code>venn()</code> function to create a venn diagram.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># BiocManager::install("gplots")</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gplots)</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>setlist <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Limma =</span> <span class="fu">rownames</span>(sigGenesLimma), </span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">DESeq2 =</span> <span class="fu">rownames</span>(resPadjLogFC))</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="fu">venn</span>(setlist)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># BiocManager::install("gplots")</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gplots)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>setlist <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Limma =</span> <span class="fu">rownames</span>(sigGenesLimma), </span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">DESeq2 =</span> <span class="fu">rownames</span>(resPadjLogFC))</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="fu">venn</span>(setlist)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>This is very strong concordance between our two methods and gives us high confidence in our approach. At this point you could take the overlap (n = 1799 genes), take all genes (n = 1799 + 31 + 92), or take genes from just one method (more relevant if one method was conservative compared to the other). Exactly how you resolve this step will depend on the exact shape of your venn diagram and your context.</p>
 <p>For simplicity, we will take the list of genes identified by limma. We will save the R object, and then see in the next episode how we can derive meaningful biological information from this long list of genes.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(sigGenesLimma, <span class="at">file =</span> <span class="st">'topTable.RData'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co">#save(sigGenesLimma, file = 'topTable.RData')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 

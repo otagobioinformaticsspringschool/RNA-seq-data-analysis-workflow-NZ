@@ -210,7 +210,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./episode_4.html" class="sidebar-item-text sidebar-link">
+  <a href="./dge.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Identify Differentially Expressed Genes</span></a>
   </div>
 </li>
@@ -314,7 +314,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The html file outputs from FastQC can be opened in a browser for viewing. For each sample we have an overview of the quality for different metrics. On the left hand side of the report is a navigation bar that works as a broad summary. An ideal sample would have green tick marks for every measurement, while a terrible sample would have red crosses for every measurement. Most samples will have a mix and there is an element of interpretation.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="figures/per_base_quality.png" class="img-fluid figure-img"></p>
+<p><img src="images/per_base_quality.png" class="img-fluid figure-img"></p>
 <figcaption>FastQC Per base sequence quality summary</figcaption>
 </figure>
 </div>
@@ -342,13 +342,13 @@ For reference: R1 and R2 ‘Per base sequence content’ images –&gt;
 <div class="callout-body-container callout-body">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="figures/R1_perbaseseqcontent.png" class="img-fluid figure-img"></p>
+<p><img src="images/R1_perbaseseqcontent.png" class="img-fluid figure-img"></p>
 <figcaption>R1 Per base sequence content</figcaption>
 </figure>
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="figures/R2_perbaseseqcontent.png" class="img-fluid figure-img"></p>
+<p><img src="images/R2_perbaseseqcontent.png" class="img-fluid figure-img"></p>
 <figcaption>R2 Per base sequence content</figcaption>
 </figure>
 </div>
@@ -423,7 +423,7 @@ SOLUTION
 <p>Click on the <code>multiqc_report.html</code> file to open it (you may also need to click a ‘Trust HTML’ button).</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="figures/multiqc-fastqc.png" class="img-fluid figure-img"></p>
+<p><img src="images/multiqc-fastqc.png" class="img-fluid figure-img"></p>
 <figcaption>MultiQC report</figcaption>
 </figure>
 </div>
@@ -507,7 +507,7 @@ SOLUTION
 <p>Alternatively, you can run FastQC on the trimmed files, add the FastQC results to the MultiQC dir and re-run <code>multiqc .</code> to generate a report that has fastqc results from both the raw reads and trimmed reads. You also have the option to run multiqc on specific dirs only, rather than everything within one dir (<em>e.g.,</em> <code>multiqc dir1 dir2</code>)</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="figures/multiqc-fastqc-trimmomatic.png" class="img-fluid figure-img"></p>
+<p><img src="images/multiqc-fastqc-trimmomatic.png" class="img-fluid figure-img"></p>
 <figcaption>Updated MultiQC report</figcaption>
 </figure>
 </div>

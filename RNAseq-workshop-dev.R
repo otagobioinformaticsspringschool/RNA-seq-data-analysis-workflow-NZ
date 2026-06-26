@@ -339,7 +339,25 @@ coldata_subset_test <- coldata.table |>
 
 write.table(coldata_subset_test, "data-files/coldata.txt", sep="\t", quote=FALSE, row.names=TRUE)
 
+# limma ----
 
 
+library(limma)
+library(edgeR)
+library(dplyr)
+
+dge <- DGEList(counts=counts.test)
+
+dge <- normLibSizes(dge)
+?normLibSizes
+
+
+logCPM <- cpm(dge, log=TRUE, prior.count=3)
+
+
+head(logCPM, 3)
+
+design <- model.matrix(~histov3 + batchname, data = coldata_subset_test)
+design
                               
     

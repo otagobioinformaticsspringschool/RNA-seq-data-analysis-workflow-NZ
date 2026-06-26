@@ -22,7 +22,7 @@ website:
           - exploratory.qmd
       - section: "Day Two" 
         contents:
-          - episode_4.qmd
+          - dge.qmd
           - episode_5.qmd
           - episode_6.qmd
       - section: "Supplementary" 

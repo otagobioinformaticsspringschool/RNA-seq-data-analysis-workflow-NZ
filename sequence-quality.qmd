@@ -51,7 +51,7 @@ If we now look within the QC directory, we should see two types of files for eac
 
 The html file outputs from FastQC can be opened in a browser for viewing. For each sample we have an overview of the quality for different metrics. On the left hand side of the report is a navigation bar that works as a broad summary. An ideal sample would have green tick marks for every measurement, while a terrible sample would have red crosses for every measurement. Most samples will have a mix and there is an element of interpretation. 
 
-![FastQC Per base sequence quality summary](figures/per_base_quality.png)
+![FastQC Per base sequence quality summary](images/per_base_quality.png)
 
 The image above shows **Per base sequence quality**, which is the first plot you can use to assess the quality of your reads. You can picture the reads as being all stacked on top of each other, and the average quality at each position (x-axis) shown as a boxplot (*i.e.,* position 1 shows a boxplot of the quality scores of base pair #1 in all reads, position 2 shows a boxplot for base pair #2, and so on).
 
@@ -71,9 +71,9 @@ Open both (R1 and R2) of the html files for the SI16_1G sample. Most of the summ
 ::: {.callout-note collapse="true" appearance="simple"}
 # For reference: R1 and R2 'Per base sequence content' images -->
 
-![R1 Per base sequence content](figures/R1_perbaseseqcontent.png)
+![R1 Per base sequence content](images/R1_perbaseseqcontent.png)
 
-![R2 Per base sequence content](figures/R2_perbaseseqcontent.png)
+![R2 Per base sequence content](images/R2_perbaseseqcontent.png)
 
 
 :::
@@ -141,7 +141,7 @@ multiqc .
 
 Click on the `multiqc_report.html` file to open it (you may also need to click a 'Trust HTML' button).
 
-![MultiQC report](figures/multiqc-fastqc.png)
+![MultiQC report](images/multiqc-fastqc.png)
 
 After each step in the analysis (*e.g.,* read trimming, alignment) we will copy over new reports and summaries to the MultiQC directory and re-run the multiqc command. New MultiQC reports will be generated encompassing the additional information.  
 
@@ -238,7 +238,7 @@ multiqc .
 Alternatively, you can run FastQC on the trimmed files, add the FastQC results to the MultiQC dir and re-run `multiqc .`  to generate a report that has fastqc results from both the raw reads and trimmed reads. You also have the option to run multiqc on specific dirs only, rather than everything within one dir (*e.g.,* `multiqc dir1 dir2`)
 
 
-![Updated MultiQC report](figures/multiqc-fastqc-trimmomatic.png)
+![Updated MultiQC report](images/multiqc-fastqc-trimmomatic.png)
 
 We can now see the Trimmomatic metrics have been added to the new report. 
 
