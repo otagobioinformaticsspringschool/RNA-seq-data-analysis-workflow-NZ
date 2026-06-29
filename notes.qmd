@@ -11,3 +11,13 @@ It's worth noting that many newer R packages and workflows will require (or at l
 
 ![The summarised experiment object, image from the Carpentries Incubator Introduction to Data Analysis with R workshop.](images/carpentriesSummarisedExperiment.svg)
 :::
+
+# header 1
+
+## header 2
+
+### header 3
+
+#### header 4
+
+##### header 5

@@ -178,6 +178,8 @@ A common question to ask at this point is, are the differences we can see betwee
 
 Library size refers to the total number of reads for the entire sample. If two samples have vastly different library sizes, genes would look differentially expressed between samples e.g., if one library was twice as large as another, all genes would look to be upregulated in the larger library sample. Before we compare counts across samples we need to check whether the library sizes are approximately similar, and if they are not, make a correction to account for the size differences.
 
+In this code below, focus on what we are trying to *do* with the code rather than the code itself. For each sample in our counts object, we are adding up the total counts across every gene to calculate the library size. There are different ways you could achieve this in R, but if you understand the end goal you can find your own path.  
+
 
 ```{r}
 
@@ -220,7 +222,7 @@ Next the counts object needs to be flipped for `prcomp()` analysis.
 Our counts dataframe currently looks like this:
 
 ```
-        Sample 1 | Sample 2 | Sample 3
+        Sample 1   Sample 2   Sample 3
 geneA   1          3          4
 geneB   46         986        60
 geneC   0          0          2
@@ -230,7 +232,7 @@ geneC   0          0          2
 But we need to transpose it to look like this:
 
 ```
-           geneA  |  geneB  |  geneC
+           geneA     geneB     geneC
 Sample 1   1         3         4
 Sample 2   46        986       60
 Sample 3   0         0         2
@@ -299,10 +301,11 @@ What patterns do you see?
 - Is sample SI16_22G an outlier and should we remove it?
 - Do we have enough samples from each batch in each group to determine whether we are seeing batch effects?
 
-SI16_22G is potentially worth removing. With only 5 samples per histology group, the batch split is at best 2:3, making it difficult to confidently distinguish batch effects from biological signal. The MT group in particular has only 1 SI16 sample and 4 SI18 samples. That said, samples largely cluster by histology group, suggesting histology is the stronger driver of variance — batch effects may be present but appear secondary. 
+Answer: SI16_22G is potentially worth removing. With only 5 samples per histology group, the batch split is at best 2:3, making it difficult to confidently distinguish batch effects from biological signal. The MT group in particular has only 1 SI16 sample and 4 SI18 samples. That said, samples largely cluster by histology group, suggesting histology is the stronger driver of variance – batch effects may be present but appear secondary. 
 
 :::
 
 
+### Next up ...
 
-
+After exploring our dataset, removing any outliers and deciding which factors we may need to correct for that are causing batch effects, we are now ready to move onto differentially gene expression analysis. 

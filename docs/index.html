@@ -225,11 +225,9 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#background-knowledge" id="toc-background-knowledge" class="nav-link" data-scroll-target="#background-knowledge">Background knowledge</a></li>
   </ul></li>
-  <li><a href="#workshop-timeline" id="toc-workshop-timeline" class="nav-link" data-scroll-target="#workshop-timeline">Workshop timeline</a>
-  <ul class="collapse">
-  <li><a href="#day-1" id="toc-day-1" class="nav-link" data-scroll-target="#day-1">Day 1</a></li>
-  <li><a href="#day-2" id="toc-day-2" class="nav-link" data-scroll-target="#day-2">Day 2</a></li>
-  </ul></li>
+  <li><a href="#whats-covered-in-this-workshop" id="toc-whats-covered-in-this-workshop" class="nav-link" data-scroll-target="#whats-covered-in-this-workshop">What’s covered in this workshop</a></li>
+  <li><a href="#whats-not-covered-in-this-workshop" id="toc-whats-not-covered-in-this-workshop" class="nav-link" data-scroll-target="#whats-not-covered-in-this-workshop">What’s not covered in this workshop</a></li>
+  <li><a href="#workshop-timeline" id="toc-workshop-timeline" class="nav-link" data-scroll-target="#workshop-timeline">Workshop timeline</a></li>
   <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a></li>
   <li><a href="#attribution-notice" id="toc-attribution-notice" class="nav-link" data-scroll-target="#attribution-notice">Attribution notice</a></li>
   </ul></li>
@@ -254,23 +252,34 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="getting-started-with-rna-seq-data-analysis">Getting started with RNA-seq data analysis</h2>
 <p>This workshop aims to get you started with analysing your own RNA-seq data by providing an example workflow. At each of the major steps in the workflow we will examine issues that could confound your analysis and consider how different available methods address these issues.</p>
 <p>Rather than prescribing what methods you should use, this workshop aims to make the user aware of the biological and statistical challenges involved in analysing RNA-seq data and asks how different methods address those challenges. By the end of this workshop you should be familiar with the general workflow of RNA-seq analysis and be ready to ask informed questions about the specific methods you should select going forward.</p>
-<p>The workshop includes a small example Illumina short read dataset which will be used by the workshop Instructor to demonstrate an analysis. Attendees may choose to follow along with the analysis in real time or they may choose to focus on note-taking. The workshop includes short exercises to highlight key messages and reinforce your understanding.</p>
 <section id="background-knowledge" class="level4">
 <h4 class="anchored" data-anchor-id="background-knowledge">Background knowledge</h4>
 <p>This workflow assumes you are familiar with transcriptomic and biological concepts. In particular, it assumes you are familar with the concept of sequencing libraries and with the data format (i.e., FASTA and FASTQ files). For more information on these topics, see the <a href="https://datacarpentry.github.io/wrangling-genomics/index.html">Data Carpentry lesson</a> which describes the FASTQ format (i.e., files that contain reads and quality scores for the bases in each read) and <a href="https://sapac.illumina.com/science/technology/next-generation-sequencing/beginners.html">NGS basics by Illumina</a>, which describes the full process of sample to data, and further details on chosing an <a href="https://sapac.illumina.com/techniques/sequencing/ngs-library-prep/rna.html">NGS RNA library preparation method</a>, which describes different Illumina kits for prepping your RNA sample into a sequenceable library.</p>
 </section>
 </section>
+<section id="whats-covered-in-this-workshop" class="level2">
+<h2 class="anchored" data-anchor-id="whats-covered-in-this-workshop">What’s covered in this workshop</h2>
+<ul>
+<li>Full RNAseq workflow of a New Zealand endemic species using both bash and R tools.<br>
+</li>
+<li>Illumina short-read quality assessment and pre-processing.<br>
+</li>
+<li>Aligning paired-end reads to a publically available genome.<br>
+</li>
+<li>Identifying differentially expressed genes with limma and DEseq2.</li>
+<li>Functional annotation using GOseq to investigate trends in expression.</li>
+</ul>
+</section>
+<section id="whats-not-covered-in-this-workshop" class="level2">
+<h2 class="anchored" data-anchor-id="whats-not-covered-in-this-workshop">What’s not covered in this workshop</h2>
+<ul>
+<li>Submitting and optimising HPC scheduled jobs (see Bash scripting and HPC Job Scheduler workshop)</li>
+<li>Extensive data manipulation and plotting in R, beyond the basics.</li>
+</ul>
+</section>
 <section id="workshop-timeline" class="level2">
 <h2 class="anchored" data-anchor-id="workshop-timeline">Workshop timeline</h2>
 <p>This workshop runs over two mornings, from 9am - 1pm. We will take 10 min breaks approximately once every hour.</p>
-<section id="day-1" class="level3">
-<h3 class="anchored" data-anchor-id="day-1">Day 1</h3>
-<p>An overview of RNA-seq data analysis workflows Quality assessment Adaptor trimming and filtering Mapping and counting methods Exploratory analysis</p>
-</section>
-<section id="day-2" class="level3">
-<h3 class="anchored" data-anchor-id="day-2">Day 2</h3>
-<p>Concepts for identifying differentially expressed genes Limma for differentially expressed genes DESeq2 for differentially expressed genes Over-representation analysis</p>
-</section>
 </section>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
@@ -278,7 +287,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="attribution-notice" class="level2">
 <h2 class="anchored" data-anchor-id="attribution-notice">Attribution notice</h2>
-<p>This workshop is an updated version on an existing version of <a href="https://genomicsaotearoa.github.io/RNA-seq-workshop-on-demand/">RNA-seq data analysis by Genomics Aotearoa and REANNZ (formerly NeSI)</a>. It incorporates, and takes inspiration from, various training materials produced by the <a href="https://github.com/hbctraining">Harvard Bioinformatics Core</a> and from The Carpentries, specifically their <a href="https://carpentries-incubator.github.io/bioc-rnaseq/index.html">RNA-seq analysis with Bioconductor workshop</a>.</p>
+<p>This workshop is an updated version on an existing version of <a href="https://genomicsaotearoa.github.io/RNA-seq-data-analysis-workflow/">RNA-seq data analysis workflow</a> by Genomics Aotearoa. It incorporates, and takes inspiration from, various training materials produced by the <a href="https://github.com/hbctraining">Harvard Bioinformatics Core</a> and from The Carpentries, specifically their <a href="https://carpentries-incubator.github.io/bioc-rnaseq/index.html">RNA-seq analysis with Bioconductor workshop</a>.</p>
 </section>
 </section>
 <section id="section" class="level1" style="background: #e6f2e6; text-align:center;">

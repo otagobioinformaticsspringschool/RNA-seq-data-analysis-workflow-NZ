@@ -36,6 +36,9 @@ Let's look at some peculiar features of RNA-seq data and identify the challenges
 
 ## What are the main challenges or decision points?
 
+
+Knowing what cut offs to use or whether outputs are good enough is a constant quesiton youll ask yourself. Not always possibel to knwo for sure the correct answer (enough biological replicates example).  becuase gene expression is so dynamic, whats normal for your particualr tissue at a particualry tiem and x treatment is often hard to determine for sure. hence replicates and statistics. in rnaseq, n=3 biological replicates is not usually enough. more is always better, aim for a minimum of 5. 
+
 ### Counting or quantifying
 
 This is not an exhaustive overview of RNA-seq data, but as a reminder, the raw data we receive in the form of FASTA files is a series of reads from *somewhere* in the genome. Each read is an indication, or measurement, of gene expression. We must take these reads, identify where in the genome they originated from and then make a measurement of how frequently we observed those reads. The more reads that are mapped back to a specific location in the genome, the more highly expressed that region (gene) is. 

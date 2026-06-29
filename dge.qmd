@@ -134,7 +134,7 @@ We use the design matrix to specify our different groups. Initially we will just
 ```{r}
 head(coldata)
 
-design <- model.matrix(~histology, data = coldata)
+design <- model.matrix(~histology + batchname, data = coldata)
 
 
 design
@@ -142,10 +142,7 @@ design
 
 ::: {.callout-warning}
 # CHECK
-Currently design not looking correct - comapre in Rstudio. miht be different counts/coldata loaded. 
-
-think samples need to be in the same order a counts df
-
+need to see how to make this work if not comparing to default first condition F  ?
 :::
 
 
@@ -185,9 +182,7 @@ boxplot(v$E ~ col(v$E), ylab = "Counts", xlab = "Samples", main = "Log counts af
 
 We can see that log counts in the voom object (that is, counts after voom has been applied to create a stable mean-variance relationship) have not drastically changed from when we plotted them earlier.
 
-Voom should stabilise mean-variance without removing differecnes between sample groups
-
-We can see that voom has not removed the differences between our sample groups.
+Voom should stabilise mean-variance without removing differences between sample groups
 
 What if we wanted to remove these differences? Remember, we (probably) cannot be certain as to whether these differences are biological or technical. In cases like this it can be good to run your analysis multiple ways - first without removing the differences, and then after removing the differences. If a decision like this causes your results to change drastically then you need to be aware of the impact your choices are having so that you can make an informed decision about how to investigate further.
 
@@ -214,10 +209,8 @@ tt <- topTable(fit, coef=ncol(design), n=nrow(counts))
 head(tt)
 
 sum(tt$adj.P.Val < 0.05)
-# 5140 genes with an adjusted p-value less than 0.05. 
 
 sum(tt$adj.P.Val < 0.01)
-# 4566 genes with an adjusted p-value less than 0.01.
 
 #save(tt, file="tt.RData")
 ```
@@ -239,7 +232,6 @@ Genes will be coloured based on whether they are up (red) or down (blue) regulat
 This plot is an important "sanity check". We can logically check that our significant genes (in red) are those with both a p-value \< 0.05 and a log2 fold change greater than 1 (which is equivalent to a doubling or halving of gene expression). If we observe red marked dots in the center or bottom of the plot, we could recognise an error has occurred.
 
 ```{r message=FALSE}
-#| eval: false
 
 library(dplyr)
 library(limma)
@@ -270,7 +262,6 @@ plot_data$category <- ifelse(plot_data$adj.P.Val <= pval_threshold,
 ```
 
 ```{r}
-#| eval: false
 
 # Create the volcano plot using ggplot2
 ggplot(plot_data, aes(x = logFC, y = negLogPval, color = category)) +
@@ -301,7 +292,6 @@ ggplot(plot_data, aes(x = logFC, y = negLogPval, color = category)) +
 We can also produce an interactive volcano plot with the ggigraph package.
 
 ```{r}
-#| eval: false
 
 # Create the ggplot object
 p <- ggplot(plot_data, aes(x = logFC, y = negLogPval, color = category, text = ID)) +
@@ -325,7 +315,6 @@ p <- ggplot(plot_data, aes(x = logFC, y = negLogPval, color = category, text = I
 ```
 
 ```{r}
-#| eval: false
 
 # Convert ggplot to an interactive plotly object
 interactive_plot <- ggplotly(p, tooltip = c("text", "x", "y", "color"))
@@ -365,106 +354,79 @@ The DESeq2 package requires a specific data storage object called a "DESeq Data 
 Note that if your data is stored in another format the DESeq2 function we will use to import data can be modified to work on other data formats *e.g.,* a summarisedExperimentObject.
 
 ```{r}
-#| output: false
-#| eval: false
+#| message: false
 
 library(DESeq2)
-```
 
-```{r}
-#| eval: false
+coldata$histology <- factor(coldata$histology, levels = c("F", "MT", "TPM"))
+coldata$batchname <- factor(coldata$batchname)
+
 
 dds <- DESeqDataSetFromMatrix(countData = counts, 
-                              colData = data.frame(conds=factor(conds)), 
-                              design = formula(~conds))
+                              colData = coldata, 
+                              design = ~histology + batchname)
 
 ```
  
 
-::: {.callout-note collapse="true" appearance="simple"}
-# A note on formatting the coldata and design matrix  
-In this example, we have turned our conditions we created earlier during limma analysis into a long format dataframe. In practise, you should set up your metadata in a sample metadata table (e.g., start in excel and save as either a csv or tsv file before importing into RStudio), with one row per sample and one column for each metadata variable. This way, you can have a single dataframe in R that contains all possible metadata you may have for your samples (e.g., sex, age, tissue, treatments) and can use whichever parameters are required for your design comparison when you create your dds object. It is best this file also lists your sample types, in the same order as the columns in your counts file, to avoid accidentally matching the wrong metadata to the wrong sample. See below for how you would format this for these samples:
 
-```{r}
-#| echo: false
-#| eval: false
-
-
-metadata_df <- data.frame(
-  sample_id = c("SRR014335", "SRR014336", "SRR014337", "SRR014339", "SRR014340", "SRR014341"),
-  conds = c("WT", "WT", "WT", "MT", "MT", "MT"),
-  rep = c(1, 2, 3, 1, 2, 3 ),
-  species = rep("Saccharomyces cerevisiae",6)
-)
-
-metadata_df
-
-```
-(Note the 1-6 row numbers are an output here from R - you should not number your rows in your table).
-
-The design matrix can be pulled directly from the data provided to the `colData` argument. You may need to factorise the columns first, but otherwise you may get a warning from `DESeqDataSetFromMatrix()` saying some variables are characters, converting to factors. Numeric columns will likely error and must be first factorised.  
-
-For example, if we used the data frame above, we could first factorise our `conds` column as so:
-
-```{r}
-#| eval: false
-
-metadata_df <- metadata_df %>%
-  mutate(conds = factor(conds))
-```
-
-Then re-write the dds code as:
-
-```{r}
-#| eval: false
-
-dds <- DESeqDataSetFromMatrix(countData = counts, 
-                              colData = metadata_df, 
-                              design = ~conds)
-
-```
+The design matrix can be pulled directly from the data provided to the `colData` argument. You may need to factorise the columns first, but otherwise you may get a warning from `DESeqDataSetFromMatrix()` saying some variables are characters, converting to factors. Numeric columns will likely error and must be first factorised.  Here when we factorise the histology column we also specify **levels**. This is optional but necessary if your metadata has an inherant order to it. These samples represent a chronological transition in state (*i.e.,* gonads transition from female --> multiple distinct transitional states --> terminal phase male)  
 
 
 
-Alternatively, use `design = ~1` to fit an intercept-only model (no condition effect), useful for normalisation or transformation steps where group comparisons aren't needed.  
+Alternatively, use `design = ~1` to fit an intercept-only model (no condition effect), useful for testing out normalisation or transformation steps where group comparisons aren't needed.  
 
-:::
 
 Raw counts can be retrieved from our `dds` object using the function `counts()` from the DESeq2 package. 
 
 ```{r}
-#| eval: false
 
 counts(dds) %>% head()
+  
 ```
 
 Now fit the DESeq2 generalised linear model to the data.
 
 ```{r}
-#| eval: false
 
 dds <- DESeq(dds)
 ```
 
 Note the outputs from running this function. What are these outputs?
 
--   Estimating size factors: assesses library size and calculates factors to adjust for differences between samples. This also adjusts for compositional differences (*e.g.,* if gene X in sample 1 takes up a very large proportion of all available reads, other genes will have correspondingly fewer genes. If this effect is not uniform across samples, it can be corrected for during this stage).
+-   **Estimating size factors:** assesses library size and calculates factors to adjust for differences between samples. This also adjusts for compositional differences (*e.g.,* if gene X in sample 1 takes up a very large proportion of all available reads, other genes will have correspondingly fewer genes. If this effect is not uniform across samples, it can be corrected for during this stage).
 
--   Dispersion: adjusting for heteroscedasticity. DESeq2 makes use of variability estimates from not just one gene, but from all genes to make estimates about overall levels of variance. By bringing in (or "borrowing") information from other genes, DESeq2 compensates for a small number of samples (which can lead to artificially small variance estimates otherwise).
+-   **Dispersion:** adjusting for heteroscedasticity. DESeq2 makes use of variability estimates from not just one gene, but from all genes to make estimates about overall levels of variance. By bringing in (or "borrowing") information from other genes, DESeq2 compensates for a small number of samples (which can lead to artificially small variance estimates otherwise).
 
--   Fitting model and testing: fitting the GLM and identifying differentially expressed genes.
+-   **Fitting model and testing:** fitting the GLM and identifying differentially expressed genes.
 
 We will now create a new object, res, to store the results in. We can access those results using either the head function or the summary function, which will give us slightly different information - both are valid and useful ways of familiarising yourself with the data.
 
 ```{r}
-#| eval: false
 
 res <- DESeq2::results(dds)
 
 res %>% head()
 
 res %>% summary()
+
 ```
+
+
+
+::: {.callout-tip}
+# Handy tip!
+
+Want to save and output your full results now as a nice human readable table? Convert the res object to a dataframe, and then read out the table as a tsv file:
+
+```{r}
+#| eval: false
+res_df <- res %>% as.data.frame()
+
+write.table(res_df, file = "deseq2_results.tsv", sep = "\t", quote = FALSE, row.names = TRUE)
+```
+
+:::
 
 The res object contains information for all genes tested. It is practical to create a new object that contains only the genes we consider differentially expressed based on the thresholds (p-value, logFC) and methods (e.g., multiple testing adjustment) that suit our situation.
 

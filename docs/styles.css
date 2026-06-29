@@ -22,8 +22,8 @@ body {
   }
   
   /* Heading styles with background highlight */
-h1, h2, h3 {
-    color: #444444;  /* Lighter medium grey for headers */
+h1 {
+    color: #4a5c2d;  /* Darker olive green for headers */
     padding: 12px 8px 8px 12px; /* top right bottom left */
     background-color: #e6f2e6;  /* Soft green background for heading highlights */
     border-radius: 5px;
@@ -31,7 +31,14 @@ h1, h2, h3 {
     margin-bottom: 12px; /* Optional: adds space below headings */
 }
 
-h4 {
+h2, h3, h4 {
+    color: #5c6b3a;  /* dark olive green for headers */
+    margin-top: 12px;
+    margin-bottom: 8px;
+}
+
+ h5 {
+    color: #444444;  /* dark grey for header 5 */
     margin-top: 12px;
     margin-bottom: 8px;
 }
