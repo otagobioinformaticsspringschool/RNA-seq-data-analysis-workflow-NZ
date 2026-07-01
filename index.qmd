@@ -43,7 +43,7 @@ During the workshop, code will be run in real-time to demonstrate the analysis. 
 
 ## Attribution notice
 
-This workshop is an updated version on an existing version of [RNA-seq data analysis workflow](https://genomicsaotearoa.github.io/RNA-seq-data-analysis-workflow/) by Genomics Aotearoa. It incorporates, and takes inspiration from, various training materials produced by the [Harvard Bioinformatics Core](https://github.com/hbctraining) and from The Carpentries, specifically their [RNA-seq analysis with Bioconductor workshop](https://carpentries-incubator.github.io/bioc-rnaseq/index.html). 
+This workshop is an updated version on an existing version of [RNA-seq data analysis workflow](https://genomicsaotearoa.github.io/RNA-seq-data-analysis-workflow/) by Genomics Aotearoa. It incorporates, and takes inspiration from, various training materials produced by the [Harvard Bioinformatics Core](https://github.com/hbctraining) and from The Carpentries, specifically their [RNA-seq analysis with Bioconductor workshop](https://carpentries-incubator.github.io/bioc-rnaseq/index.html), and online guides such as [Kasper D. Hansen's guide on limma](https://kasperdanielhansen.github.io/genbioconductor/html/limma.html)
 
 
 ::: {style="background: #e6f2e6; text-align:center; padding: 1.5rem; border-radius: 8px;"}

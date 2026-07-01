@@ -133,33 +133,65 @@ head(logCPM, 3)
 We use the design matrix to specify our different groups. Initially we will just look at a simple design, where we will specify wt and mutant. However, you can also include other information *e.g.,* if your two sample groups were comprised of male and females and you had reason to suspect there might be sex-dependent factors involved.
 
 ```{r}
+
+# i am leaving this here as it caused me huge grief when i first tried to run through this code. 
+
+coldata <- coldata[match(colnames(counts), coldata$sample), ]
+
+# coldata sample order MUST match the same order in counts, or the dge object and deisng matrix wont match each other!
+
+identical(colnames(counts), coldata$sample)
+
+
+
+```{r}
 head(coldata)
 
-design <- model.matrix(~histology + batchname, data = coldata)
+design <- model.matrix(~0 + histology + batchname, data = coldata)
 
 
 design
 ```
 
-::: {.callout-warning}
-# CHECK
-need to see how to make this work if not comparing to default first condition F  ?
 
-SEE dev R - workgn on pullign out custom contrasts
-could turn this into an exercise. will do deseq2 one in more depth. 
-:::
+
 
 #### Covariates in our model
 
-Our design matrix includes **histology**, the variable we actually want to test, but also **batchname**. This second term is a ***covariate*** – a variable we don't care about testing directly, but which we suspect explains some of the variation in gene expression alongside histology. Recall the test statistic formula from earlier: a large test statistic (and therefore a small, significant p-value) comes from a large difference in means relative to variability. If batch effects exist in our data but aren't included in the model, that variation gets absorbed into the "noise" the model can't explain, inflating the variability term and making real histology effects harder to detect. By adding batchname to our design, we're telling the model "some of the scatter in expression is explained by which batch a sample came from, not by its histology group" – this allows the model to separate that structured variation out of the residual error before testing for histology differences, giving us more statistical power to detect genuine biological effects. It's worth checking, however, that your covariates aren't confounded with your variable of interest – for example, if every F sample happened to come from a single batch, the model would have no way to distinguish a batch effect from a histology effect. 
+Our design matrix includes **histology**, the variable we actually want to test, but also **batchname**. This second term is a ***covariate*** – a variable we don't care about testing directly, but which we suspect explains some of the variation in gene expression alongside histology. 
 
-Chekcing with:
+Recall the test statistic formula from earlier: a large test statistic (and therefore a small, significant p-value) comes from a large difference in means relative to variability. If batch effects exist in our data but aren't included in the model, that variation gets absorbed into the "noise" the model can't explain, inflating the variability term and making real histology effects harder to detect. By adding batchname to our design, we're telling the model "some of the scatter in expression is explained by which batch a sample came from, not by its histology group" – this allows the model to separate that structured variation out of the residual error before testing for histology differences, giving us more statistical power to detect genuine biological effects. 
+
+It's worth checking, however, that your covariates aren't confounded with your variable of interest, for example, if every F sample happened to come from a single batch, the model would have no way to distinguish a batch effect from a histology effect. 
+
+Checking with:
 
 ```{r}
 table(coldata$histology,coldata$batchname)
 ``` 
 
 before fitting your model is good practice to confirm each batch contains a mix of histology groups.
+
+::: {.callout-warning collapse="true" appearance="minimal"}
+# 🤓 Extra for experts: model matrix design
+
+These three lines all fit the *same underlying model*  – the same variance explained, the same fitted values, but they parameterise it differently, which changes what your coefficients mean and how you write contrasts.
+
+```{r}
+#| eval: false
+
+design <- model.matrix(~0 + histology + batchname, data = coldata)
+design <- model.matrix(~1 + histology + batchname, data = coldata)
+design <- model.matrix(~histology + batchname, data = coldata)
+```
+
+- **`~0 + histology + batchname`**  – no intercept. Produces one column per histology level (`histologyF`, `histologyMT`, `histologyTPM`), each representing that group's mean expression directly. Nothing is treated as a "baseline". This is the form we use in this workshop, because it makes contrasts explicit and readable: `histologyMT - histologyF` compares exactly what it says.
+
+- **`~1 + histology + batchname`** and **`~histology + batchname`**  – these two are identical to each other (`~1` is R's default and is added automatically if you don't write `~0`). Both produce an intercept column plus one column per *extra* histology level: `(Intercept)`, `histologyMT`, `histologyTPM`. Here, the intercept absorbs the reference level (F, since that's first in `levels = c("F", "MT", "TPM")`), and `histologyMT`/`histologyTPM` are *already* contrasts against F  – *i.e.,* `histologyMT` directly means "MT minus F". You'd still need `makeContrasts()` to get `TPM_vs_MT`, since that comparison isn't a direct column in this parameterisation.
+
+**Practical difference:** with the intercept form, two of your three pairwise comparisons come "for free" as model coefficients, and you only need `makeContrasts()` for the third. With the no-intercept form, all comparisons are equally explicit and all need to be written in `makeContrasts()`  – nothing is hidden behind an implicit reference group. For teaching, we prefer `~0 +` because "F is the reference" isn't a fact you need to remember and get right every time  – it's spelled out in the contrast itself. But you'll see the intercept form very often in the literature and in other people's scripts, so it's worth being able to recognise both.
+
+:::
 
 
 
@@ -178,6 +210,8 @@ This plot highlights an earlier point about heteroscedasticity. For genes with l
 
 Importantly, other than changing the mean-variance relationship, voom does not cause significant changes to the underlying data.
 
+
+::: {.callout-note collapse="true"}
 #### The impacts of voom
 
 ```{r}
@@ -205,6 +239,10 @@ What if we wanted to remove these differences? Remember, we (probably) cannot be
 
 Quantile normalisation is one method you can use to remove differences between sample groups, but note that quantile normalisation is a drastic intervention and should not be undertaken without a real need.
 
+
+
+:::
+
 ### Detecting differentially expressed genes
 
 Now that we have reached this point in the analysis, identifying differentially expressed genes is relatively simple in terms of the code we run. We will use the `lmFit()` command to fit a linear model for every gene using our v (voom) object and the design matrix, then use the `eBayes()` function on the linear model to perform Empirical Bayes shrinkage estimation and return moderated test statistics.
@@ -212,16 +250,33 @@ Now that we have reached this point in the analysis, identifying differentially 
 ```{r}
 
 fit <- lmFit(v, design)
+```
 
-fit <- (eBayes(fit))
+
+Define contrasts
+
+```{r}
+
+contrasts.matrix <- makeContrasts(
+  MT_vs_F   = histologyMT - histologyF,
+  TPM_vs_F  = histologyTPM - histologyF,
+  TPM_vs_MT = histologyTPM - histologyMT,
+  levels    = colnames(design)
+)
+
+```
+
+
+```{r}
+fitC <- contrasts.fit(fit, contrasts = contrasts.matrix)
+fitC <- eBayes(fitC)
 ```
 
 The fit object is complex to look at. We will use the topTable function to retrieve the useful information (gene name, logFC, adjusted p values), and then filter for significant genes only. We will also save the topTable object (tt) for use in the next episode.
 
 ```{r}
 
-
-tt <- topTable(fit, coef=ncol(design), n=nrow(counts))
+tt <- topTable(fitC, coef="TPM_vs_F", n=nrow(counts))
 
 head(tt)
 
