@@ -5,7 +5,7 @@ library(ggplot2)
 library(tidyr)
 library(dplyr)
 library(DESeq2)
-library(here)
+#library(here)
 
 #  Data prep ------------------------------------------
 
@@ -342,14 +342,17 @@ write.table(coldata_subset_test, "data-files/coldata.txt", sep="\t", quote=FALSE
 # limma ----
 
 
+coldata <- read.table("data-files/coldata.txt", sep="\t", header=TRUE)
+counts <- read.table("data-files/counts.txt",  sep="\t", header=TRUE, row.names=1)
+
 library(limma)
 library(edgeR)
 library(dplyr)
 
-dge <- DGEList(counts=counts.test)
+dge <- DGEList(counts=counts)
 
 dge <- normLibSizes(dge)
-?normLibSizes
+
 
 
 logCPM <- cpm(dge, log=TRUE, prior.count=3)
@@ -357,7 +360,58 @@ logCPM <- cpm(dge, log=TRUE, prior.count=3)
 
 head(logCPM, 3)
 
-design <- model.matrix(~histov3 + batchname, data = coldata_subset_test)
+coldata$histology <- factor(coldata$histology, levels = c("F", "MT", "TPM"))
+coldata$batchname <- factor(coldata$batchname)
+
+
+# design and custom contrasts ----
+
+coldata
+
+design <- model.matrix(~0 + histology + batchname, data = coldata)
 design
-                              
+
+unique(coldata$batchname)   
+
+v <- voom(dge, design, plot = TRUE)
+
+# 1. Fit the linear model for each gene
+fit <- lmFit(v, design)
+
+
+# 2. Define the contrasts (comparisons) you want to make.
+# You can add or remove comparisons from this list as needed.
+contr.matrix <- makeContrasts(
+  MT_vs_F   = histologyMT - histologyF,
+  TPM_vs_F  = histologyTPM - histologyF,
+  TPM_vs_MT = histologyTPM - histologyMT,
+  levels    = colnames(design)
+)
+
+# 3. Fit the contrasts to the model
+fit_contr <- contrasts.fit(fit, contrasts = contr.matrix)
+
+# 4. Apply Empirical Bayes shrinkage estimation
+fit_contr <- eBayes(fit_contr)
+
+# 5. Extract the results table for any specific comparison
+# using the names defined in makeContrasts() above:
+
+# For MT vs F:
+tt_MT_vs_F <- topTable(fit_contr, coef = "MT_vs_F", n = Inf)
+
+# For TPM vs F:
+tt_TPM_vs_F <- topTable(fit_contr, coef = "TPM_vs_F", n = Inf)
+
+# For TPM vs MT:
+tt_TPM_vs_MT <- topTable(fit_contr, coef = "TPM_vs_MT", n = Inf)
+
+
+# View top 6 genes for TPM vs MT comparison
+head(tt_TPM_vs_MT)
+
+# Count how many genes are significant (adjusted p-value < 0.05) in MT vs F
+sum(tt_MT_vs_F$adj.P.Val < 0.05)
+
+
     

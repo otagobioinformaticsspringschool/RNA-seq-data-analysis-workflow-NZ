@@ -88,6 +88,7 @@ Load the libraries required for running limma, create a dge object where we spec
 
 ```{r}
 #| echo: false
+#| message: false
 
 library(tidyverse)
 coldata <- read.table("/Users/vanch93p/Library/CloudStorage/OneDrive-UniversityofOtago/GenomicsAotearoa/Workshops_GA/testing-new-content/RNAseq-new-content/rnaseq-spotty/data-files/coldata.txt", sep="\t", header=TRUE)
@@ -143,7 +144,23 @@ design
 ::: {.callout-warning}
 # CHECK
 need to see how to make this work if not comparing to default first condition F  ?
+
+SEE dev R - workgn on pullign out custom contrasts
+could turn this into an exercise. will do deseq2 one in more depth. 
 :::
+
+#### Covariates in our model
+
+Our design matrix includes **histology**, the variable we actually want to test, but also **batchname**. This second term is a ***covariate*** – a variable we don't care about testing directly, but which we suspect explains some of the variation in gene expression alongside histology. Recall the test statistic formula from earlier: a large test statistic (and therefore a small, significant p-value) comes from a large difference in means relative to variability. If batch effects exist in our data but aren't included in the model, that variation gets absorbed into the "noise" the model can't explain, inflating the variability term and making real histology effects harder to detect. By adding batchname to our design, we're telling the model "some of the scatter in expression is explained by which batch a sample came from, not by its histology group" – this allows the model to separate that structured variation out of the residual error before testing for histology differences, giving us more statistical power to detect genuine biological effects. It's worth checking, however, that your covariates aren't confounded with your variable of interest – for example, if every F sample happened to come from a single batch, the model would have no way to distinguish a batch effect from a histology effect. 
+
+Chekcing with:
+
+```{r}
+table(coldata$histology,coldata$batchname)
+``` 
+
+before fitting your model is good practice to confirm each batch contains a mix of histology groups.
+
 
 
 ### Addressing heteroscedasticity with Limma
