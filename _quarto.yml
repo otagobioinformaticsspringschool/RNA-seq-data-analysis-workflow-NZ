@@ -49,4 +49,5 @@ format:
     toc-title: "Contents"
     code-copy: true
     code-block-bg: true
+    link-external-newwindow: true
 
