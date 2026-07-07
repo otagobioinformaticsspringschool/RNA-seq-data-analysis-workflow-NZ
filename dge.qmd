@@ -587,30 +587,22 @@ dds <- DESeqDataSetFromMatrix(countData = counts,
 ```
 
 
-::: {.callout-note }
-# Why factorise? 
+::: {.callout-note}
+# Why factorise?
 
-not striclty necessary, code wont break as deseq will auto convert to factors.
+This is not strictly necessary – the code won't break, as DESeq2 will automatically convert character columns to factors (although numeric columns will likely error and must be factorised first!)
 
-But in our case we want to set an *order* - which we shoudl do with factor
+But in our case we want to set an *order*, which we should do with `factor()`.
 
-this is becuase F MT TPM are a chronological transition in state, and we want to be able to see this order reflected in our results. T
-
-comes up in ggplot2 when tryign to get things to plot on x axis in a specific order.  
-
+This is because F, MT, and TPM represent a chronological transition in state (*i.e.,* gonads transition from female --> multiple distinct transitional states --> terminal phase male), and we want this order reflected in our results. The same order also comes up when using ggplot2, if we want the x-axis to plot in a specific order rather than alphabetically.
 
 :::
  
 
 
-The design matrix can be pulled directly from the data provided to the `colData` argument. You may need to factorise the columns first, but otherwise you may get a warning from `DESeqDataSetFromMatrix()` saying some variables are characters, converting to factors. Numeric columns will likely error and must be first factorised.  
+The design matrix can be pulled directly from the data provided to the `colData` argument. 
 
-Here when we factorise the histology column we also specify **levels**. This is optional but necessary if your metadata has an inherant order to it. These samples represent a chronological transition in state (*i.e.,* gonads transition from female --> multiple distinct transitional states --> terminal phase male)  
-
-
-
-Alternatively, use `design = ~1` to fit an intercept-only model (no condition effect), useful for testing out normalisation or transformation steps where group comparisons aren't needed.  
-
+Alternatively, use `design = ~1` to fit an intercept-only model (no condition effect), useful for testing out normalisation or transformation steps where group comparisons aren't needed.
 
 Raw counts can be retrieved from our `dds` object using the function `counts()` from the DESeq2 package. 
 
@@ -635,7 +627,9 @@ Note the outputs from running this function. What are these outputs?
 
 -   **Fitting model and testing:** fitting the GLM and identifying differentially expressed genes.
 
-We will now create a new object, res, to store the results in. We can access those results using either the head function or the summary function, which will give us slightly different information - both are valid and useful ways of familiarising yourself with the data.
+These steps were done in separate functions in the Limma workflow, but DESeq2 does it all in one function. 
+
+We will now create a new object, res, to store the results in. We can access those results using either the head function or the summary function, which will give us slightly different information – both are valid and useful ways of familiarising yourself with the data.
 
 ```{r}
 
@@ -670,7 +664,7 @@ We will remove any rows that have NAs in the results object, then pull out only 
 ```{r}
 #| eval: false
 
-res <- na.omit(res)
+res <- na.omit(res) # why na omit here but not in limma ?
 
 # Keep all rows in the res object if the adjusted p-value < 0.05
 resPadj <- res[res$padj <= 0.05 , ]
