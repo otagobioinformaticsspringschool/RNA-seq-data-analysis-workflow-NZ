@@ -5,7 +5,7 @@ library(ggplot2)
 library(tidyr)
 library(dplyr)
 library(DESeq2)
-#library(here)
+library(here)
 
 #  Data prep ------------------------------------------
 
@@ -366,12 +366,11 @@ coldata$batchname <- factor(coldata$batchname)
 
 # design and custom contrasts ----
 
-coldata
+coldata <- coldata[match(colnames(counts), coldata$sample), ]
+# coldata sample order MUST match the same order in counts, or the dge object and deisng matrix wont match each other!
 
 design <- model.matrix(~0 + histology + batchname, data = coldata)
 design
-
-unique(coldata$batchname)   
 
 v <- voom(dge, design, plot = TRUE)
 
@@ -379,9 +378,7 @@ v <- voom(dge, design, plot = TRUE)
 fit <- lmFit(v, design)
 
 
-# 2. Define the contrasts (comparisons) you want to make.
-# You can add or remove comparisons from this list as needed.
-contr.matrix <- makeContrasts(
+contrasts.matrix <- makeContrasts(
   MT_vs_F   = histologyMT - histologyF,
   TPM_vs_F  = histologyTPM - histologyF,
   TPM_vs_MT = histologyTPM - histologyMT,
@@ -389,29 +386,28 @@ contr.matrix <- makeContrasts(
 )
 
 # 3. Fit the contrasts to the model
-fit_contr <- contrasts.fit(fit, contrasts = contr.matrix)
+fitC <- contrasts.fit(fit, contrasts = contrasts.matrix)
 
-# 4. Apply Empirical Bayes shrinkage estimation
-fit_contr <- eBayes(fit_contr)
-
-# 5. Extract the results table for any specific comparison
-# using the names defined in makeContrasts() above:
-
-# For MT vs F:
-tt_MT_vs_F <- topTable(fit_contr, coef = "MT_vs_F", n = Inf)
-
-# For TPM vs F:
-tt_TPM_vs_F <- topTable(fit_contr, coef = "TPM_vs_F", n = Inf)
-
-# For TPM vs MT:
-tt_TPM_vs_MT <- topTable(fit_contr, coef = "TPM_vs_MT", n = Inf)
+fitC <- contrasts.fit(fit, contrasts = contrasts.matrix)
+fitC <- eBayes(fitC)
 
 
-# View top 6 genes for TPM vs MT comparison
-head(tt_TPM_vs_MT)
 
-# Count how many genes are significant (adjusted p-value < 0.05) in MT vs F
-sum(tt_MT_vs_F$adj.P.Val < 0.05)
+tt_TPM_vs_F <- topTable(fitC, coef="TPM_vs_F", n=nrow(counts))
+
+head(tt_TPM_vs_F)
+write.table(tt_TPM_vs_F, file = "tt_TPM_vs_F.tsv", sep = "\t", quote = FALSE, row.names = TRUE, col.names = NA)
+write.table(tt_MT_vs_F, file = "tt_MT_vs_F.tsv", sep = "\t", quote = FALSE, row.names = TRUE, col.names = NA)
+write.table(tt_TPM_vs_MT, file = "tt_TPM_vs_MT.tsv", sep = "\t", quote = FALSE, row.names = TRUE, col.names = NA)
 
 
-    
+# deseq2 ----
+
+library(DESeq2)
+
+coldata_nofactor <- coldata %>% mutate(across(where(is.factor), as.character))
+
+
+dds <- DESeqDataSetFromMatrix(countData = counts, 
+                              colData = coldata_nofactor, 
+                              design = ~histology + batchname)

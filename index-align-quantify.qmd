@@ -51,21 +51,8 @@ The last two flags you will need to tailor to your own reads.
 Run this code below, and lets consider the following scenario as its running:
 
 
-::: {.callout-warning}
-
-# THIS NEEDS TO BE IN A BASH SCRIPT TO WORK
-
-:::
-
-
 ```bash
-STAR \
-     --runMode genomeGenerate \
-     --genomeDir . \
-     --genomeFastaFiles GCF_009762535.1_fNotCel1.pri_genomic.fna \
-     --sjdbGTFfile GCF_009762535.1_fNotCel1.pri_genomic.gtf \  
-     --sjdbOverhang 124 \ 
-     --genomeSAindexNbases 13 
+STAR --runMode genomeGenerate --genomeDir . --genomeFastaFiles GCF_009762535.1_fNotCel1.pri_genomic.fna   --sjdbGTFfile GCF_009762535.1_fNotCel1.pri_genomic.gtf  --sjdbOverhang 124  --genomeSAindexNbases 13 
 ```
 
 
@@ -78,7 +65,7 @@ Scenario: During the course of conducting your research project you have generat
 ::: {.callout-tip collapse="true"}
 # SOLUTION
 
-You need to change the `--sjdbOverhang` flag and regenerate the genome index. With 150bp reads, this will need to be `--sjdbOverhang 149`. The paired-end/single-end-ness of the data does not matter -- a red herring!
+You need to change the `--sjdbOverhang` flag and regenerate the genome index. With 150bp reads, this will need to be `--sjdbOverhang 149`. The paired-end/single-end-ness of the data does not matter -- [a red herring!](https://en.wikipedia.org/wiki/Red_herring)
 
 
 ```bash

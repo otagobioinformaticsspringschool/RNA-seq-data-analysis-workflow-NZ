@@ -43,7 +43,8 @@ Run the code below to load the file:
 ```{r}
 #| eval: false
 
-counts <- read.delim("~/RNA_seq/data-files/counts.txt", comment.char="#")
+coldata <- read.table("data-files/coldata.txt", sep="\t", header=TRUE)
+counts  <- read.table("data-files/counts.txt",  sep="\t", header=TRUE, row.names=1)
 ```
 
 ```{r}

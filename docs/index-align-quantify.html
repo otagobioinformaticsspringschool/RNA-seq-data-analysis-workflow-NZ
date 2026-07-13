@@ -140,7 +140,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div class="sidebar-title mb-0 py-0">
       <a href="./">RNA-seq data analysis workflow</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/GenomicsAotearoa/RNA-seq-data-analysis-workflow" title="Github" class="quarto-navigation-tool px-1" aria-label="Github"><i class="bi bi-github"></i></a>
+    <a href="https://github.com/GenomicsAotearoa/RNA-seq-data-analysis-workflow-NZ" title="Github" class="quarto-navigation-tool px-1" aria-label="Github"><i class="bi bi-github"></i></a>
 </div>
     </div>
       </div>
@@ -312,31 +312,12 @@ GCF_009762535.1_fNotCel1.pri_genomic.gtf</code></pre>
 <li><code>--genomeSAindexNbases</code> this is optional: 14 is the default. You may get a warning with a suggestion to use a different number (you should then modify and rerun your script)</li>
 </ul>
 <p>Run this code below, and lets consider the following scenario as its running:</p>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-THIS NEEDS TO BE IN A BASH SCRIPT TO WORK
-</div>
-</div>
-<div class="callout-body-container callout-body">
-
-</div>
-</div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">STAR</span> <span class="dt">\</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">--runMode</span> genomeGenerate <span class="dt">\</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">--genomeDir</span> . <span class="dt">\</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">--genomeFastaFiles</span> GCF_009762535.1_fNotCel1.pri_genomic.fna <span class="dt">\</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">--sjdbGTFfile</span> GCF_009762535.1_fNotCel1.pri_genomic.gtf <span class="dt">\ </span> </span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>     <span class="ex">--sjdbOverhang</span> 124 <span class="dt">\ </span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>     <span class="ex">--genomeSAindexNbases</span> 13 </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">STAR</span> <span class="at">--runMode</span> genomeGenerate <span class="at">--genomeDir</span> . <span class="at">--genomeFastaFiles</span> GCF_009762535.1_fNotCel1.pri_genomic.fna   <span class="at">--sjdbGTFfile</span> GCF_009762535.1_fNotCel1.pri_genomic.gtf  <span class="at">--sjdbOverhang</span> 124  <span class="at">--genomeSAindexNbases</span> 13 </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <section id="exercise-2-mins" class="level5">
 <h5 class="anchored" data-anchor-id="exercise-2-mins">EXERCISE 🧠🏋️‍♀️ (2 mins)</h5>
 <p>Scenario: During the course of conducting your research project you have generated multiple RNA-seq datasets from the same species. You have previously generated an indexed genome for your species when you were working with 100bp paired-end reads. Your new samples are 150bp single-end reads. Can you use the same indexed genome files? What flag/s and argument/s do you need to change if not?</p>
 <div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -345,9 +326,9 @@ SOLUTION
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>You need to change the <code>--sjdbOverhang</code> flag and regenerate the genome index. With 150bp reads, this will need to be <code>--sjdbOverhang 149</code>. The paired-end/single-end-ness of the data does not matter – a red herring!</p>
+<p>You need to change the <code>--sjdbOverhang</code> flag and regenerate the genome index. With 150bp reads, this will need to be <code>--sjdbOverhang 149</code>. The paired-end/single-end-ness of the data does not matter – <a href="https://en.wikipedia.org/wiki/Red_herring">a red herring!</a></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">STAR</span> <span class="dt">\</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>--runMode genomeGenerate <span class="dt">\</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>--genomeDir . <span class="dt">\</span></span>
@@ -363,7 +344,7 @@ SOLUTION
 <h4 class="anchored" data-anchor-id="output">Output</h4>
 <p>We can now see many new files, which make up the indexed version of the genome.</p>
 <div class="callout callout-style-simple callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -372,7 +353,7 @@ Output files –&gt;
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <pre class="output"><code>chrLength.txt                                 
 chrNameLength.txt                             
@@ -444,7 +425,7 @@ DONE: Genome generation, EXITING</code></pre>
 <li><p><code>--quantMode GeneCounts</code> : this allows STAR to automatically generate a counts file during alignment. This is optional, as you can also use the STAR alignment files (BAM/SAM) as input for other software to generate counts (e.g., featureCounts).</p></li>
 </ul>
 <div class="callout callout-style-simple callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -453,7 +434,7 @@ Other common STAR alignment flags –&gt;
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>STAR has many flags you can use during alignment; read the <a href="https://github.com/alexdobin/STAR#manual">STAR manual</a> to find these.</p>
 <p>Some of the most common flags you may need to add or consider changing from the default value are:</p>
@@ -507,7 +488,7 @@ ALL DONE!</code></pre>
 <p>In this workshop we are using fastq files that are a subset (100,000 reads) of the original fastq files (~10-15 million) reads, so the summary statistics generated do not reflect the sort of results we’d normally expect.</p>
 <p>Let’s look instead at the summary statistcs for one of the samples, SI16_1G, which is supplied below:</p>
 <div class="callout callout-style-simple callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -516,7 +497,7 @@ Log.final.out file –&gt;
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <pre class="output"><code>                                 Started job on |   Mar 22 10:09:19
                              Started mapping on |   Mar 22 10:47:48
@@ -570,7 +551,7 @@ All reads that did not map to the genome. This is broken up into three categorie
 <h5 class="anchored" data-anchor-id="discussion-2-mins">DISCUSSION 🤔 (2 mins)</h5>
 <p>What do you think of the mapping statistics for the Log.final.out file provided above? Was this a good alignment?</p>
 <div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -579,7 +560,7 @@ SOLUTION
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>Yes, this alignment looks pretty good. More than 85% of the reads uniquely mapped (88.66%), and there are few unmapped reads. There are a few reads that are too short at 8.12%, this might be worth checking how short these are on average and thinking about if filtering needs to be readjusted before aligning. You could do this by including the flag with argument <code>--outReadsUnmapped Fastx</code> during alignment, which will output unmapped and partially mapped (<em>i.e.,</em> mapped only one mate of a paired end read) reads in separate file(s), that you could then run FastQC on.</p>
 </div>
@@ -617,7 +598,7 @@ LOC117818779    0   0   0</code></pre>
 <h5 class="anchored" data-anchor-id="discussion-2-mins-1">DISCUSSION 🤔 (2 mins)</h5>
 <p>Which column do you think we should use for our data, or how could we figure it out?</p>
 <div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -626,7 +607,7 @@ SOLUTION
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>These data were generated with the TruSeq Stranded library prep kit, which means that read 1 corresponds to the antisense strand, which is the first complementary DNA strand generated during library prep. Read 2 corresponds to the original mRNA sequence (sense strand). Read about <a href="https://knowledge.illumina.com/library-preparation/rna-library-prep/library-preparation-rna-library-prep-reference_material-list/000002238">Illumina stranded RNA workflows here</a>. What this means is we want the <strong>reverse</strong> option - so we should use the 4th column. However, if you are unsure which column to use for stranded data (3 or 4), look at the N_noFeature row and pick the column with the smallest number. You should also check the STAR manual (section ‘8 Counting number of reads per gene’) for further description of these parameters and you should reaad the <a href="https://htseq.readthedocs.io/en/master/htseqcount.html">htseq-count documentation</a> to determine the effect of the htseq-count -s yes/reverse flag.</p>
 </div>
