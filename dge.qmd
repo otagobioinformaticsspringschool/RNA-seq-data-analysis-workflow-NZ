@@ -403,6 +403,17 @@ When `row.names = TRUE`, `write.table()` writes a header row with one column nam
 
 :::
 
+Let's make an object to store all the information for our list of significantly differentially expressed genes. We will use a threshold of an adjusted p-value \< 0.05 and a logFC \> 1. This will grab all upregulated genes - which in this contrast means up in TPM. We will return to this object later! 
+
+```{r}
+
+sigGenesLimma_TPM_vs_F <- which(tt_TPM_vs_F$adj.P.Val <= 0.05 & tt_TPM_vs_F$logFC > 1)
+
+sigGenesLimma_TPM_vs_F <- tt_TPM_vs_F[sigGenesLimma_TPM_vs_F, ]
+```
+
+
+
 ### Volcano plots
 
 Volcano plots are a useful and commonly used method to visualise differentially expressed genes within your data set.
@@ -549,7 +560,7 @@ library(plotly)
 interactive_plot <- ggplotly(p, tooltip = c("text", "x", "y", "color"))
 
 # Customize hover text
-interactive_plot <- interactive_plot %>% 
+interactive_plot <- interactive_plot |> 
   layout(hoverlabel = list(bgcolor = "white"),
          hovermode = "closest")
 
@@ -608,7 +619,7 @@ Raw counts can be retrieved from our `dds` object using the function `counts()` 
 
 ```{r}
 
-counts(dds) %>% head()
+counts(dds) |> head()
   
 ```
 
@@ -629,17 +640,40 @@ Note the outputs from running this function. What are these outputs?
 
 These steps were done in separate functions in the Limma workflow, but DESeq2 does it all in one function. 
 
-We will now create a new object, res, to store the results in. We can access those results using either the head function or the summary function, which will give us slightly different information – both are valid and useful ways of familiarising yourself with the data.
+We will create a new object to store the results in. We can access those results using either the head function or the summary function, which will give us slightly different information – both are valid and useful ways of familiarising yourself with the data. 
 
 ```{r}
 
-res <- DESeq2::results(dds)
+res_F_vs_TPM <- results(dds, contrast = c("histology", "F", "TPM")) 
 
-res %>% head()
+res_F_vs_TPM |> head()
 
-res %>% summary()
+res_F_vs_TPM |> summary()
 
 ```
+
+
+::: {.callout-note collapse="true"}
+# Bonus: view coefficients and pull out by name
+
+We can also pull out the native comparisons that are generated during analysis using:
+
+```{r}
+
+resultsNames(dds)
+```
+
+This lists every coefficient DESeq2 estimated directly when fitting the model. Because we set `F` as the reference level for `histology`, DESeq2 estimated each other level *against* `F` –  so `resultsNames()` gives us `histology_MT_vs_F` and `histology_TPM_vs_F`, but not `MT_vs_TPM` 
+
+We can pull either of these straight out by name:
+```{r}
+res_MT_vs_F <- results(dds, name = "histology_MT_vs_F" ) 
+
+```
+`name` and `contrast` will give you identical results whenever the comparison you want is against the reference level (here, `F`). `name` is just a shortcut that skips DESeq2 recomputing the contrast. For any comparison that isn't against the reference level (e.g. `MT` vs `TPM`), you must use `contrast` instead, since that comparison/coefficient was never directly estimated. 
+
+
+:::
 
 
 
@@ -649,10 +683,11 @@ res %>% summary()
 Want to save and output your full results now as a nice human readable table? Convert the res object to a dataframe, and then read out the table as a tsv file:
 
 ```{r}
-#| eval: false
-res_df <- res %>% as.data.frame()
+#| eval: false 
 
-write.table(res_df, file = "deseq2_results.tsv", sep = "\t", quote = FALSE, row.names = TRUE)
+res_F_vs_TPM_df <- res_F_vs_TPM |> as.data.frame()
+
+write.table(res_F_vs_TPM_df,  file = "deseq2_F-vs-TPM-results.tsv", sep = "\t", quote = FALSE, row.names = TRUE)
 ```
 
 :::
@@ -662,61 +697,60 @@ The res object contains information for all genes tested. It is practical to cre
 We will remove any rows that have NAs in the results object, then pull out only those with an adjusted p-value less than 0.05.
 
 ```{r}
-#| eval: false
 
-res <- na.omit(res) # why na omit here but not in limma ?
+res_F_vs_TPM <- res_F_vs_TPM |> na.omit()
 
 # Keep all rows in the res object if the adjusted p-value < 0.05
-resPadj <- res[res$padj <= 0.05 , ]
+resPadj <- res_F_vs_TPM[res_F_vs_TPM$padj <= 0.05 , ]
 
-resPadjLogFC <- res[res$padj <= 0.05 & abs(res$log2FoldChange) > 1,]
+# Keep all rows in the res object if the adjusted p-value < 0.05 AND the log2 fold change is less than -1. 
+resPadjLogFC_TPM_vs_F <- res_F_vs_TPM[res_F_vs_TPM$padj <= 0.05 & res_F_vs_TPM$log2FoldChange < -1,]
 
 # Get dimensions
-resPadj %>% dim() # should be 4811 x 6
-resPadjLogFC %>% dim() # should be 1830 x 6
+resPadj |> dim() 
+resPadjLogFC_TPM_vs_F  |> dim() 
 
 ```
 
-#### **Exercise:** Identify method for multiple testing corrections
+##### EXERCISE 🧠🏋️‍♀️ (2 mins) - Identify method for multiple testing corrections
 
-Bioinformatics can often be something of a "black box" - we execute a function by feeding in some data, and get new data as output. It's *very* easy to fall into the trap of believing your data without asking all the necessary questions. For example, we've just used an adjusted p-value for our threshold for significance. Did you question which method was used to adjust for multiple testing? See if you can identify, using the help menu as we've done above, which method was used here. Try and specify a different method for multiple testing corrections and note how this alters your output.
+Bioinformatics can often be something of a "black box" - we execute a function by feeding in some data, and get new data as output. It's *very* easy to fall into the trap of believing your data without asking all the necessary questions. For example, we've just used an adjusted p-value for our threshold for significance. Did you question which method was used to adjust for multiple testing? See if you can identify, using the help menu, which method was used here. Try and specify a different method for multiple testing corrections and note how this alters your output.
+
+
+::: {.callout-tip collapse="true"}
+# SOLUTION
+
+The `?results` help info will show the default p adjustment method is `pAdjustMethod = "BH"`. Further reading will show that options for this come from `?p.adjust`, which lists the following options:
+
+` "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"`
+
+The default BH method is Benjamini & Hochberg (or the FDR method), which is described [here in the R documentation](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/p.adjust). 
+
+:::
+
 
 ### Differentially expressed gene lists
 
 
-
-Let's make an object to store all the information for our list of significantly differentially expressed genes. We will use a threshold of an adjusted p-value \< 0.05 and a logFC \> 1. We will return to this object later, but for now we will move on and identify differentially expressed genes using a different method.
-
-```{r}
-#| eval: false
-
-sigGenesLimma <- which(tt$adj.P.Val <= 0.05 & (abs(tt$logFC) > 1))
-length(sigGenesLimma)
-
-sigGenesLimma <- tt[sigGenesLimma, ]
-```
-
-
-
-To recap, we've now produced two lists of differentially expressed genes - one produced with the Limma method (called sigGenesLimma), one with DESeq2 (called resPadjLogFC). In both cases we used the same threshold for statistical significance (adjusted p-value \< 0.05, using the FDR correction) and biological significance (logFC more than 1 or less than negative 1, which is equivalent to a doubling or halving gene expression). In our run-through, Limma identified 1,891 differentially expressed genes, while DESeq2 identified 1,830 genes.
-
+To recap, we've now produced two lists of differentially expressed genes - one produced with the Limma method (called sigGenesLimma_TPM_vs_F), one with DESeq2 (called resPadjLogFC). In both cases we used the same threshold for statistical significance (adjusted p-value \< 0.05, using the FDR correction) and biological significance (logFC more than 1 or less than negative 1, which is equivalent to a doubling or halving gene expression). In our run-through, Limma identified 1,891 differentially expressed genes, while DESeq2 identified 1,830 genes.
+.
 These numbers are very similar, but what's the actual overlap between these two groups? A venn diagram is an easy way to visualise the relationship between the two groups. First, load the gplots library which we will use for making venn diagrams. Create an object, which we will call setlist, that lists the two gene sets (in our case, this will be the rownames of the objects we created with Limma and DESeq2). Finally, use the `venn()` function to create a venn diagram.
 
-```{r, message=FALSE}
-#| eval: false
+```{r}
+#| message: false
 
 # BiocManager::install("gplots")
 library(gplots)
 
-setlist <- list(Limma = rownames(sigGenesLimma), 
-                DESeq2 = rownames(resPadjLogFC))
+setlist <- list(Limma = rownames(sigGenesLimma_TPM_vs_F), 
+                DESeq2 = rownames(resPadjLogFC_TPM_vs_F ))
 
 venn(setlist)
 ```
 
 
 
-This is very strong concordance between our two methods and gives us high confidence in our approach. At this point you could take the overlap (n = 1799 genes), take all genes (n = 1799 + 31 + 92), or take genes from just one method (more relevant if one method was conservative compared to the other). Exactly how you resolve this step will depend on the exact shape of your venn diagram and your context.
+This is very strong concordance between our two methods and gives us high confidence in our approach. At this point you could take the overlap (n = 8416 genes), take all genes (n = 1799 + 31 + 92), or take genes from just one method (more relevant if one method was conservative compared to the other). Exactly how you resolve this step will depend on the exact shape of your venn diagram and your context.
 
 For simplicity, we will take the list of genes identified by limma. We will save the R object, and then see in the next episode how we can derive meaningful biological information from this long list of genes.
 

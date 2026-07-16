@@ -31,10 +31,6 @@ This workflow assumes you are familiar with transcriptomic and biological concep
 - Submitting and optimising HPC scheduled jobs (see Bash scripting and HPC Job Scheduler workshop)
 - Extensive data manipulation and plotting in R, beyond the basics.  
 
-## Workshop timeline
-
-This workshop runs over two mornings, from 9am - 1pm. We will take 10 min breaks approximately once every hour.
-
 
 ## Setup
 
@@ -43,7 +39,7 @@ During the workshop, code will be run in real-time to demonstrate the analysis. 
 
 ## Attribution notice
 
-This workshop is an updated version on an existing version of [RNA-seq data analysis workflow](https://genomicsaotearoa.github.io/RNA-seq-data-analysis-workflow/) by Genomics Aotearoa. It incorporates, and takes inspiration from, various training materials produced by the [Harvard Bioinformatics Core](https://github.com/hbctraining) and from The Carpentries, specifically their [RNA-seq analysis with Bioconductor workshop](https://carpentries-incubator.github.io/bioc-rnaseq/index.html), and online guides such as [Kasper D. Hansen's guide on limma](https://kasperdanielhansen.github.io/genbioconductor/html/limma.html)
+This workshop is an updated version on an existing version of [RNA-seq data analysis workflow](https://genomicsaotearoa.github.io/RNA-seq-data-analysis-workflow/) by Genomics Aotearoa. It was written by [Chloé van der Burg](https://github.com/chloevdb) while working as the [Bioinformatics Training Coordinator](https://genomicsaotearoa.github.io/BioinformaticsTrainingProgramme/meetTheTeam.html#get-to-know-the-team) at [Genomics Aotearoa](https://www.genomics-aotearoa.org.nz/). It incorporates, and takes inspiration from, various training materials produced by the [Harvard Bioinformatics Core](https://github.com/hbctraining) and from The Carpentries, specifically their [RNA-seq analysis with Bioconductor workshop](https://carpentries-incubator.github.io/bioc-rnaseq/index.html), and online guides such as [Kasper D. Hansen's guide on limma](https://kasperdanielhansen.github.io/genbioconductor/html/limma.html) and [Love, Anders and Huber's guide on DESeq2](https://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html). 
 
 
 ::: {style="background: #e6f2e6; text-align:center; padding: 1.5rem; border-radius: 8px;"}
