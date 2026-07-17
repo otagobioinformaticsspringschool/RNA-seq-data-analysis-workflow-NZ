@@ -96,6 +96,23 @@ However, gene length does need to be taken into account when we carry out over-r
 
 ## Introduction to the dataset
 
-The example data in this workshop come from a New Zealand wrasse species (*Notolabrus celidotus*) called "spotty" or "paketi" in Te Reo Māori. Spotty is endemic to New Zealand and is found abundantly along the entire coastline. They are a protogynous sequential hermaphrodite, meaning they can change sex from female to male. 
+The example datasets in this workshop come from a New Zealand wrasse species (*Notolabrus celidotus*), known as "spotty" or "paketi" in Te Reo Māori. Spotty is endemic to New Zealand and is found abundantly along the entire coastline. They are protogynous sequential hermaphrodites, meaning individuals can change sex from female to male. During adult sex change, the gonads transition from a functional female phenotype with mature ovarian tissue, through a series of early-, mid- and late-transitional stages, to a functional male phenotype with sperm-producing gonad tissue. This change is also accompanied by physiological, neurological and morphological changes in the fish. 
+
+The workshop data comprise of 15 gonad transcriptomes from three of these phenotypes – adult female ("F"), mid-transitional ("MT") and terminal phase male ("TPM"). The raw RNA-seq reads are available on the NCBI SRA under [BioProject PRJNA631152](https://www.ncbi.nlm.nih.gov/bioproject/631152).
+ 
+ \
+
+
+<table style="border: none; border-collapse: collapse;">
+  <tr style="border: none;">
+    <td style="border: none; padding: 0;">
+      <img src="images/spotty-pic.JPG" alt="Spotty wrasse" style="width:400px; height:300px; object-fit:cover; border-radius:30%;">
+    </td>
+    <td style="border: none; padding-left:20px; text-align: justify;">
+      <i>Figure 1. A female spotty wrasse in Dunedin Harbour</i><br>
+      <br>
+    </td>
+  </tr>
+</table>
 
 

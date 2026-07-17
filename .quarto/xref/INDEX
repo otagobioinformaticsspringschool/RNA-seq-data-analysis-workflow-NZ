@@ -46,5 +46,11 @@
   },
   "dge.qmd": {
     "dge.html": "345c9088"
+  },
+  "functional-analysis.qmd": {
+    "functional-analysis.html": "dec4919a"
+  },
+  "Supplementary/S2_functional.qmd": {
+    "S2_functional.html": "6584a929"
   }
 }

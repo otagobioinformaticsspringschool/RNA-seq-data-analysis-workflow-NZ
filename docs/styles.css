@@ -114,7 +114,7 @@ div.sourceCode button.code-copy-button {
 
 .banner-right {
   font-style: italic;
-  text-align: right;
+  text-align: right; 
 }
   
   /* Table styles with improved visual interest */
@@ -122,7 +122,7 @@ div.sourceCode button.code-copy-button {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);  /* Subtle shadow for the table */
+    /*box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.05);  /* Subtle shadow for the table */
   }
   
   table th, table td {

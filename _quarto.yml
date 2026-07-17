@@ -23,11 +23,12 @@ website:
       - section: "Day Two" 
         contents:
           - dge.qmd
-          - episode_5.qmd
+          - functional-analysis.qmd
           - episode_6.qmd
       - section: "Supplementary" 
         contents:
           - Supplementary/S1_hpc-job-scheduler.qmd
+          - Supplementary/S2_functional.qmd
 
 
     tools:

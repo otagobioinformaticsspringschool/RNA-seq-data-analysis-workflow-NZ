@@ -1,0 +1,196 @@
+---
+title: ""
+code-overflow: wrap
+---
+
+# Functional analysis with a supported organism
+
+### GOseq
+
+::: {.callout-warning collapse="true"}
+# A word of warning about defining your background gene list
+Here we use the whole genome to generate our background gene list. This approach may not always be appropriate, and it is up to you to decide what is the most biologically appropriate gene list to use as the background. For example, if you are comparing gene expression across samples from a tissue type that is known to be naturally high in apoptotic procesess, then using the whole genome as a background gene list may 'drown out' the signal. Instead, you may want to use all of the genes that are generally known to be expressed in that tissue as your background (e.g., this could be by using a set of control samples, or by using all genes detected as differentially expressed in all your samples together).
+:::
+
+
+Load the goseq package, the dplyr package (if you haven't already), and use the `supportedOrganisms()` function to check whether your organism of interest is supported.
+The code for *Saccharomyces cerevisiae* is sacCer.
+
+```{r}
+#| eval: false
+#| message: false
+#| output: false
+# BiocManager::install("goseq")
+
+library(dplyr)
+library(goseq)
+
+supportedOrganisms() %>% View()
+```
+
+We need to create an object that will pass GOseq a list of all our genes, with the differentially expressed genes highlighted.
+To do this, we will use an `ifelse()` statement which will check every gene in our experiment and ask test if it has an adjusted p-value of less than 0.05.
+If adj-p-value is \< 0.05, return a "1" and if greater than (or equal to) 0.05, return a "0".
+After that, add the gene names to this vector of 1s and 0s.
+
+Note #1: at the end of the previous exercise we also applied a logFC threshold for defining differentially expressed.
+We won't use that here and will just use adjusted p-values for simplicity.
+
+Note #2: the tt object was created when we used limma to identify differentially expressed genes.
+tt is 7,127 rows, and has genes stored as row names, includes the logFC, and adj.P.Val columns.
+
+```{r}
+#| eval: false
+
+load("tt.RData")
+
+genes <- ifelse(tt$adj.P.Val <= 0.05, 1, 0)
+
+names(genes) <- rownames(tt)
+
+head(genes)
+
+tail(genes)
+```
+
+Note #3: because tt is ordered (that is, all the genes with low p values are at the top), it's worth using tail to check the bottom of the new genes object looks different to the top.
+Another useful check is to use the `table()` function to ask how many genes fall into each category.
+
+```{r}
+#| eval: false
+
+table(genes)
+```
+
+This is a useful reminder about the conditions of this experiment: of the 7,127 genes in the tt object, 5,140 are differentially expressed.
+Most experiments will not have this level of differential expression.
+
+::: {.callout-note collapse="true"}
+# IF you did want to include the logFC cutoff, you can use the code below...
+
+```{r}
+#| eval: false
+
+genes2 <- ifelse(tt$adj.P.Val <= 0.05 & (abs(tt$logFC) > log2(2)), 1, 0)
+names(genes2) <- rownames(tt)
+table(genes2)
+```
+
+This gives a more modest 1,891 differentially expressed genes.
+For the purposes of today's workflow, we will continue with the larger gene list.
+
+:::
+
+
+#### Methodology
+
+What is GOSeq doing?
+How does it correct for gene length?
+
+Remember that we will still use the hypergeometric distribution and Fisher's Exact test with the 2 x 2 table.
+Because we know that longer genes are more likely to in the differentially expressed category, we can think of this category as *having more weight than it should*.
+GOSeq will calculate a value for each gene which will offset this artificial weight.
+In other words, if our 2 x 2 table would have 10 genes in the top left square, and some of those genes are very long, GOSeq will treat the number as something slightly less than 10.
+By treating the value as less than 10, we have taken into account the fact that there shouldn't *really* have been 10 genes in there in the first place if not for gene length bias.
+
+Calculate the weighting that should be assigned to each gene with the Probability Weighting Function (the `nullp()` function).  
+
+- Specify the object "gene" which is our list of all genes and whether they are differentially expressed or not, as a binary named vector  
+- Specify the genome ("sacCer1" for our yeast genome)  
+- Specify the gene ID type (in this case, we are using ensembl Gene IDs)  
+
+This will create a plot in which genes are placed into "bins" based on length, and then gene length vs proportion of differentially expressed is plotted.
+We can then inspect the pwf object.
+
+Note: you will frequently get a *Warning in pcls(G): initial point very close to some inequality constraints* message when running `nullp()`. You can ignore this.  
+
+
+```{r}
+#| eval: false
+
+pwf <- nullp(genes, "sacCer1", "ensGene")
+
+pwf %>% head()
+
+pwf %>% tail()
+```
+
+Here we can see that genes have been given a different pwf value based on the bias.data column.
+The pwf value will be less than 1, and indicates how much a gene should be 'counted for' if it is in the differentially expressed category in the 2 x 2 table.
+
+We can predict that pwf and bias (length) are opposing values, and we can visualise that data:
+
+```{r}
+#| eval: false
+
+par(mfrow=c(1,2))
+hist(pwf$bias.data,30)
+hist(pwf$pwf,30)
+```
+
+We have a large number of genes which have low/no bias, and a correspondingly high number of genes with the max pwf weighting.
+A smaller number of genes have a greater bias and are given lower weighting.
+
+We can now carry out our Fishers Exact test using the pwf value instead of the raw counts.
+We will use the `goseq()` function to perform this test, and output the over-representation data into an object.
+
+```{r}
+#| eval: false
+
+
+# BiocManager::install("org.Sc.sgd.db")
+# BiocManager::install("AnnotationDbi")
+library(org.Sc.sgd.db)
+
+GO.wall = goseq(pwf, "sacCer1", "ensGene")
+
+GO.wall %>% head()
+```
+
+We will want to filter for only those categories with an adjusted p-value \< 0.05, and save that information to a new object for easy browsing.
+
+You might have noticed that the GO.wall object doesn't automatically perform an adjustment for multiple testing, so we will use the `p.adjust()` function to generate corrected p-values.
+
+We will then use the adjusted p-values as a filtering criteria, and include the columns that correspond to category, term, and ontology (using the `colnames()` function, we can see that these are columns 1, 6 and 7).
+
+```{r}
+#| eval: false
+
+GO.wall.padj = p.adjust(GO.wall$over_represented_pvalue, method="fdr")
+
+sum(GO.wall.padj < 0.05)
+
+GO.wall.sig = GO.wall[GO.wall.padj < 0.05, c(1,6,7)]
+
+GO.wall.sig %>% dim()
+
+GO.wall.sig %>% head()
+```
+
+An optional filtering step can be applied here, which is to remove categories that have a large number of genes.
+Categories which have a large number of genes tend to be very broad terms, which are not very informative *e.g.,* the categories "organelle", "biological_process", and "protein localization".
+
+If you choose to apply this filter, re-make the GO.wall.sig object.
+Here we are filtering with a requirement that the category contains fewer than 500 genes. 
+
+```{r}
+#| eval: false
+
+GO.wall.sig <- GO.wall[GO.wall.padj < 0.05 & GO.wall$numInCat < 500, c(1,6,7)]
+
+GO.wall.sig %>% dim()
+
+GO.wall.sig %>% head()
+```
+
+This is a very useful way of getting a broad overview of what processes our differentially expressed genes are involved in.
+The final step we will take here is to use the GO.db package to retrieve more detailed information about the categories we have identified.
+GO.db will use the unique identifier in the category column and provide more information.
+
+```{r}
+#| eval: false
+
+library(GO.db)
+
+GOTERM[[GO.wall.sig$category[1]]]
+```

@@ -401,13 +401,127 @@ write.table(tt_MT_vs_F, file = "tt_MT_vs_F.tsv", sep = "\t", quote = FALSE, row.
 write.table(tt_TPM_vs_MT, file = "tt_TPM_vs_MT.tsv", sep = "\t", quote = FALSE, row.names = TRUE, col.names = NA)
 
 
+sigGenesLimma_TPM_vs_F <- which(tt_TPM_vs_F$adj.P.Val <= 0.05 & tt_TPM_vs_F$logFC > 1)
+
+sigGenesLimma_TPM_vs_F <- tt[sigGenesLimma_TPM_vs_F, ]
+
+nrow(sigGenesLimma_TPM_vs_F )
+
+
+# absolute vs only up and only down with test 
+sigGenesLimma_allDE <- which(tt_TPM_vs_F$adj.P.Val <= 0.05 & abs(tt_TPM_vs_F$logFC) > 1)
+sigGenesLimma_allDE <- tt_TPM_vs_F[sigGenesLimma_allDE, ]
+
+
+sigGenesLimma_up <- which(tt_TPM_vs_F$adj.P.Val <= 0.05 & tt_TPM_vs_F$logFC > 1)
+sigGenesLimma_up <- tt_TPM_vs_F[sigGenesLimma_up, ]
+
+sigGenesLimma_down <- which(tt_TPM_vs_F$adj.P.Val <= 0.05 & tt_TPM_vs_F$logFC < -1)
+sigGenesLimma_down <- tt_TPM_vs_F[sigGenesLimma_down, ]
+
+# test
+nrow(sigGenesLimma_allDE) == nrow(sigGenesLimma_up) + nrow(sigGenesLimma_down)
+
+
 # deseq2 ----
 
 library(DESeq2)
 
 coldata_nofactor <- coldata %>% mutate(across(where(is.factor), as.character))
 
+coldata$histology <- factor(coldata$histology, levels = c("F", "MT", "TPM"))
+coldata$batchname <- factor(coldata$batchname)
 
 dds <- DESeqDataSetFromMatrix(countData = counts, 
-                              colData = coldata_nofactor, 
+                              colData = coldata, 
                               design = ~histology + batchname)
+
+
+
+dds <- DESeq(dds)
+
+dds |> str()
+resultsNames(dds)
+
+
+res_MT_vs_F <- results(dds, name = "histology_MT_vs_F") |> 
+  na.omit()
+
+res_MT_vs_F %>% head()
+
+
+res_MT_vs_TPM <- results(dds, contrast = c("histology", "MT", "TPM")) |> na.omit()
+res_MT_vs_TPM %>% head()
+
+
+
+# deseq2 tpm up vs F ----
+
+
+res_F_vs_TPM <- results(dds, contrast = c("histology", "F", "TPM")) 
+
+res_F_vs_TPM |> head()
+
+res_F_vs_TPM <- res_F_vs_TPM |> na.omit()
+
+# Keep all rows in the res object if the adjusted p-value < 0.05
+resPadj <- res_F_vs_TPM[res_F_vs_TPM$padj <= 0.05 , ]
+
+# Keep all rows in the res object if the adjusted p-value < 0.05 AND the log2 fold change is less than -1. 
+resPadjLogFC_TPM_vs_F <- res_F_vs_TPM[res_F_vs_TPM$padj <= 0.05 & res_F_vs_TPM$log2FoldChange < -1,]
+
+resPadjLogFC_TPM_vs_F  |> dim() 
+
+resPadjLogFC_TPM_vs_F |>  head()
+
+
+# venn ----
+
+
+sigGenesLimma_TPM_vs_F |> nrow()
+sigGenesDESeq_TPM_vs_F |> nrow()
+
+#BiocManager::install("gplots")
+library(gplots)
+
+setlist <- list(Limma = rownames(sigGenesLimma_TPM_vs_F), 
+                DESeq2 = rownames(sigGenesDESeq_TPM_vs_F))
+
+venn(setlist)
+
+str(setlist)
+
+# Convert venn data to list object
+intersect_list <- attr(venn(setlist), "intersections")
+intersect_list  |> str()
+
+# Create vectors of the three gene lists 
+Limma_only_genes <- intersect_list$Limma
+DEseq2_only_genes <- intersect_list$DESeq2
+Both_genes <- intersect_list$`Limma:DESeq2`
+
+
+
+
+getwd()
+save(res_F_vs_TPM, file = "deseq2-FvsTPM.RData") 
+dim(res_F_vs_TPM)
+
+# goseq ----
+
+hypergeoDistMatrix <- matrix(c(10,490,90,9410),2,2)
+hypergeoDistMatrix
+
+ftest <- fisher.test(hypergeoDistMatrix)
+round(fisher.test(hypergeoDistMatrix)$p.value, 3)
+
+
+res_F_vs_TPM
+dds 
+counts |> dim()
+
+# checking effect of na.omit 
+res_test<- results(dds, name = "histology_TPM_vs_F") 
+res_test
+
+

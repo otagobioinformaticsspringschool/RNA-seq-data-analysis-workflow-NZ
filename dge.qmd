@@ -140,7 +140,7 @@ head(logCPM, 3)
 We use the design matrix to specify our different groups. Here we will specify **histology** as our main variable for the biological groups we actually want to compare. However, you can also include other information as **covariates** *e.g.,* here our samples were collected in different batches (`batchname`), and we have reason to suspect there might be batch-dependent factors involved. You can include many variables as covariates in your design matrix to account for their effects, but today we'll do just the batchname.
 
 
-::: {.callout-warning}
+::: {.callout-caution appearance="minimal"}
 # Important! 
 
 First make sure the sample names in coldata and counts match each other and are in the same order. If they don't match or are not in the same order, the dge object and design matrix won't match and the result will be the wrong metadata being attributed to the wrong sample. 
@@ -403,15 +403,46 @@ When `row.names = TRUE`, `write.table()` writes a header row with one column nam
 
 :::
 
-Let's make an object to store all the information for our list of significantly differentially expressed genes. We will use a threshold of an adjusted p-value \< 0.05 and a logFC \> 1. This will grab all upregulated genes - which in this contrast means up in TPM. We will return to this object later! 
+Let's make an object to store all the information for our list of significantly differentially expressed genes. We will use a threshold of an adjusted p-value \< 0.05 and a logFC \> 1. This will grab all upregulated genes – which in this contrast means up in TPM. We will return to this object later! 
+
+The `which()` function returns index positions, which we then use to subset out the rows we want to keep.
+
 
 ```{r}
-
 sigGenesLimma_TPM_vs_F <- which(tt_TPM_vs_F$adj.P.Val <= 0.05 & tt_TPM_vs_F$logFC > 1)
 
 sigGenesLimma_TPM_vs_F <- tt_TPM_vs_F[sigGenesLimma_TPM_vs_F, ]
 ```
 
+
+::: {.callout-warning collapse="true" appearance="minimal"}
+# 🌟 Bonus! Subset out all differentially expressed genes with abs()
+
+Above we subsetted out genes that are upregulated in TPM (vs F), but sometimes we want to grab the list of ALL differentially expressed genes in a single comparison, regardless of which direction they are DE. 
+
+We can do this using the `abs()` function, which takes the absolute value of logFC before filtering. This keeps genes with logFC > 1 OR logFC < -1, effectively excluding genes with a fold change between -1 and 1 (*i.e.,* not a substantial enough change in either direction). 
+
+
+```{r}
+
+# All DE genes using abs()
+sigGenesLimma_allDE <- which(tt_TPM_vs_F$adj.P.Val <= 0.05 & abs(tt_TPM_vs_F$logFC) > 1)
+sigGenesLimma_allDE <- tt_TPM_vs_F[sigGenesLimma_allDE, ]
+
+# Upregulated genes only
+sigGenesLimma_up <- which(tt_TPM_vs_F$adj.P.Val <= 0.05 & tt_TPM_vs_F$logFC > 1)
+sigGenesLimma_up <- tt_TPM_vs_F[sigGenesLimma_up, ]
+
+# Downregulated genes only
+sigGenesLimma_down <- which(tt_TPM_vs_F$adj.P.Val <= 0.05 & tt_TPM_vs_F$logFC < -1)
+sigGenesLimma_down <- tt_TPM_vs_F[sigGenesLimma_down, ]
+
+# test that our 'up' and 'down' lists combined are equal our 'all DE' list in number
+nrow(sigGenesLimma_allDE) == nrow(sigGenesLimma_up) + nrow(sigGenesLimma_down)
+```
+
+
+:::
 
 
 ### Volcano plots
@@ -694,21 +725,25 @@ write.table(res_F_vs_TPM_df,  file = "deseq2_F-vs-TPM-results.tsv", sep = "\t", 
 
 The res object contains information for all genes tested. It is practical to create a new object that contains only the genes we consider differentially expressed based on the thresholds (p-value, logFC) and methods (e.g., multiple testing adjustment) that suit our situation.
 
-We will remove any rows that have NAs in the results object, then pull out only those with an adjusted p-value less than 0.05.
+We will remove any rows that have NAs in the results object, then pull out only those with an adjusted p-value less than 0.05. We are also going to keep all genes that are upregulated in TPM, so that we can directly compare to our limma results from earlier. Because the contrast we generated here is `contrast = c("histology", "F", "TPM")) ` this means that all genes with a positive logFC are upregulated in the first condition "F". We want genes that are upregulated in the second condition "TPM". To get these, we can simply grab all genes that are less than -1 logFC because anything downregulated in the first condition "F" is inherently upregulated in the second condition "TPM". 
 
 ```{r}
 
 res_F_vs_TPM <- res_F_vs_TPM |> na.omit()
 
-# Keep all rows in the res object if the adjusted p-value < 0.05
-resPadj <- res_F_vs_TPM[res_F_vs_TPM$padj <= 0.05 , ]
+# Get dimensions
+res_F_vs_TPM   |> dim() 
+```
 
+
+
+
+```{r}
 # Keep all rows in the res object if the adjusted p-value < 0.05 AND the log2 fold change is less than -1. 
-resPadjLogFC_TPM_vs_F <- res_F_vs_TPM[res_F_vs_TPM$padj <= 0.05 & res_F_vs_TPM$log2FoldChange < -1,]
+resPadjLogFC_F_vs_TPM <- res_F_vs_TPM[res_F_vs_TPM$padj <= 0.05 & res_F_vs_TPM$log2FoldChange < -1,]
 
 # Get dimensions
-resPadj |> dim() 
-resPadjLogFC_TPM_vs_F  |> dim() 
+resPadjLogFC_F_vs_TPM   |> dim() 
 
 ```
 
@@ -732,8 +767,20 @@ The default BH method is Benjamini & Hochberg (or the FDR method), which is desc
 ### Differentially expressed gene lists
 
 
-To recap, we've now produced two lists of differentially expressed genes - one produced with the Limma method (called sigGenesLimma_TPM_vs_F), one with DESeq2 (called resPadjLogFC). In both cases we used the same threshold for statistical significance (adjusted p-value \< 0.05, using the FDR correction) and biological significance (logFC more than 1 or less than negative 1, which is equivalent to a doubling or halving gene expression). In our run-through, Limma identified 1,891 differentially expressed genes, while DESeq2 identified 1,830 genes.
-.
+To recap, we've now produced two lists of differentially expressed genes - one produced with the Limma method (called `sigGenesLimma_TPM_vs_F`{style="color:black"}), one with DESeq2 (called `resPadjLogFC_F_vs_TPM`{style="color:black"}). In both cases we used the same threshold for statistical significance (adjusted p-value \< 0.05, using the FDR correction) and biological significance (logFC more than 1 or less than negative 1, which is equivalent to a doubling or halving gene expression). 
+
+```{r}
+#| echo: false
+
+# Hello future instructors! Use inline code when describing how many genes were DE (as I've done below). Limma/edgeR in particular gives slightly different numbers when versions are updated so any "hardcoded" gene numbers in text will likely be wrong with the next version. 
+
+n_limma_total <- nrow(sigGenesLimma_TPM_vs_F)
+n_deseq_total <- nrow(resPadjLogFC_F_vs_TPM)
+
+```
+
+In our run-through, Limma identified `r n_limma_total ` differentially expressed genes, while DESeq2 identified `r n_deseq_total` genes.
+
 These numbers are very similar, but what's the actual overlap between these two groups? A venn diagram is an easy way to visualise the relationship between the two groups. First, load the gplots library which we will use for making venn diagrams. Create an object, which we will call setlist, that lists the two gene sets (in our case, this will be the rownames of the objects we created with Limma and DESeq2). Finally, use the `venn()` function to create a venn diagram.
 
 ```{r}
@@ -743,18 +790,68 @@ These numbers are very similar, but what's the actual overlap between these two 
 library(gplots)
 
 setlist <- list(Limma = rownames(sigGenesLimma_TPM_vs_F), 
-                DESeq2 = rownames(resPadjLogFC_TPM_vs_F ))
+                DESeq2 = rownames(resPadjLogFC_F_vs_TPM ))
 
 venn(setlist)
 ```
 
-
-
-This is very strong concordance between our two methods and gives us high confidence in our approach. At this point you could take the overlap (n = 8416 genes), take all genes (n = 1799 + 31 + 92), or take genes from just one method (more relevant if one method was conservative compared to the other). Exactly how you resolve this step will depend on the exact shape of your venn diagram and your context.
-
-For simplicity, we will take the list of genes identified by limma. We will save the R object, and then see in the next episode how we can derive meaningful biological information from this long list of genes.
-
 ```{r}
-#save(sigGenesLimma, file = 'topTable.RData')
+#| echo: false
+
+# Pull out counts for inline use below
+intersect_list <- attr(venn(setlist, show.plot = FALSE), "intersections")
+n_overlap <- length(intersect_list[["Limma:DESeq2"]])
+n_limma_only <- length(intersect_list[["Limma"]])
+n_deseq2_only <- length(intersect_list[["DESeq2"]])
+n_total <- n_overlap + n_limma_only + n_deseq2_only
 ```
 
+
+This is a strong concordance between our two methods and gives us high confidence in our approach. At this point you could take the overlap (n = `r n_overlap` genes) only, take all genes (`r n_overlap` + `r n_limma_only` + `r n_deseq2_only` = `r n_total`), or take genes from just one method (more relevant if one method was conservative compared to the other). Exactly how you resolve this step will depend on the exact shape of your venn diagram and your context.
+
+For simplicity, we will take the list of all genes identified by DEseq2 and see in the next episode how we can derive meaningful biological information from this long list of genes.
+
+
+::: {.callout-tip collapse="true" }
+# How to pull out venn intersection gene lists 
+
+```{r}
+# Convert venn data to list object
+intersect_list <- attr(venn(setlist, show.plot = FALSE), "intersections")
+intersect_list  |> str()
+```
+
+```{r}
+# Create vectors of the three gene lists 
+Limma_only_genes <- intersect_list$Limma
+DEseq2_only_genes <- intersect_list$DESeq2
+Both_genes <- intersect_list$`Limma:DESeq2`
+```
+
+:::
+
+
+```{r}
+#| echo: false
+#| eval: false
+
+# Hello again future instructors! There is a back up file in results/ that was generated with:
+
+save(res_F_vs_TPM, file = "results/deseq2-FvsTPM.RData") 
+save(dds, file = "results/dds.RData")
+
+# The dimensions of which are currently:
+[1] 23773     6
+
+# It was generated using DESeq2
+> packageVersion("DESeq2")
+[1] ‘1.52.0’
+
+# If the package/dim changes, you may want to regenerate that file. It's mostly just there as a back-up for the next section.
+
+# And while I'm here - the package verisons for limma and edge R are:
+> packageVersion("limma")
+[1] ‘3.68.2’
+> packageVersion("edgeR")
+[1] ‘4.10.0’
+```

@@ -74,7 +74,9 @@ ul.task-list li input[type="checkbox"] {
 
 <link rel="stylesheet" href="styles.css">
 <meta property="og:title" content="– RNA-seq data analysis workflow">
+<meta property="og:image" content="images/spotty-pic.JPG">
 <meta property="og:site_name" content="RNA-seq data analysis workflow">
+<meta property="og:image:alt" content="Spotty wrasse">
 </head>
 
 <body class="nav-sidebar docked quarto-light">
@@ -178,7 +180,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./episode_5.html" class="sidebar-item-text sidebar-link">
+  <a href="./functional-analysis.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Functional analysis</span></a>
   </div>
 </li>
@@ -203,6 +205,12 @@ ul.task-list li input[type="checkbox"] {
   <div class="sidebar-item-container"> 
   <a href="./Supplementary/S1_hpc-job-scheduler.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Working with a HPC Job Scheduler</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Supplementary/S2_functional.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Functional analysis with a supported organism</span></a>
   </div>
 </li>
       </ul>
@@ -339,7 +347,20 @@ Solution
 </section>
 <section id="introduction-to-the-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="introduction-to-the-dataset">Introduction to the dataset</h2>
-<p>The example data in this workshop come from a New Zealand wrasse species (<em>Notolabrus celidotus</em>) called “spotty” or “paketi” in Te Reo Māori. Spotty is endemic to New Zealand and is found abundantly along the entire coastline. They are a protogynous sequential hermaphrodite, meaning they can change sex from female to male.</p>
+<p>The example datasets in this workshop come from a New Zealand wrasse species (<em>Notolabrus celidotus</em>), known as “spotty” or “paketi” in Te Reo Māori. Spotty is endemic to New Zealand and is found abundantly along the entire coastline. They are protogynous sequential hermaphrodites, meaning individuals can change sex from female to male. During adult sex change, the gonads transition from a functional female phenotype with mature ovarian tissue, through a series of early-, mid- and late-transitional stages, to a functional male phenotype with sperm-producing gonad tissue. This change is also accompanied by physiological, neurological and morphological changes in the fish.</p>
+<p>The workshop data comprise of 15 gonad transcriptomes from three of these phenotypes – adult female (“F”), mid-transitional (“MT”) and terminal phase male (“TPM”). The raw RNA-seq reads are available on the NCBI SRA under <a href="https://www.ncbi.nlm.nih.gov/bioproject/631152">BioProject PRJNA631152</a>.</p>
+<p><br>
+</p>
+<table style="border: none; border-collapse: collapse;">
+<tbody><tr style="border: none;">
+<td style="border: none; padding: 0;">
+<img src="images/spotty-pic.JPG" alt="Spotty wrasse" style="width:400px; height:300px; object-fit:cover; border-radius:30%;">
+</td>
+<td style="border: none; padding-left:20px; text-align: justify;">
+<i>Figure 1. A female spotty wrasse in Dunedin Harbour</i><br> <br>
+</td>
+</tr>
+</tbody></table>
 
 
 </section>

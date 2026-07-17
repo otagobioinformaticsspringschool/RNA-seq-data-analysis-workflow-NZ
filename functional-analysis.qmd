@@ -1,12 +1,6 @@
 ---
 title: ""
 code-overflow: wrap
-editor: 
-  markdown: 
-    wrap: sentence
-knitr:
-  opts_chunk:
-    eval: false
 ---
 
 # Functional analysis
@@ -16,7 +10,7 @@ knitr:
 ![](theme_images/over-rep_theme.png){width=100%}
 :::
 ::: {.g-col-8 .d-flex .align-items-center}
-*Functional analysis is the process of taking a list of genes which we cannot meaningfully interact with and distilling information that we as researchers can then interpret. Generally, this involves grouping genes based on functions or processes, and determining which processes or functions appear to be different between your experimental groups.*  
+Functional analysis is the process of taking a list of genes which we cannot meaningfully interact with and distilling information that we as researchers can then interpret. Generally, this involves grouping genes based on functions or processes, and determining which processes or functions appear to be different between your experimental groups. 
 :::
 :::
 
@@ -29,8 +23,7 @@ There are different approaches to functional analysis *e.g.,*:
 
 -   **Pathway topology**: Pathway topology analysis takes a higher level approach, compiling information on up- and down-regulation at the level of the pathway rather than the level of the gene.
 
-Today we will cover **over-representation analysis** and functional class scoring.
-Links to pathway topology workflows are provided.
+Today we will cover **Over-representation analysis using GOseq** 
 
 ## Annotation
 
@@ -41,12 +34,20 @@ There are now many databases that maintain information and annotation on genes, 
 Annotation and databases is an entire area in itself, and not something we can cover today.
 For now, we will retrieve annotation information from different sources and attach the annotation to genes.
 
-The annotations that we are going to be using today are called **Gene Ontologies** or GO terms. There are three major classes of GO -- **Molecular Function (MF)**, **Cellular Component (CC)**, and **Biological Process (BP)**. GO terms are hierarchical, and each child term is more specialised than the parent term. Check out the [documentation here on gene ontologies.](https://geneontology.org/docs/ontology-documentation/) 
 
 
-## Over-representation Analysis
+::: {.grid}
+::: {.g-col-5}
+[![](images/GO-hexose-biosynthetic-process.png){width="100%"}](https://amigo.geneontology.org/amigo/term/GO:0019319)
+:::
+::: {.g-col-6 .d-flex .align-items-center}
+The annotations that we are going to be using today are called **Gene Ontologies** or GO terms. There are three major classes of GO -- **Molecular Function (MF)**, **Cellular Component (CC)**, and **Biological Process (BP)**. GO terms are hierarchical, and each child term is more specialised than the parent term. Check out the [documentation here on gene ontologies](https://geneontology.org/docs/ontology-documentation/). On the left is an example gene ontology hierarchy for the hexose biosynthetic process term.
+:::
+:::
 
-### The hypergeometric distribution
+
+
+## Over-representation analysis - The hypergeometric distribution
 
 Let's say you have a list of 100 differentially expressed genes and, after annotation, you notice that 10 of these genes are involved in apoptosis.
 Is this a significant finding?
@@ -56,7 +57,7 @@ If, for example, we find that 12% of all genes in the genome are annotated as ap
 However, if you'd found 25% (or 0%!) THEN you might have something significant.
 
 Over-representation analysis is the use of a hypergeometric distribution to determine whether or not a sample group is undergoing coordinated gene expression changes.
-Statistically, it is asking what is the probability of getting 10 apoptosis genes in my list of 100 differentially expressed genes, given the number of apoptosis genes in the whole genome.
+Statistically, it is asking what is the probability of getting 10 apoptosis genes in my list of 100 differentially expressed genes, given the number of apoptosis genes in the background gene list.
 
 ::: {.callout-warning collapse="true"}
 # A word of warning about defining your background gene list
@@ -100,7 +101,8 @@ Now we can test for an association - or, more accurately, we can test the null h
 fisher.test(hypergeoDistMatrix)
 ```
 
-The p-value of 0.033 let's us reject the null hypothesis and we conclude there is an association.
+
+The p-value of `r round(fisher.test(hypergeoDistMatrix)$p.value, 3)` let's us reject the null hypothesis and we conclude there is an association.
 In our hypothetical experiment, apoptosis-related genes are over-represented (enriched) in our differentially expressed gene list.
 
 We don't want to perform this test manually for every possible functional category (adjusting for multiple testing as we go), so we will look to existing software packages to do this for us.
@@ -109,14 +111,12 @@ But first, let's look at some caveats and considerations.
 ### Caveats
 
 The hypergeometric distribution and Fisher's test makes the assumption that all genes are equal.
-As an exercise, take 30 seconds to think about the ways that genes might not be equal, about RNA-sequencing, and what impact this could have on our test.
-
-One major difference when looking across genes is gene length.
+One major difference when looking across genes is **gene length.**
 RNA-seq tends to produce greater counts for longer genes, which is itself worth remembering, and this gives these genes a greater chance of being statistically differentially expressed.
 An additional problem is that some gene sets tend to be made up of primarily long genes (because certain processes or functions may require large, complex proteins).
 Because long genes have a greater chance of being differentially expressed, gene sets which are made up of long genes will have a greater chance of being enriched or over-represented.
 
-We must carry out some type of correction for gene length when conducting over-representation analyses.
+We must carry out some type of correction for gene length when conducting over-representation analyses, which is built in to the GOSeq analysis pipeline. 
 
 ### GOseq
 
@@ -127,10 +127,54 @@ An illustration from the [full paper](https://genomebiology.biomedcentral.com/ar
 There is a strong positive correlation between differential gene expression and both total gene length and number of reads.
 Unless corrected for, gene length will bias your over-representation analysis.
 
-Load the goseq package, the dplyr package (if you haven't already), and use the `supportedOrganisms()` function to check whether your organism of interest is supported.
-The code for *Saccharomyces cerevisiae* is sacCer.
+
+
+#### Create gene lists 
+The first thing we need to do is create a vector of our gene lists.  We must split our differentially expressed genes into upregulated and downregulated genes for each condition. In this example we are going to use an adjusted pvalue of 0.05 and a logFC of 1 as our cutoffs, but you can decide for your own data if you want to be more or less stringent. 
 
 ```{r}
+#| echo: false
+#| message: false
+
+library(DESeq2)
+
+load("results/deseq2-FvsTPM.RData")
+load("results/dds.RData")
+
+```
+
+```{r}
+
+DE_genes_UP <- as.data.frame(res_F_vs_TPM[res_F_vs_TPM$padj <= 0.05 & res_F_vs_TPM$log2FoldChange < -1,])
+DE_genes_DOWN <- as.data.frame(res_F_vs_TPM[res_F_vs_TPM$padj <= 0.05 & res_F_vs_TPM$log2FoldChange > 1,])
+
+# Convert to vector of gene names by pulling out the rownames
+DE_genes_UP <-  rownames(DE_genes_UP)
+DE_genes_DOWN <- rownames(DE_genes_DOWN)
+
+length(DE_genes_UP)
+length(DE_genes_DOWN)
+```
+
+
+#### Create background gene list
+
+For this workshop, we'll create a background gene list by taking all mapped genes from the dds object (you could also take this from the counts dataframe, as they both contain the same number of genes).  
+
+A word of warning about the background list - these should be genes that are relevant to your particular analysis. 
+
+```{r}
+
+background <- rownames(dds)
+
+```
+
+
+
+Load the goseq package, the dplyr package (if you haven't already). 
+
+```{r}
+#| eval: false
 #| message: false
 #| output: false
 # BiocManager::install("goseq")
@@ -138,55 +182,9 @@ The code for *Saccharomyces cerevisiae* is sacCer.
 library(dplyr)
 library(goseq)
 
-supportedOrganisms() %>% View()
 ```
 
-We need to create an object that will pass GOseq a list of all our genes, with the differentially expressed genes highlighted.
-To do this, we will use an `ifelse()` statement which will check every gene in our experiment and ask test if it has an adjusted p-value of less than 0.05.
-If adj-p-value is \< 0.05, return a "1" and if greater than (or equal to) 0.05, return a "0".
-After that, add the gene names to this vector of 1s and 0s.
 
-Note #1: at the end of the previous exercise we also applied a logFC threshold for defining differentially expressed.
-We won't use that here and will just use adjusted p-values for simplicity.
-
-Note #2: the tt object was created when we used limma to identify differentially expressed genes.
-tt is 7,127 rows, and has genes stored as row names, includes the logFC, and adj.P.Val columns.
-
-```{r}
-load("tt.RData")
-
-genes <- ifelse(tt$adj.P.Val <= 0.05, 1, 0)
-
-names(genes) <- rownames(tt)
-
-head(genes)
-
-tail(genes)
-```
-
-Note #3: because tt is ordered (that is, all the genes with low p values are at the top), it's worth using tail to check the bottom of the new genes object looks different to the top.
-Another useful check is to use the `table()` function to ask how many genes fall into each category.
-
-```{r}
-table(genes)
-```
-
-This is a useful reminder about the conditions of this experiment: of the 7,127 genes in the tt object, 5,140 are differentially expressed.
-Most experiments will not have this level of differential expression.
-
-::: {.callout-note collapse="true"}
-# IF you did want to include the logFC cutoff, you can use the code below...
-
-```{r}
-genes2 <- ifelse(tt$adj.P.Val <= 0.05 & (abs(tt$logFC) > log2(2)), 1, 0)
-names(genes2) <- rownames(tt)
-table(genes2)
-```
-
-This gives a more modest 1,891 differentially expressed genes.
-For the purposes of today's workflow, we will continue with the larger gene list.
-
-:::
 
 
 #### Methodology
@@ -213,6 +211,8 @@ Note: you will frequently get a *Warning in pcls(G): initial point very close to
 
 
 ```{r}
+#| eval: false
+
 pwf <- nullp(genes, "sacCer1", "ensGene")
 
 pwf %>% head()
@@ -226,6 +226,8 @@ The pwf value will be less than 1, and indicates how much a gene should be 'coun
 We can predict that pwf and bias (length) are opposing values, and we can visualise that data:
 
 ```{r}
+#| eval: false
+
 par(mfrow=c(1,2))
 hist(pwf$bias.data,30)
 hist(pwf$pwf,30)
@@ -238,6 +240,8 @@ We can now carry out our Fishers Exact test using the pwf value instead of the r
 We will use the `goseq()` function to perform this test, and output the over-representation data into an object.
 
 ```{r}
+#| eval: false
+
 
 # BiocManager::install("org.Sc.sgd.db")
 # BiocManager::install("AnnotationDbi")
@@ -255,6 +259,8 @@ You might have noticed that the GO.wall object doesn't automatically perform an 
 We will then use the adjusted p-values as a filtering criteria, and include the columns that correspond to category, term, and ontology (using the `colnames()` function, we can see that these are columns 1, 6 and 7).
 
 ```{r}
+#| eval: false
+
 GO.wall.padj = p.adjust(GO.wall$over_represented_pvalue, method="fdr")
 
 sum(GO.wall.padj < 0.05)
@@ -273,6 +279,8 @@ If you choose to apply this filter, re-make the GO.wall.sig object.
 Here we are filtering with a requirement that the category contains fewer than 500 genes. 
 
 ```{r}
+#| eval: false
+
 GO.wall.sig <- GO.wall[GO.wall.padj < 0.05 & GO.wall$numInCat < 500, c(1,6,7)]
 
 GO.wall.sig %>% dim()
@@ -285,6 +293,8 @@ The final step we will take here is to use the GO.db package to retrieve more de
 GO.db will use the unique identifier in the category column and provide more information.
 
 ```{r}
+#| eval: false
+
 library(GO.db)
 
 GOTERM[[GO.wall.sig$category[1]]]
@@ -320,6 +330,8 @@ GSEA and clusterProfiler do not implement a gene length correction. Does this in
 In any situation where there are multiple tools, methods, or decision points (*e.g.,* thresholds, removal of outliers *etc.,*) it is recommended that you complete the analyses and compare the outcomes. It is possible to run GOSeq *without* the length correction implemention (shown below) and compare the over-represented categories. If the difference is large, then you should be cautious when interpreting GSEA results or the output of clusterProfiler. 
 
 ```{r}
+#| eval: false
+
 GO.nobias=goseq(pwf, "sacCer1", "ensGene", method="Hypergeometric")
 ```
 

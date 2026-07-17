@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Notes – RNA-seq data analysis workflow</title>
+<title>s2_functional – RNA-seq data analysis workflow</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,28 +20,63 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./index.html" rel="next">
-<link href="./theme_images/GA-image-black-favicon.png" rel="icon" type="image/png">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-182fece1ef6b8713be5fac70a3243d43.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../Supplementary/S1_hpc-job-scheduler.html" rel="prev">
+<link href="../theme_images/GA-image-black-favicon.png" rel="icon" type="image/png">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-2b26f57d8318b6eba2cd7cd1feee4645.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -71,9 +106,8 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="styles.css">
-<meta property="og:title" content="Notes – RNA-seq data analysis workflow">
-<meta property="og:image" content="images/carpentriesSummarisedExperiment.svg">
+<link rel="stylesheet" href="../styles.css">
+<meta property="og:title" content="– RNA-seq data analysis workflow">
 <meta property="og:site_name" content="RNA-seq data analysis workflow">
 </head>
 
@@ -86,7 +120,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./notes.html">Notes</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Supplementary/S1_hpc-job-scheduler.html">Supplementary</a></li><li class="breadcrumb-item"><a href="../Supplementary/S2_functional.html">Functional analysis with a supported organism</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -101,7 +135,7 @@ ul.task-list li input[type="checkbox"] {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">RNA-seq data analysis workflow</a> 
+      <a href="../">RNA-seq data analysis workflow</a> 
         <div class="sidebar-tools-main">
     <a href="https://github.com/GenomicsAotearoa/RNA-seq-data-analysis-workflow-NZ" title="Github" class="quarto-navigation-tool px-1" aria-label="Github"><i class="bi bi-github"></i></a>
 </div>
@@ -116,19 +150,19 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./notes.html" class="sidebar-item-text sidebar-link active">
+  <a href="../notes.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Notes</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Home</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./background.html" class="sidebar-item-text sidebar-link">
+  <a href="../background.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Background</span></a>
   </div>
 </li>
@@ -143,19 +177,19 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sequence-quality.html" class="sidebar-item-text sidebar-link">
+  <a href="../sequence-quality.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Sequence Quality - FastQC, MultiQC and Trimmomatic</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index-align-quantify.html" class="sidebar-item-text sidebar-link">
+  <a href="../index-align-quantify.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Quantifying Gene Expression</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./exploratory.html" class="sidebar-item-text sidebar-link">
+  <a href="../exploratory.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Exploratory Analysis</span></a>
   </div>
 </li>
@@ -172,19 +206,19 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./dge.html" class="sidebar-item-text sidebar-link">
+  <a href="../dge.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Identify Differentially Expressed Genes</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./functional-analysis.html" class="sidebar-item-text sidebar-link">
+  <a href="../functional-analysis.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Functional analysis</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./episode_6.html" class="sidebar-item-text sidebar-link">
+  <a href="../episode_6.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Conclusions</span></a>
   </div>
 </li>
@@ -201,13 +235,13 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Supplementary/S1_hpc-job-scheduler.html" class="sidebar-item-text sidebar-link">
+  <a href="../Supplementary/S1_hpc-job-scheduler.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Working with a HPC Job Scheduler</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./Supplementary/S2_functional.html" class="sidebar-item-text sidebar-link">
+  <a href="../Supplementary/S2_functional.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Functional analysis with a supported organism</span></a>
   </div>
 </li>
@@ -223,78 +257,161 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Contents</h2>
    
   <ul>
-  <li><a href="#header-1" id="toc-header-1" class="nav-link active" data-scroll-target="#header-1">header 1</a>
+  <li><a href="#functional-analysis-with-a-supported-organism" id="toc-functional-analysis-with-a-supported-organism" class="nav-link active" data-scroll-target="#functional-analysis-with-a-supported-organism">Functional analysis with a supported organism</a>
   <ul>
-  <li><a href="#header-2" id="toc-header-2" class="nav-link" data-scroll-target="#header-2">header 2</a>
+  <li><a href="#goseq" id="toc-goseq" class="nav-link" data-scroll-target="#goseq">GOseq</a>
   <ul class="collapse">
-  <li><a href="#header-3" id="toc-header-3" class="nav-link" data-scroll-target="#header-3">header 3</a>
-  <ul class="collapse">
-  <li><a href="#header-4" id="toc-header-4" class="nav-link" data-scroll-target="#header-4">header 4</a></li>
-  </ul></li>
+  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology">Methodology</a></li>
   </ul></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Notes</h1>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Supplementary/S1_hpc-job-scheduler.html">Supplementary</a></li><li class="breadcrumb-item"><a href="../Supplementary/S2_functional.html">Functional analysis with a supported organism</a></li></ol></nav></header>
 
 
 
-<div class="quarto-title-meta">
 
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="true" aria-label="Toggle callout">
+<section id="functional-analysis-with-a-supported-organism" class="level1">
+<h1>Functional analysis with a supported organism</h1>
+<section id="goseq" class="level3">
+<h3 class="anchored" data-anchor-id="goseq">GOseq</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Summarised experiment objects - a special complex object type in R for biologists
+A word of warning about defining your background gene list
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-1" class="callout-1-contents callout-collapse collapse show">
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>It’s worth noting that many newer R packages and workflows will require (or at least strongly encourage) you to use a “summarised experiment object”. If a vector is a one-dimensional data storage object, and a matrix is a two-dimensional data storage object, you can think of a summarised experiment object as a three-dimensional way of storing data. In a summarised experiment object where you have the genes on the y axis and the samples on the x axis with counts as the observations, the z axis could be a second matrix storing different observations. Summarised experiment objects can stack multiple data types in this way and build up a complex (but tidy) array of data. Summarised experiment objects are powerful but can be harder to mentally conceptualise and require more complex code to interact with the data they store.</p>
-<p><a href="https://carpentries-incubator.github.io/bioc-intro/60-next-steps.html#next-steps">Summarised experiment objects</a> are covered in the Carpentries Introduction to Data Analysis with R workshop.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/carpentriesSummarisedExperiment.svg" class="img-fluid figure-img"></p>
-<figcaption>The summarised experiment object, image from the Carpentries Incubator Introduction to Data Analysis with R workshop.</figcaption>
-</figure>
+<p>Here we use the whole genome to generate our background gene list. This approach may not always be appropriate, and it is up to you to decide what is the most biologically appropriate gene list to use as the background. For example, if you are comparing gene expression across samples from a tissue type that is known to be naturally high in apoptotic procesess, then using the whole genome as a background gene list may ‘drown out’ the signal. Instead, you may want to use all of the genes that are generally known to be expressed in that tissue as your background (e.g., this could be by using a set of control samples, or by using all genes detected as differentially expressed in all your samples together).</p>
 </div>
 </div>
 </div>
+<p>Load the goseq package, the dplyr package (if you haven’t already), and use the <code>supportedOrganisms()</code> function to check whether your organism of interest is supported. The code for <em>Saccharomyces cerevisiae</em> is sacCer.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># BiocManager::install("goseq")</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(goseq)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">supportedOrganisms</span>() <span class="sc">%&gt;%</span> <span class="fu">View</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="header-1" class="level1">
-<h1>header 1</h1>
-<section id="header-2" class="level2">
-<h2 class="anchored" data-anchor-id="header-2">header 2</h2>
-<section id="header-3" class="level3">
-<h3 class="anchored" data-anchor-id="header-3">header 3</h3>
-<section id="header-4" class="level4">
-<h4 class="anchored" data-anchor-id="header-4">header 4</h4>
-<section id="header-5" class="level5">
-<h5 class="anchored" data-anchor-id="header-5">header 5</h5>
+<p>We need to create an object that will pass GOseq a list of all our genes, with the differentially expressed genes highlighted. To do this, we will use an <code>ifelse()</code> statement which will check every gene in our experiment and ask test if it has an adjusted p-value of less than 0.05. If adj-p-value is &lt; 0.05, return a “1” and if greater than (or equal to) 0.05, return a “0”. After that, add the gene names to this vector of 1s and 0s.</p>
+<p>Note #1: at the end of the previous exercise we also applied a logFC threshold for defining differentially expressed. We won’t use that here and will just use adjusted p-values for simplicity.</p>
+<p>Note #2: the tt object was created when we used limma to identify differentially expressed genes. tt is 7,127 rows, and has genes stored as row names, includes the logFC, and adj.P.Val columns.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"tt.RData"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>genes <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(tt<span class="sc">$</span>adj.P.Val <span class="sc">&lt;=</span> <span class="fl">0.05</span>, <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(genes) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(tt)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(genes)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(genes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Note #3: because tt is ordered (that is, all the genes with low p values are at the top), it’s worth using tail to check the bottom of the new genes object looks different to the top. Another useful check is to use the <code>table()</code> function to ask how many genes fall into each category.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(genes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This is a useful reminder about the conditions of this experiment: of the 7,127 genes in the tt object, 5,140 are differentially expressed. Most experiments will not have this level of differential expression.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+IF you did want to include the logFC cutoff, you can use the code below…
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>genes2 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(tt<span class="sc">$</span>adj.P.Val <span class="sc">&lt;=</span> <span class="fl">0.05</span> <span class="sc">&amp;</span> (<span class="fu">abs</span>(tt<span class="sc">$</span>logFC) <span class="sc">&gt;</span> <span class="fu">log2</span>(<span class="dv">2</span>)), <span class="dv">1</span>, <span class="dv">0</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(genes2) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(tt)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(genes2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This gives a more modest 1,891 differentially expressed genes. For the purposes of today’s workflow, we will continue with the larger gene list.</p>
+</div>
+</div>
+</div>
+<section id="methodology" class="level4">
+<h4 class="anchored" data-anchor-id="methodology">Methodology</h4>
+<p>What is GOSeq doing? How does it correct for gene length?</p>
+<p>Remember that we will still use the hypergeometric distribution and Fisher’s Exact test with the 2 x 2 table. Because we know that longer genes are more likely to in the differentially expressed category, we can think of this category as <em>having more weight than it should</em>. GOSeq will calculate a value for each gene which will offset this artificial weight. In other words, if our 2 x 2 table would have 10 genes in the top left square, and some of those genes are very long, GOSeq will treat the number as something slightly less than 10. By treating the value as less than 10, we have taken into account the fact that there shouldn’t <em>really</em> have been 10 genes in there in the first place if not for gene length bias.</p>
+<p>Calculate the weighting that should be assigned to each gene with the Probability Weighting Function (the <code>nullp()</code> function).</p>
+<ul>
+<li>Specify the object “gene” which is our list of all genes and whether they are differentially expressed or not, as a binary named vector<br>
+</li>
+<li>Specify the genome (“sacCer1” for our yeast genome)<br>
+</li>
+<li>Specify the gene ID type (in this case, we are using ensembl Gene IDs)</li>
+</ul>
+<p>This will create a plot in which genes are placed into “bins” based on length, and then gene length vs proportion of differentially expressed is plotted. We can then inspect the pwf object.</p>
+<p>Note: you will frequently get a <em>Warning in pcls(G): initial point very close to some inequality constraints</em> message when running <code>nullp()</code>. You can ignore this.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>pwf <span class="ot">&lt;-</span> <span class="fu">nullp</span>(genes, <span class="st">"sacCer1"</span>, <span class="st">"ensGene"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>pwf <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>pwf <span class="sc">%&gt;%</span> <span class="fu">tail</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Here we can see that genes have been given a different pwf value based on the bias.data column. The pwf value will be less than 1, and indicates how much a gene should be ‘counted for’ if it is in the differentially expressed category in the 2 x 2 table.</p>
+<p>We can predict that pwf and bias (length) are opposing values, and we can visualise that data:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(pwf<span class="sc">$</span>bias.data,<span class="dv">30</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(pwf<span class="sc">$</span>pwf,<span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We have a large number of genes which have low/no bias, and a correspondingly high number of genes with the max pwf weighting. A smaller number of genes have a greater bias and are given lower weighting.</p>
+<p>We can now carry out our Fishers Exact test using the pwf value instead of the raw counts. We will use the <code>goseq()</code> function to perform this test, and output the over-representation data into an object.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># BiocManager::install("org.Sc.sgd.db")</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># BiocManager::install("AnnotationDbi")</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(org.Sc.sgd.db)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>GO.wall <span class="ot">=</span> <span class="fu">goseq</span>(pwf, <span class="st">"sacCer1"</span>, <span class="st">"ensGene"</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>GO.wall <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We will want to filter for only those categories with an adjusted p-value &lt; 0.05, and save that information to a new object for easy browsing.</p>
+<p>You might have noticed that the GO.wall object doesn’t automatically perform an adjustment for multiple testing, so we will use the <code>p.adjust()</code> function to generate corrected p-values.</p>
+<p>We will then use the adjusted p-values as a filtering criteria, and include the columns that correspond to category, term, and ontology (using the <code>colnames()</code> function, we can see that these are columns 1, 6 and 7).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>GO.wall.padj <span class="ot">=</span> <span class="fu">p.adjust</span>(GO.wall<span class="sc">$</span>over_represented_pvalue, <span class="at">method=</span><span class="st">"fdr"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(GO.wall.padj <span class="sc">&lt;</span> <span class="fl">0.05</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>GO.wall.sig <span class="ot">=</span> GO.wall[GO.wall.padj <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">6</span>,<span class="dv">7</span>)]</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>GO.wall.sig <span class="sc">%&gt;%</span> <span class="fu">dim</span>()</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>GO.wall.sig <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>An optional filtering step can be applied here, which is to remove categories that have a large number of genes. Categories which have a large number of genes tend to be very broad terms, which are not very informative <em>e.g.,</em> the categories “organelle”, “biological_process”, and “protein localization”.</p>
+<p>If you choose to apply this filter, re-make the GO.wall.sig object. Here we are filtering with a requirement that the category contains fewer than 500 genes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>GO.wall.sig <span class="ot">&lt;-</span> GO.wall[GO.wall.padj <span class="sc">&lt;</span> <span class="fl">0.05</span> <span class="sc">&amp;</span> GO.wall<span class="sc">$</span>numInCat <span class="sc">&lt;</span> <span class="dv">500</span>, <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">6</span>,<span class="dv">7</span>)]</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>GO.wall.sig <span class="sc">%&gt;%</span> <span class="fu">dim</span>()</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>GO.wall.sig <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This is a very useful way of getting a broad overview of what processes our differentially expressed genes are involved in. The final step we will take here is to use the GO.db package to retrieve more detailed information about the categories we have identified. GO.db will use the unique identifier in the category column and provide more information.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GO.db)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>GOTERM[[GO.wall.sig<span class="sc">$</span>category[<span class="dv">1</span>]]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
-</section>
-</section>
 </section>
 </section>
 </section>
@@ -706,11 +823,11 @@ Summarised experiment objects - a special complex object type in R for biologist
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="../Supplementary/S1_hpc-job-scheduler.html" class="pagination-link" aria-label="Working with a HPC Job Scheduler">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Working with a HPC Job Scheduler</span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./index.html" class="pagination-link" aria-label="Home">
-        <span class="nav-page-text">Home</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->
