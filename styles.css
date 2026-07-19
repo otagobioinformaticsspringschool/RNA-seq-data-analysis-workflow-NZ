@@ -202,3 +202,17 @@ div.sourceCode pre code {
     white-space: pre-wrap;
     word-break: break-all;
 }
+
+.workshop-banner {
+  position: sticky;       /* stays at top */
+  top: 0;               
+  left: 0;
+  width: 100%;          /* full width */
+  background-color: #FF0000; 
+  color: white;          /* text in white for contrast */
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: bold;
+  padding: 5px 20px;
+  z-index: 9999;        /* ensures it stays on top */
+}

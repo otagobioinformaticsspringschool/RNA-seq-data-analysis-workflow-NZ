@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  title: "RNA-seq data analysis workflow"
+  title: "RNA-seq data analysis workflow (NZ)"
   favicon: theme_images/GA-image-black-favicon.png
   open-graph: true # https://quarto.org/docs/websites/website-tools.html#open-graph
   sidebar:
@@ -38,6 +38,7 @@ website:
 
 format:
   html:
+    include-before-body: banner.html
     mainfont: "Mukta"
     monofont: "monospace"
     fontsize: 20px
