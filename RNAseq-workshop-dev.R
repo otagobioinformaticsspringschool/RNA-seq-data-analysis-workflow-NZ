@@ -525,3 +525,26 @@ res_test<- results(dds, name = "histology_TPM_vs_F")
 res_test
 
 
+# save new files ----
+library(tidyverse)
+geneLengths <- read_rds("https://raw.githubusercontent.com/GenomicsAotearoa/genomics-mini-series/main/data/geneLengths.rds")
+geneOntologies <- read_rds("https://raw.githubusercontent.com/GenomicsAotearoa/genomics-mini-series/main/data/geneOntologies.rds")
+
+getwd()
+
+write_tsv(geneLengths, "data-files/genelengths.txt")
+write_tsv(geneOntologies, "data-files/geneontologies.txt")
+
+geneLengths <-  read_tsv("data-files/genelengths.txt")
+geneOntologies <- read_tsv("data-files/geneontologies.txt")
+
+
+load("results/dds.RData")
+library(DESeq2)
+nrow(counts(dds))
+
+
+geneOntologies[geneOntologies == "."] <- NA #change all dots to NAs
+splitgoannot <-  strsplit(geneOntologies[,2], split=',') # split go annotations into a large list
+names(splitgoannot) <-  as.vector(geneOntologies[,1])
+

@@ -137,6 +137,7 @@ The first thing we need to do is create a vector of our gene lists.  We must spl
 #| message: false
 
 library(DESeq2)
+library(tidyverse)
 
 load("results/deseq2-FvsTPM.RData")
 load("results/dds.RData")
@@ -169,6 +170,73 @@ background <- rownames(dds)
 
 ```
 
+
+#### Load in gene lengths and gene ontologies files
+
+In this workshop we are not going to get [into the nitty gritty](https://genomicsaotearoa.github.io/genomics-mini-series/mini-series-gene-ontology.html) of how to generate or obtain these files, as there are a few potential avenues depending on the level of annotation available for your genome. For some genomes, gene ontologies are available as .gaf files which require only minimal data manipulation to prep for GOseq. Gene lengths are often not as readily available, but can be generated using packages such as `GenomicRanges` from GTF files, or if you use `featureCounts` to generate counts from your SAM/BAM file it outputs gene lengths.
+
+We'll focus instead on what these files should look like so you have an idea of what you need to generate. 
+
+```{r}
+#| message: false
+
+geneLengths <-  read.delim("data-files/genelengths.txt", header = TRUE, sep = "\t")
+geneOntologies <- read.delim("data-files/geneontologies.txt", header = TRUE, sep = "\t")
+
+geneLengths |> head()
+```
+
+The gene lengths object should be a dataframe, and needs to have one column with the GeneIDs (must match the geneIDs in your alignment/counts files) and one column with the length of the gene. We typically use the union exon length as a proxy for the gene length (*i.e.,* add together the number of bps in each exon). 
+
+
+```{r}
+geneOntologies |> head()
+```
+
+The gene ontologies object should be a dataframe, and needs to have one column with the GeneIDs (must match the geneIDs in your alignment/counts files) and one column for gene ontology terms. 
+
+Some genes will have no GO annotations and these should be designated with a period "." (or an NA) 
+
+Many genes will have multiple GO annotations and these should be a single string, separated by a "," or a ";"  
+
+::: {.callout-caution appearance="minimal" collapse="true"}
+# 🕵 Sanity check! 
+
+The number of genes in your gene ontologies dataframe and your gene lengths dataframe should be the same, as there should be a single observation/row for each gene that we mapped to during alignment. This will generally be the same as the number of genes in your dds object, although sometimes you may filter out very low counts from your dds object, in which case this test would not be true. If so, check that the nrow of your original counts matrix dataframe match the lengths and ontologies.  
+
+```{r}
+nrow(geneOntologies) == nrow(geneLengths)  # should be true
+nrow(geneOntologies) == nrow(counts(dds)) # usually true if no filtering for low count genes applied 
+nrow(geneLengths) == nrow(counts(dds)) # usually true if no filtering for low count genes applied 
+
+nrow(geneOntologies)
+nrow(geneLengths)
+nrow(counts(dds))
+
+```
+
+
+:::
+
+#### Prepare data for GOSeq
+
+
+Generate GO mapping structure, final object splitgoannot list 
+
+```{r}
+geneOntologies[geneOntologies == "."] <- NA #change all dots to NAs
+splitgoannot <-  strsplit(geneOntologies[,2], split=',') # split go annotations into a large list
+names(splitgoannot) <-  as.vector(geneOntologies[,1])
+```
+
+Load in gene lengths, final object length.vector is a named vector 
+
+```{r}
+length.vector <- setNames(geneLengths$Length, geneLengths$GeneID)
+length(length.vector)
+```
+
+> Note - gene lengths must be whole numbers. Use `as.integer(round(genelengths$Length)) `if you have decimal places.
 
 
 Load the goseq package, the dplyr package (if you haven't already). 
