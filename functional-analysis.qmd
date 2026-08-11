@@ -45,6 +45,11 @@ The annotations that we are going to be using today are called **Gene Ontologies
 :::
 :::
 
+### Bioconductor annotation packages
+
+In this workshop, we are using a dataset from the New Zealand Spotty wrasse species *Notolabrus celidotus*, which does not have a dedicated annotation package. However, there are many species which do have dedicated annotation packages, and these can be used to retrieve gene ontology information for your genes of interest.
+
+You can check if your research organism has a Bioconductor organism package with Genome wide annotations [by searching this list here](https://bioconductor.org/packages/release/BiocViews.html#___OrgDb). If your species is listed, it is relatively simple to perform GOseq analysis and you should not follow the method outlined here. The Bioconductor approach is used for our [alternative RNAseq workshop](https://genomicsaotearoa.github.io/RNA-seq-data-analysis-workflow/) which uses the yeast *Saccharomyces cerevisiae* for the example dataset.    
 
 
 ## Over-representation analysis - The hypergeometric distribution
@@ -57,12 +62,11 @@ If, for example, we find that 12% of all genes in the genome are annotated as ap
 However, if you'd found 25% (or 0%!) THEN you might have something significant.
 
 Over-representation analysis is the use of a hypergeometric distribution to determine whether or not a sample group is undergoing coordinated gene expression changes.
-Statistically, it is asking what is the probability of getting 10 apoptosis genes in my list of 100 differentially expressed genes, given the number of apoptosis genes in the background gene list.
+Statistically, it is asking what is the probability of getting 10 apoptosis genes in my list of 100 differentially expressed genes, given the number of apoptosis genes in the **background gene list.**
 
-::: {.callout-warning collapse="true"}
-# A word of warning about defining your background gene list
-Here we use the whole genome to generate our background gene list. This approach may not always be appropriate, and it is up to you to decide what is the most biologically appropriate gene list to use as the background. For example, if you are comparing gene expression across samples from a tissue type that is known to be naturally high in apoptotic procesess, then using the whole genome as a background gene list may 'drown out' the signal. Instead, you may want to use all of the genes that are generally known to be expressed in that tissue as your background (e.g., this could be by using a set of control samples, or by using all genes detected as differentially expressed in all your samples together).
-:::
+
+::: {.callout-note collapse="true"}
+# Using Fisher's Exact test and the hypergeometric distribution 
 
 We can use the Fisher's Exact test and the hypergeometric distribution to ask whether being involved in apoptosis is independent of being significantly differentially expressed.
 
@@ -106,7 +110,9 @@ The p-value of `r round(fisher.test(hypergeoDistMatrix)$p.value, 3)` let's us re
 In our hypothetical experiment, apoptosis-related genes are over-represented (enriched) in our differentially expressed gene list.
 
 We don't want to perform this test manually for every possible functional category (adjusting for multiple testing as we go), so we will look to existing software packages to do this for us.
-But first, let's look at some caveats and considerations.
+
+:::
+
 
 ### Caveats
 
@@ -130,7 +136,7 @@ Unless corrected for, gene length will bias your over-representation analysis.
 
 
 #### Create gene lists 
-The first thing we need to do is create a vector of our gene lists.  We must split our differentially expressed genes into upregulated and downregulated genes for each condition. In this example we are going to use an adjusted pvalue of 0.05 and a logFC of 1 as our cutoffs, but you can decide for your own data if you want to be more or less stringent. 
+The first thing we need to do is create a vector of our gene lists.  We must split our differentially expressed genes into upregulated and downregulated genes for each condition. In this example we are going to use an adjusted pvalue of 0.05 and a logFC of 1 as our cutoffs, but you can decide for your own data if you want to be more or less stringent. We'll use the DESeq results, but you could chose to use the limma results or the genes that overlap both methods.  
 
 ```{r}
 #| echo: false
@@ -162,18 +168,21 @@ length(DE_genes_DOWN)
 
 For this workshop, we'll create a background gene list by taking all mapped genes from the dds object (you could also take this from the counts dataframe, as they both contain the same number of genes).  
 
-A word of warning about the background list - these should be genes that are relevant to your particular analysis. 
+::: {.callout-warning collapse="false"}
+# A word of warning about defining your background gene list
+You need to think carefully about which genes you want to use as your background gene list. Generating it is fairly straight forward, but it has implications for the analysis. Read more in this paper on [“Ten common mistakes that could ruin your enrichment analysis”](https://doi.org/10.1371/journal.pcbi.1014122) by Bora, McKenzie and Ziemann, 2026. The simplest option for the background is to use all genes that are expressed in your dataset (removing non-expressed and very lowly expressed genes). However, it is up to you to decide what is the most biologically appropriate gene list to use as the background. For some organisms, *e.g.,* yeast, it may be acceptable to use all genes in the genome as the background, which is the approach used in our [alternative RNAseq workshop.](https://genomicsaotearoa.github.io/RNA-seq-data-analysis-workflow/)
+:::
 
 ```{r}
 
 background <- rownames(dds)
-
+str(background)
 ```
 
 
 #### Load in gene lengths and gene ontologies files
 
-In this workshop we are not going to get [into the nitty gritty](https://genomicsaotearoa.github.io/genomics-mini-series/mini-series-gene-ontology.html) of how to generate or obtain these files, as there are a few potential avenues depending on the level of annotation available for your genome. For some genomes, gene ontologies are available as .gaf files which require only minimal data manipulation to prep for GOseq. Gene lengths are often not as readily available, but can be generated using packages such as `GenomicRanges` from GTF files, or if you use `featureCounts` to generate counts from your SAM/BAM file it outputs gene lengths.
+In this workshop we are not going to get [into the nitty gritty](https://genomicsaotearoa.github.io/genomics-mini-series/mini-series-gene-ontology.html) of how to generate or obtain these files, as there are a few potential avenues depending on the level of annotation available for your genome. For some genomes, gene ontologies are available as `.gaf` files which require only minimal data manipulation to prep for GOseq. Gene lengths are often not as readily available alongside the genome annotation files, but can be generated using packages such as `GenomicRanges` from GTF files, or if you use `featureCounts` to generate counts from your SAM/BAM file it outputs gene lengths.
 
 We'll focus instead on what these files should look like so you have an idea of what you need to generate. 
 
@@ -185,6 +194,9 @@ geneOntologies <- read.delim("data-files/geneontologies.txt", header = TRUE, sep
 
 geneLengths |> head()
 ```
+
+
+
 
 The gene lengths object should be a dataframe, and needs to have one column with the GeneIDs (must match the geneIDs in your alignment/counts files) and one column with the length of the gene. We typically use the union exon length as a proxy for the gene length (*i.e.,* add together the number of bps in each exon). 
 
@@ -209,10 +221,6 @@ nrow(geneOntologies) == nrow(geneLengths)  # should be true
 nrow(geneOntologies) == nrow(counts(dds)) # usually true if no filtering for low count genes applied 
 nrow(geneLengths) == nrow(counts(dds)) # usually true if no filtering for low count genes applied 
 
-nrow(geneOntologies)
-nrow(geneLengths)
-nrow(counts(dds))
-
 ```
 
 
@@ -224,8 +232,10 @@ nrow(counts(dds))
 Generate GO mapping structure, final object splitgoannot list 
 
 ```{r}
-geneOntologies[geneOntologies == "."] <- NA #change all dots to NAs
-splitgoannot <-  strsplit(geneOntologies[,2], split=',') # split go annotations into a large list
+# split go annotations into a large list
+splitgoannot <-  strsplit(geneOntologies[,2], split=',') 
+
+# add the gene names to the list
 names(splitgoannot) <-  as.vector(geneOntologies[,1])
 ```
 
@@ -233,22 +243,26 @@ Load in gene lengths, final object length.vector is a named vector
 
 ```{r}
 length.vector <- setNames(geneLengths$Length, geneLengths$GeneID)
-length(length.vector)
+
+# Force length.vector gene names to be in the same order as the background - important!
+length.vector <- length.vector[background] 
 ```
 
-> Note - gene lengths must be whole numbers. Use `as.integer(round(genelengths$Length)) `if you have decimal places.
+> Note - gene lengths must be whole numbers. Use `as.integer(round(genelengths$Length))` if you have decimal places.
 
 
-Load the goseq package, the dplyr package (if you haven't already). 
+Create a binary vector of genes which are differentially expressed or not, final object genes is a named vector.
 
 ```{r}
-#| eval: false
-#| message: false
-#| output: false
-# BiocManager::install("goseq")
+DE.vector <- background  %in%  DE_genes_UP 
+DE.vector <-  DE.vector * 1 
+names(DE.vector) <-  background
 
-library(dplyr)
-library(goseq)
+
+# Last tests - important! Both need to be TRUE.
+# If these are not both true you need to go back and debug.  
+length(DE.vector) == length(length.vector) 
+identical(names(length.vector), names(DE.vector))
 
 ```
 
@@ -260,128 +274,186 @@ library(goseq)
 What is GOSeq doing?
 How does it correct for gene length?
 
-Remember that we will still use the hypergeometric distribution and Fisher's Exact test with the 2 x 2 table.
-Because we know that longer genes are more likely to in the differentially expressed category, we can think of this category as *having more weight than it should*.
+Longer genes are more likely to be in the differentially expressed category, we can think of this category as *having more weight than it should*.
 GOSeq will calculate a value for each gene which will offset this artificial weight.
-In other words, if our 2 x 2 table would have 10 genes in the top left square, and some of those genes are very long, GOSeq will treat the number as something slightly less than 10.
-By treating the value as less than 10, we have taken into account the fact that there shouldn't *really* have been 10 genes in there in the first place if not for gene length bias.
+
 
 Calculate the weighting that should be assigned to each gene with the Probability Weighting Function (the `nullp()` function).  
 
-- Specify the object "gene" which is our list of all genes and whether they are differentially expressed or not, as a binary named vector  
-- Specify the genome ("sacCer1" for our yeast genome)  
-- Specify the gene ID type (in this case, we are using ensembl Gene IDs)  
+We need to specify two things to the `nullp()` function:
+
+- Specify the object "DE.vector" which is our list of all genes and whether they are differentially expressed or not, as a **binary named vector**  
+- Specify the object "length.vector" which is our list of all genes and their lengths, as a **named vector**.
+
 
 This will create a plot in which genes are placed into "bins" based on length, and then gene length vs proportion of differentially expressed is plotted.
-We can then inspect the pwf object.
+We can then inspect the data.pwf object.
 
 Note: you will frequently get a *Warning in pcls(G): initial point very close to some inequality constraints* message when running `nullp()`. You can ignore this.  
 
+Load the goseq package and the dplyr package. 
 
 ```{r}
-#| eval: false
+#| message: false
+#| output: false
+# BiocManager::install("goseq")
 
-pwf <- nullp(genes, "sacCer1", "ensGene")
+library(goseq)
 
-pwf %>% head()
+```
 
-pwf %>% tail()
+
+```{r}
+
+# Run PWF for length bias correction
+data.pwf <- nullp(DEgenes=DE.vector, bias.data=length.vector)  
+
+```
+
+
+
+::: {.callout-note collapse="true"}
+# More on PWF
+
+If you read the note earlier on **Using Fisher's exact test and the hypergeometric distribution**, you have an idea already on how GOSeq works in the background. But there's a little more to understand about how GOseq corrects for gene length bias. 
+
+In our 2 x 2 table example:
+```{r}
+hypergeoDistMatrix
+```
+
+The 10 genes in the top left square represent 10 DEGs which were related to our function of interest (apoptosis). If some of those genes are very long, GOSeq will treat the number as something slightly less than 10. By treating the value as less than 10, we have taken into account the fact that there shouldn't *really* have been 10 genes in there in the first place if not for gene length bias. This is what the PWF (probability weighting function) is doing - it is calculating a value for each gene which will offset this artificial weight.
+
+```{r}
+data.pwf |> head()
+
+data.pwf |> tail()
 ```
 
 Here we can see that genes have been given a different pwf value based on the bias.data column.
 The pwf value will be less than 1, and indicates how much a gene should be 'counted for' if it is in the differentially expressed category in the 2 x 2 table.
 
-We can predict that pwf and bias (length) are opposing values, and we can visualise that data:
-
-```{r}
-#| eval: false
-
-par(mfrow=c(1,2))
-hist(pwf$bias.data,30)
-hist(pwf$pwf,30)
-```
-
-We have a large number of genes which have low/no bias, and a correspondingly high number of genes with the max pwf weighting.
-A smaller number of genes have a greater bias and are given lower weighting.
+:::
 
 We can now carry out our Fishers Exact test using the pwf value instead of the raw counts.
 We will use the `goseq()` function to perform this test, and output the over-representation data into an object.
 
-```{r}
-#| eval: false
+Note: You will frequently get a note that *"For XX genes, we could not find any categories. These genes will be excluded."*  You can ignore this, it is because some genes do not have any GO annotations (marked with NA in the dataframe), and therefore cannot be included in the analysis. 
 
-
-# BiocManager::install("org.Sc.sgd.db")
-# BiocManager::install("AnnotationDbi")
-library(org.Sc.sgd.db)
-
-GO.wall = goseq(pwf, "sacCer1", "ensGene")
-
-GO.wall %>% head()
-```
-
-We will want to filter for only those categories with an adjusted p-value \< 0.05, and save that information to a new object for easy browsing.
-
-You might have noticed that the GO.wall object doesn't automatically perform an adjustment for multiple testing, so we will use the `p.adjust()` function to generate corrected p-values.
-
-We will then use the adjusted p-values as a filtering criteria, and include the columns that correspond to category, term, and ontology (using the `colnames()` function, we can see that these are columns 1, 6 and 7).
 
 ```{r}
-#| eval: false
 
-GO.wall.padj = p.adjust(GO.wall$over_represented_pvalue, method="fdr")
+GO.out <- goseq(data.pwf, gene2cat = splitgoannot)
 
-sum(GO.wall.padj < 0.05)
-
-GO.wall.sig = GO.wall[GO.wall.padj < 0.05, c(1,6,7)]
-
-GO.wall.sig %>% dim()
-
-GO.wall.sig %>% head()
 ```
 
-An optional filtering step can be applied here, which is to remove categories that have a large number of genes.
-Categories which have a large number of genes tend to be very broad terms, which are not very informative *e.g.,* the categories "organelle", "biological_process", and "protein localization".
-
-If you choose to apply this filter, re-make the GO.wall.sig object.
-Here we are filtering with a requirement that the category contains fewer than 500 genes. 
 
 ```{r}
-#| eval: false
 
-GO.wall.sig <- GO.wall[GO.wall.padj < 0.05 & GO.wall$numInCat < 500, c(1,6,7)]
-
-GO.wall.sig %>% dim()
-
-GO.wall.sig %>% head()
+head(GO.out)
 ```
 
-This is a very useful way of getting a broad overview of what processes our differentially expressed genes are involved in.
-The final step we will take here is to use the GO.db package to retrieve more detailed information about the categories we have identified.
+
+You might have noticed that the GO.out object doesn't automatically perform an adjustment for multiple testing, so we will use the `p.adjust()` function to generate corrected p-value for both the over and under represented p-value categories.
+
+We will then use the adjusted p-values as a filtering criteria.
+
+
+
+```{r}
+library(dplyr)
+
+
+GO.out <- GO.out |> 
+  mutate(padj.over = p.adjust(over_represented_pvalue, method="fdr")) |> 
+  mutate(padj.under = p.adjust(under_represented_pvalue, method="fdr")) 
+
+```
+
+
+#### Plot
+
+We’re going to need a new column Gene Ratio for plotting. The Gene Ratio is the number of DE genes in the GO term divided by the total number of genes in that GO term. This is the proportion of DE genes with that GO term *e.g.,* a Gene ratio of 0.5 means that 50% of the genes in that GO term are DE.
+
+
+```{r}
+GO.out  <- GO.out  |>
+  mutate(GeneRatio = numDEInCat / numInCat)
+```
+
+Now let's plot the top 10 over-represented GO terms for upregulated genes in TPM vs F. We will use the `ggplot2` package to create a bubble plot, where the x-axis is the Gene Ratio, the y-axis is the GO term, the size of the bubble is the number of DE genes in that GO term, and the colour of the bubble is the -log10 of the over-represented p-value.
+
+```{r}
+GO.out  |>
+  filter(!is.na(ontology)) |>
+  slice_min(padj.over, n = 10) |>
+  ggplot(aes(x = GeneRatio,
+             y = reorder(str_wrap(term, width = 35), GeneRatio),
+             size = numDEInCat,
+             colour = -log10(over_represented_pvalue))) +
+  geom_point() +
+  scale_colour_gradient(low = "steelblue", high = "firebrick",
+                        name = "-log10(p-value)") +
+  scale_size_continuous(name = "DE gene count", range = c(2, 10)) +
+  labs(title = str_wrap("Over-represented GO terms for upregulated genes in TPM, vs F", width = 45),
+       x = "Gene Ratio", y = NULL) +
+  theme_bw()
+
+```
+
+
+#### Further processing and filtering 
+
+Our output above contains both over-represented and under-represented GO terms for our upregulated genes from our TPM vs F pairwise comparison, which need to be considered separately.
+
+For each pairwise comparison, we should end up with 4 objects or files:   
+
+1. Upregulated genes - over-represented GO terms
+2. Upregulated genes - under-represented GO terms
+3. Downregulated genes - over-represented GO terms
+4. Downregulated genes - under-represented GO terms
+
+As you can imagine, this can end up being a lot of files if you have many pairwise comparisons!
+
+You may also want to want to further filter for only significant GO terms.
+
+Another optional filtering step can be applied here, which is to remove categories that have a large number of genes (more than 500, [recommended by GSEA](https://docs.gsea-msigdb.org/#GSEA/GSEA_FAQ/#7-how-many-genes-should-there-be-in-a-gene-set)). Categories which have a large number of genes tend to be very broad terms, which are not very informative *e.g.,* the categories "organelle", "biological_process", and "protein localization".
+
+```{r}
+# Chose a pvalue threshold
+GOSEQ_SIGNIFICANCE_THRESHOLD <- 0.05
+
+GO.out_TPM_UP_over  <- GO.out[GO.out$padj.over < GOSEQ_SIGNIFICANCE_THRESHOLD, ]
+GO.out_TPM_UP_under <-GO.out[GO.out$padj.under < GOSEQ_SIGNIFICANCE_THRESHOLD, ]
+```
+
+```{r}
+
+# Filtering to retain categories that contain fewer than 500 genes. 
+GO.out_TPM_UP_over.filtered <- GO.out[GO.out$padj.over < 0.05 & GO.out$numInCat < 500, ]
+
+```
+
+
+
+##### Retrieving more information on GO terms
+
+We can use the GO.db package to retrieve more detailed information about the categories we have identified.
 GO.db will use the unique identifier in the category column and provide more information.
 
 ```{r}
-#| eval: false
+#| message: false
 
 library(GO.db)
 
-GOTERM[[GO.wall.sig$category[1]]]
+GOTERM[[GO.out$category[1]]]
 ```
 
-### Closing thoughts on GOseq
 
-GOSeq is a powerful tool that corrects for an important bias in RNA-seq data. There are other options when it comes to over-representation analysis, and functional analysis in general. Some of these tools might help with generating better visualisations, or claim to have more up-to-date databases. 
-
+## Alternative approaches to functional analysis
 
 
-## Gene set enrichment analysis and clusterProfiler
-
-We will not complete a full demonstration of gene set enrichment analysis (GSEA) and clusterProfiler, but we will give an overview of these techniques and tools. 
-
-In particular we strongly recommend The Carpentries workshop [RNA-seq analysis with Bioconductor](https://carpentries-incubator.github.io/bioc-rnaseq/instructor/07-gene-set-analysis.html#ora-with-clusterprofiler) section on GSEA. 
-
-
-### GSEA
+### Gene set enrichment analysis (GSEA)
 
 GSEA takes an alternative approach to the previous section in that it does not take as input a list of differentially expressed genes. GSEA moves away from the binary "differentially expressed or not" approach and considers the state, or position, of all genes in the list. 
 
@@ -391,15 +463,86 @@ This approach has the advantage of not relying on our somewhat arbitrary cutoff 
 
 ClusterProfiler is a widely used package with the support to create *excellent* figures ([check these out](https://carpentries-incubator.github.io/bioc-rnaseq/instructor/07-gene-set-analysis.html#visualization)). 
 
-### GSEA, clusterProfiler and length correction
 
-GSEA and clusterProfiler do not implement a gene length correction. Does this invalidate them as options? We argue that it does not. Even without length correction, GSEA is implementing a powerful and logical approach and the visualisations made with clusterProfiler should not be under-valued. 
-
-In any situation where there are multiple tools, methods, or decision points (*e.g.,* thresholds, removal of outliers *etc.,*) it is recommended that you complete the analyses and compare the outcomes. It is possible to run GOSeq *without* the length correction implemention (shown below) and compare the over-represented categories. If the difference is large, then you should be cautious when interpreting GSEA results or the output of clusterProfiler. 
+::: {.callout-note collapse="true"}
+# go enrichment plot
 
 ```{r}
-#| eval: false
+#| message: false
+# BiocManager::install(c("clusterProfiler", "enrichplot", "GO.db"))
+library(clusterProfiler)
+library(enrichplot)
 
-GO.nobias=goseq(pwf, "sacCer1", "ensGene", method="Hypergeometric")
+
+# Step 1: reformat your geneOntologies into long format 
+# clusterProfiler's enricher() needs a two-column dataframe:
+#   col 1 = GO term  (TERM2GENE format: term first, gene second)
+#   col 2 = gene ID
+# You already have geneOntologies loaded (GeneID | GOs), so we just
+# split the comma-separated GOs and pivot to long format.
+
+term2gene <- geneOntologies |>
+  filter(!is.na(GOs)) |>                          # drop genes with no annotation
+  separate_rows(GOs, sep = ",") |>               # one row per GO term
+  mutate(GOs = trimws(GOs)) |>                   # tidy any whitespace
+  select(GOs, Symbol)                             # term first, gene second
+# (enricher expects TERM2GENE with term in col 1, gene in col 2)
+
+head(term2gene)
 ```
 
+```{r}
+
+# Step 2: download and generate term2name variable 
+# We need the GO term and the name e.g., GO:0000001 and 'mitochondrion inheritance' for plotting
+library(GO.db)
+
+term2name <- AnnotationDbi::select(GO.db, keys = keys(GO.db), columns = c("GOID", "TERM"))
+term2name <- dplyr::select(term2name, GOID, TERM) 
+
+head(term2name)
+
+```
+
+```{r}
+
+# Step 3: run enricher() 
+# universe = your background gene list (same as goseq)
+# gene     = your DE gene list (same as goseq, the character vector of our genes - not the named binary vector)
+
+
+cp_result <- enricher(
+  gene          = DE_genes_UP,
+  universe      = background,
+  TERM2GENE     = term2gene,
+  TERM2NAME     = term2name,
+  pvalueCutoff  = 0.05,
+  qvalueCutoff  = 0.05,
+  pAdjustMethod = "BH"
+)
+
+
+
+# Step 4: calculate semantic similarity
+# emapplot requires the pairwise similarity between terms to be calculated first. This creates a similarity matrix. 
+cp_result_sim <- pairwise_termsim(cp_result)
+
+
+# Step5: Visualisation
+emapplot(cp_result_sim, 
+         showCategory = 30,         # change how many GOs on plot
+         size_category = 1,         # change size of bubbles
+         node_label_size = 3,       # change GO font size
+         ) +    
+  labs(title = "GO term enrichment map: upregulated genes in TPM, vs F")
+```
+
+
+
+:::
+
+
+
+### Addtional resouces
+
+https://carpentries-incubator.github.io/bioc-rnaseq/instructor/07-gene-set-analysis.html#ora-with-clusterprofiler

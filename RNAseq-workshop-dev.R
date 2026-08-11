@@ -545,6 +545,6 @@ nrow(counts(dds))
 
 
 geneOntologies[geneOntologies == "."] <- NA #change all dots to NAs
-splitgoannot <-  strsplit(geneOntologies[,2], split=',') # split go annotations into a large list
+splitgoannot <-  strsplit(geneOntologies[[2]], split=',') # split go annotations into a large list
 names(splitgoannot) <-  as.vector(geneOntologies[,1])
 

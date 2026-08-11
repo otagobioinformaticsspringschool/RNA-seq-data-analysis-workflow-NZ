@@ -73,6 +73,7 @@ ul.task-list li input[type="checkbox"] {
 
 <link rel="stylesheet" href="styles.css">
 <meta property="og:title" content="Notes – RNA-seq data analysis workflow (NZ)">
+<meta property="og:description" content="">
 <meta property="og:image" content="images/carpentriesSummarisedExperiment.svg">
 <meta property="og:site_name" content="RNA-seq data analysis workflow (NZ)">
 </head>
@@ -182,12 +183,6 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Functional analysis</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./episode_6.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Conclusions</span></a>
-  </div>
-</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -223,7 +218,8 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Contents</h2>
    
   <ul>
-  <li><a href="#header-1" id="toc-header-1" class="nav-link active" data-scroll-target="#header-1">header 1</a>
+  <li><a href="#conclusions" id="toc-conclusions" class="nav-link active" data-scroll-target="#conclusions">Conclusions</a></li>
+  <li><a href="#header-1" id="toc-header-1" class="nav-link" data-scroll-target="#header-1">header 1</a>
   <ul>
   <li><a href="#header-2" id="toc-header-2" class="nav-link" data-scroll-target="#header-2">header 2</a>
   <ul class="collapse">
@@ -284,6 +280,14 @@ Summarised experiment objects - a special complex object type in R for biologist
 </div>
 </div>
 </div>
+<p>Need to add a heatmap example</p>
+<section id="conclusions" class="level1">
+<h1>Conclusions</h1>
+<p>Here we have presented the typical workflow in an RNA-seq analysis. The expectation is that the major steps we have highlighted are always required, and for each step we have demonstrated a single method.</p>
+<p>The most important takeway from this workshop is that each tool or method has underlying assumptions or processes which are often hidden from view. This is especially true for those of us who have a strong background in biology and are less well-grounded in statistics or computational data science. It will often be the case that you need to invest a significant amount of time in understanding and choosing the tools that are fit for your scientific purpose. In many cases it is not a case of choosing ‘the best’ method and is more a case of being aware of what sacrifices you are making a choice.</p>
+<p>We strongly recommend that analyses should be repeated with different tools or options and you take the time to assess the impact of these choices. In some cases, as was the case when we compared DESeq2 and Limma, results will be very similar and you gain confidence. In other cases you will need to decide which path to take, but you will be aware of the impact of your decisions.</p>
+<p>Finally, the most useful thing you can do is to connect with other people carrying out similar analyses or people in your area (physically, or field of research) who are knowledgeable.</p>
+</section>
 <section id="header-1" class="level1">
 <h1>header 1</h1>
 <section id="header-2" class="level2">
