@@ -13,7 +13,8 @@ It's worth noting that many newer R packages and workflows will require (or at l
 :::
 
 
-Need to add a heatmap example
+- Need to add a heatmap example
+
 
 
 

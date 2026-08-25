@@ -450,7 +450,7 @@ GOTERM[[GO.out$category[1]]]
 ```
 
 
-## Alternative approaches to functional analysis
+## Alternative approaches to functional analysis and next steps 
 
 
 ### Gene set enrichment analysis (GSEA)
@@ -459,13 +459,15 @@ GSEA takes an alternative approach to the previous section in that it does not t
 
 This approach has the advantage of not relying on our somewhat arbitrary cutoff thresholds (*e.g.,* a gene with a p-value 0.0501 probably should still contribute to what we think is happening to a pathway). 
 
-### ClusterProfiler
+### ClusterProfiler for plotting
 
-ClusterProfiler is a widely used package with the support to create *excellent* figures ([check these out](https://carpentries-incubator.github.io/bioc-rnaseq/instructor/07-gene-set-analysis.html#visualization)). 
+ClusterProfiler is a widely used package with the support to create *excellent* figures ([check these out](https://yulab-smu.top/biomedical-knowledge-mining-book/enrichplot.html)). 
+
+Check out the note below on how to create an enrichment plot using semantic similarity. 
 
 
 ::: {.callout-note collapse="true"}
-# go enrichment plot
+# GO enrichment plot
 
 ```{r}
 #| message: false
@@ -528,7 +530,7 @@ cp_result <- enricher(
 cp_result_sim <- pairwise_termsim(cp_result)
 
 
-# Step5: Visualisation
+# Step 5: Visualisation
 emapplot(cp_result_sim, 
          showCategory = 30,         # change how many GOs on plot
          size_category = 1,         # change size of bubbles
@@ -541,8 +543,11 @@ emapplot(cp_result_sim,
 
 :::
 
+### Investigate the under-represented GO terms 
+
+Underrepresented GO terms can be just as interesting as overrepresented GO terms. It can give you a good idea of what functions are depleted in your sample/s, compared to your background. 
 
 
-### Addtional resouces
+### Additional resources
 
-https://carpentries-incubator.github.io/bioc-rnaseq/instructor/07-gene-set-analysis.html#ora-with-clusterprofiler
+* The Carpentries also provide a guide in an incubator (in development) lesson on [Gene Set Enrichment Analysis.](https://carpentries-incubator.github.io/bioc-rnaseq/instructor/07-gene-set-analysis.html) 
