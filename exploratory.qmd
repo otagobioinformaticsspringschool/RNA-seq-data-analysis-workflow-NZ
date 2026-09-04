@@ -18,7 +18,7 @@ If your data set was a physical problem (like a squeaky wheel or a well wrapped 
 
 ## Exploratory analysis
 
-From here and for the rest of the workshop, we will be working within R. Use the import data set or `read.delim()` function to import the file counts, and name the object counts. Also, load the dplyr library. We will look at some of the basic stats and features of our data object with `View()`, `dim()`, and `names()`
+From here and for the rest of the workshop, we will be working within R. 
 
 In the previous sections we generated counts for 3 samples. We are going to need a few more samples for the rest of this workshop when we explore gene expression, so we are loading in a counts file with 15 samples. 
 
@@ -43,16 +43,11 @@ Run the code below to load the file:
 ```{r}
 #| eval: false
 
-coldata <- read.table("data-files/coldata.txt", sep="\t", header=TRUE)
-counts  <- read.table("data-files/counts.txt",  sep="\t", header=TRUE, row.names=1)
+coldata <- read.table("DataFiles/coldata.txt", sep="\t", header=TRUE)
+counts  <- read.table("DataFiles/counts.txt",  sep="\t", header=TRUE, row.names=1)
 ```
 
-```{r}
 
-coldata <- read.table("/Users/vanch93p/Library/CloudStorage/OneDrive-UniversityofOtago/GenomicsAotearoa/Workshops_GA/testing-new-content/RNAseq-new-content/rnaseq-spotty/data-files/coldata.txt", sep="\t", header=TRUE)
-counts  <- read.table("/Users/vanch93p/Library/CloudStorage/OneDrive-UniversityofOtago/GenomicsAotearoa/Workshops_GA/testing-new-content/RNAseq-new-content/rnaseq-spotty/data-files/counts.txt",  sep="\t", header=TRUE, row.names=1)
-
-```
 
 ::: {.callout-note collapse="true"}
 # Want to load this dataset on your own computer?
@@ -60,10 +55,10 @@ counts  <- read.table("/Users/vanch93p/Library/CloudStorage/OneDrive-Universityo
 If you are completing this workshop on your own local machine, run the code below to load the file from Github:
 
 ```{r}
-#| eval: false
 
+coldata <- read.table("https://raw.githubusercontent.com/GenomicsAotearoa/RNA-seq-data-analysis-workflow-NZ/refs/heads/main/data-files/coldata.txt", sep="\t", header=TRUE)
+counts  <- read.table("https://raw.githubusercontent.com/GenomicsAotearoa/RNA-seq-data-analysis-workflow-NZ/refs/heads/main/data-files/counts.txt",  sep="\t", header=TRUE, row.names=1)
 
-counts <- read.delim("https://raw.githubusercontent.com/GenomicsAotearoa/RNA-seq-data-analysis-workflow/main/data/yeast_counts_all_chr.txt", comment.char="#")
 ```
 :::
 
@@ -163,14 +158,7 @@ ggplot(counts_long_metadata, aes(
 
 The log count boxplots reveal there may be some differences between our three sample groups. The average counts for the TPM (terminal phase males) group *appear* (we have not done any statistical analysis yet!) to be higher than the other two sample groups, F (female) and MT (mid-transitioning). 
 
-
-::: {.callout-warning}
-# WARN!
-
-this isnt a count of how many genes are exprssed per sample, this is the distribution of how expressed every gene in in the sample.
-
-
-:::
+This is *not* a count of how many genes are expressed per sample, this is the distribution of gene expression in each sample.
 
 
 A common question to ask at this point is, are the differences we can see between our two sample groups a true biological effect, or is this an experimental artifact? Often, we will not know the answer to this question. For now, it is enough to be aware of these differences and to keep them in mind moving forward.

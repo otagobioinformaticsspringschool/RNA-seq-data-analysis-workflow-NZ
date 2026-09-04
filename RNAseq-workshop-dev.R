@@ -153,8 +153,8 @@ coldatatest <- read.table("data-files/coldata.txt", sep="\t", header=TRUE)
 countstest  <- read.table("data-files/counts.txt",  sep="\t", header=TRUE, row.names=1)
 
 # seems ok as above
-rm(coldatatest)
-rm(countstest)
+#rm(coldatatest)
+#rm(countstest)
 
 
 
@@ -163,7 +163,7 @@ library(ggplot2)
 library(dplyr)
 
 # Convert counts data to long format for ggplot
-counts_long <- counts.subset_F_MT_TPM %>%
+counts_long <- countstest %>%
   as.data.frame() %>%
   tibble::rownames_to_column("Gene") %>%
   tidyr::pivot_longer(cols = -Gene, names_to = "sample", values_to = "Counts")
@@ -181,7 +181,7 @@ counts_long_metadata <- counts_long |>
 
 
 
-ggplot(counts_long_metadata, aes(x = sample, y = log(Counts + 1), fill = histov3)) +
+ggplot(counts_long_metadata, aes(x = sample, y = log(Counts + 1), fill = histology)) +
   geom_boxplot() +
   labs(x = "Samples", y = "Counts") +
   theme_minimal() +
@@ -194,6 +194,7 @@ ggplot(counts_long_metadata, aes(x = sample, y = log(Counts + 1), fill = histov3
 coldata.subset_F_MT_TPM <- read.table(here("data-files/coldata.txt"),
                                      header = TRUE, sep = "\t",
                                      stringsAsFactors = FALSE)
+counts.subset_F_MT_TPM = countstest
 
 library(tidyverse)
 colSums(counts.subset_F_MT_TPM) %>%
@@ -242,7 +243,7 @@ ggplot(counts_long_metadata, aes(
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 
-# heatmap
+# heatmap ----
 
 ggplot(counts_long_metadata, aes(
   x = sample,
@@ -253,23 +254,78 @@ ggplot(counts_long_metadata, aes(
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-# top 1000 genes HMP
-#top1000 <- counts_long_metadata %>%
-#  group_by(Gene) %>%
-#  summarise(mean_counts = mean(Counts)) %>%
-#  slice_max(mean_counts, n = 1000) %>%
-#  pull(Gene)
-#
-#counts_long_metadata %>%
-#  filter(Gene %in% top1000) %>%
-#  ggplot(aes(x = sample, y = Gene, fill = log(Counts + 1))) +
-#  geom_tile() +
-#  labs(x = "Samples", y = "Gene") +
-#  theme_minimal() +
-#  theme(axis.text.x = element_text(angle = 45, hjust = 1),
-#        axis.text.y = element_blank())
-#
 
+
+# top 1000 genes HMP
+top1000 <- counts_long_metadata %>%
+  group_by(Gene) %>%
+  summarise(mean_counts = mean(Counts)) %>%
+  slice_max(mean_counts, n = 1000) %>%
+  pull(Gene)
+
+counts_long_metadata %>%
+  filter(Gene %in% top1000) %>%
+  ggplot(aes(x = sample, y = Gene, fill = log(Counts + 1))) +
+  geom_tile() +
+  scale_fill_gradient2(
+    low="blue",
+    mid = "white",
+    high = "red",
+    midpoint = 6
+  ) +
+  labs(x = "Samples", y = "Gene") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        axis.text.y = element_blank())
+
+# heatmap() needs a numeric matrix (genes x samples), not long-format data,
+# so pivot to wide first
+heatmap_matrix <- counts_long_metadata %>%
+  filter(Gene %in% top1000) %>%
+  mutate(log_counts = log(Counts + 1)) %>%
+  select(Gene, sample, log_counts) %>%
+  pivot_wider(names_from = sample, values_from = log_counts) %>%
+  column_to_rownames("Gene") %>%
+  as.matrix()
+
+my_colors <- colorRampPalette(c("blue", "white", "red"))(256)
+
+
+heatmap(heatmap_matrix,
+        Rowv = TRUE,        # set to TRUE (default) if you want row dendrogram/clustering
+        Colv = TRUE,        # set to TRUE (default) if you want column dendrogram/clustering
+        labRow = NA,       # equivalent of axis.text.y = element_blank()
+        margins = c(8, 2), # more room for angled-ish sample labels on x-axis
+        xlab = "Samples",
+        ylab = "Gene",
+        col = my_colors)
+
+
+
+head(heatmap_matrix)
+class(heatmap_matrix)
+# matrix array
+
+my_colors2 <- colorRampPalette(c("blue", "white", "red"))(100)
+my_colors3 <- colorRampPalette(c("navy", "white", "firebrick"))(100)
+my_colors4 <- colorRampPalette(c("steelblue", "white", "darkorange"))(100)
+my_colors5 <- colorRampPalette(c("purple", "black", "yellow"))(100) 
+my_colors6 <- colorRampPalette(c("darkgreen", "white", "darkmagenta"))(100)
+my_colors7 <- colorRampPalette(c("lightyellow", "orange", "darkred"))(100)
+my_colors8 <-  hcl.colors(100, "Viridis") 
+
+library(pheatmap)
+ 
+pheatmap(heatmap_matrix,
+         color = my_colors5,
+         show_rownames = FALSE, 
+         cluster_rows = TRUE,   
+         cluster_cols = TRUE,
+         angle_col = 45,        
+         fontsize_col = 8,
+         main = "Top 1000 genes")
+
+# PCA ----
 
 counts_filtered <- counts.subset_F_MT_TPM[rowSums(counts.subset_F_MT_TPM) > 0, ]
 

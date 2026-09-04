@@ -3,3 +3,5 @@
 /.quarto/
 .Rproj.user
 workshop-files
+notes.qmd
+data-files-old

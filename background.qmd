@@ -37,61 +37,51 @@ Let's look at some peculiar features of RNA-seq data and identify the challenges
 ## What are the main challenges or decision points?
 
 
-Knowing what cut offs to use or whether outputs are good enough is a constant quesiton youll ask yourself. Not always possibel to knwo for sure the correct answer (enough biological replicates example).  becuase gene expression is so dynamic, whats normal for your particualr tissue at a particualry tiem and x treatment is often hard to determine for sure. hence replicates and statistics. in rnaseq, n=3 biological replicates is not usually enough. more is always better, aim for a minimum of 5. 
+Knowing what cut offs to use or whether outputs are good enough is a constant question you'll ask yourself. It's not always possible to know for sure the correct answer (for example, whether you have enough biological replicates to meaningfuly detect differential gene expression).  Because gene expression is so dynamic, what's normal for your particular tissue at a particular time under a given treatment is often hard or even impossible to determine. In biology we often aim for a minimum of n=3 replicates, in RNA-seq we recommend a minimum of n=5 biological replicates.   
 
 ### Counting or quantifying
 
 This is not an exhaustive overview of RNA-seq data, but as a reminder, the raw data we receive in the form of FASTA files is a series of reads from *somewhere* in the genome. Each read is an indication, or measurement, of gene expression. We must take these reads, identify where in the genome they originated from and then make a measurement of how frequently we observed those reads. The more reads that are mapped back to a specific location in the genome, the more highly expressed that region (gene) is. 
 
-There are two major approaches to measure gene expression from reads: in the first method reads are aligned to a reference genome and are then 'counted' (e.g., using programs such as [featureCounts](https://subread.sourceforge.net/featureCounts.html) or [HTSeq](https://htseq.readthedocs.io/en/latest/htseqcount.html)), while in the second method reads are 'quantified' without the need to align to a reference (these are sometimes referred to as 'pseudocounts' or 'pseudoalignment'; example programs include [Salmon](https://combine-lab.github.io/salmon/) and [Kallisto](https://pachterlab.github.io/kallisto/about)). There are arguments for each of these types; one major point of difference is if you are after gene-level resolution (count method) or transcript-level resolution (quantify method), but a full discussion of these and other approaches is beyond the scope of this workshop. 
+There are two major approaches to measure gene expression from reads: in the first method reads are aligned to a reference genome and are then 'counted' (*e.g.,* using programs such as [featureCounts](https://subread.sourceforge.net/featureCounts.html) or [HTSeq](https://htseq.readthedocs.io/en/latest/htseqcount.html)), while in the second method reads are 'quantified' without the need to align to a reference (these are sometimes referred to as 'pseudocounts' or 'pseudoalignment'; example programs include [Salmon](https://combine-lab.github.io/salmon/) and [Kallisto](https://pachterlab.github.io/kallisto/about)). There are arguments for each of these types; one major point of difference is if you are after gene-level resolution (count method) or transcript-level resolution (quantify method), but a full discussion of these and other approaches is beyond the scope of this workshop. 
 
 ### Library sizes and composition
 
 Due to myriad biological and technical effects, each sample will have differing numbers of total reads (different library sizes). When we attempt to compare gene expression across samples, these different library sizes can cause genes to be over- or under-expressed. Before we can compare samples we must correct for library size differences. 
 
-Additionally, we need to be aware of library composition. If a library has one (or a few) genes that are very highly expressed, they can be thought of as 'taking up' a high proportion of the total library of reads. If we compare this skewed library with another library, some genes may look down-regulated in the skewed library. Here is a great resource on [different ways to normalise counts](https://hbctraining.github.io/Intro-to-DGE/lessons/02_DGE_count_normalization.html), which can account for  library size and/or composition, produced by the [Harvard Chan Bioinformatics Core.](https://github.com/hbctraining/Intro-to-DGE)
+Additionally, we need to be aware of library composition. If a library has one (or a few) genes that are very highly expressed, they can be thought of as 'taking up' a high proportion of the total library of reads. If we compare this skewed library with another library, some genes may look down-regulated in the skewed library. Here is a great resource on [different ways to normalise counts](https://hbctraining.github.io/Intro-to-DGE/lessons/02_DGE_count_normalization.html), which can account for  library size and/or composition, produced by the [Harvard Chan Bioinformatics Core.](https://github.com/hbctraining/Intro-to-DGE). 
 
-### Heteroskedasticity
+### Heteroscedasticity
 
-Heteroskedasticity describes a situation where variance changes with the mean. In RNA-seq data the level of variance associated with each gene is somewhat dependent on the mean expression level of the gene. This is an issue since some statistical approaches (specifically, the Poisson distribution) assume homoskedasticity (that is, that variance is not associated with the mean). 
+[Heteroscedasticity](https://en.wikipedia.org/wiki/Homoscedasticity_and_heteroscedasticity) describes a situation where variance changes with the mean, as opposed to homoscedasticity, where variance does not change with the mean. In RNA-seq data the level of variance associated with each gene is dependent on the mean expression level of the gene (*i.e,.* RNAseq data is heteroscedastic). This is an issue since some statistical approaches (specifically, the Poisson distribution) assume homoscedasticity (that is, that variance is not associated with the mean). 
 
-Two approaches to dealing with heteroskedasticity are common in the literature: transform the data to reduce (or remove) the mean-variance association or use a method that is robust to the mean-variance association ([DESeq2](https://doi.org/10.1186/s13059-014-0550-8) with the Negative Binomial distribution). 
+Two approaches to dealing with heteroscedasticity are common in the literature: transform the data to reduce (or remove) the mean-variance association or use a method that is robust to the mean-variance association ([DESeq2](https://doi.org/10.1186/s13059-014-0550-8) with the Negative Binomial distribution). 
 
-## Heteroskedasticity
+This [write-up](https://github.com/friedue/Notes/blob/master/RNA_heteroskedasticity.md) gives an in-depth explanation of heteroscedasticity and how we can think about it.
 
-[Heteroskedasticity](https://en.wikipedia.org/wiki/Homoscedasticity_and_heteroscedasticity) is "heterogeneity of variance". If the variance we observe is non-uniform across a range of values, we can describe the dataset as heteroskedastic. In RNA-seq, this means that variance depends on the mean expression of the gene. Wikipedia has a useful example:
+#### **Discussion** 🤔 
 
-*"A classic example of heteroscedasticity is that of income versus expenditure on meals. A wealthy person may eat inexpensive food sometimes and expensive food at other times. A poor person will almost always eat inexpensive food. Therefore, people with higher incomes exhibit greater variability in expenditures on food."* 
-
-
-
-#### **Exercise:** 
-Given the above example, do you expect genes with higher expression to have higher or lower variance than genes with low expression? That is, which will have higher variance - genes with high average expression or genes with low average expression?
+Do you expect genes with higher mean expression to have higher or lower variance than genes with low expression? That is, which will have *higher variance* - genes with high average expression or genes with low average expression?
 
 ::: {.callout-note collapse="true"}
 ## Solution
 This can be a surprisingly complex question to answer, and depends on how we think about variance. If a gene has a high mean expression (*e.g.,* say 1000), then we can expect that the standard deviation will be a reasonably high number (*e.g.,* let's say 20). If a gene has low mean expression (e.g., 10), then the standard deviation will be small (*e.g.,* 2). So, it is true to say that for genes with higher average expression, the standard deviation is greater.
 
-However, we also need to think about magnitude of variance, which we can do using the numbers from our above imaginary examples. For the gene with a mean expression of 1000 and sd of 20, going from 1000 to 1020 is not a big change (i.e., 1.02 fold change). For the gene with the low mean expression, going from 10 to 12 *is* a large change (i.e., 1.2 fold change).
+However, we also need to think about magnitude of variance, which we can do using the numbers from our above imaginary examples. For the gene with a mean expression of 1000 and sd of 20, going from 1000 to 1020 is not a big change (*i.e.,* 1.02 fold change). For the gene with the low mean expression, going from 10 to 12 *is* a large change (*i.e.,* 1.2 fold change).
 
 Our assumption then is that a large fold change, regardless of the actual read count change for that gene, has a meaningful biological effect. 
+
+
+We will look more at heteroscedasticity when we begin to identify differentially expressed genes, but for now it is important to be aware of the concept.
 
 :::
 
 
 
 
-This [write-up](https://github.com/friedue/Notes/blob/master/RNA_heteroskedasticity.md) gives an in-depth explanation of heteroskedasticity and how we can think about it.
-
-We will look more at heteroskedasticity when we begin to identify differentially expressed genes, but for now it is important to be aware of the concept.
-
-
-
 ### Gene length
 
-Does gene length matter? You might be aware that if a gene is longer, it is more likely to have reads mapped to it. This is important to be aware of, but when we are identifying differentially expressed genes we are always comparing genes to themselves. Therefore, gene length is not a factor when identifying differentially expressed genes. 
-
-However, gene length does need to be taken into account when we carry out over-representation analysis.
+Does gene length matter? Yes it does! Sort of. The longer a gene is, the more likely it will have reads mapped to it. This is important to be aware of, but when we are identifying differentially expressed genes we are always comparing genes to themselves. Therefore, gene length is not a factor when identifying differentially expressed genes. However, gene length does need to be taken into account when we carry out over-representation analysis.
 
 
 ## Introduction to the dataset

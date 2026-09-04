@@ -118,12 +118,6 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./notes.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Notes</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Home</span></a>
   </div>
@@ -207,6 +201,12 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Functional analysis with a supported organism</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Supplementary/S3_heatmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gene expression heatmap</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -229,11 +229,10 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#counting-or-quantifying" id="toc-counting-or-quantifying" class="nav-link" data-scroll-target="#counting-or-quantifying">Counting or quantifying</a></li>
   <li><a href="#library-sizes-and-composition" id="toc-library-sizes-and-composition" class="nav-link" data-scroll-target="#library-sizes-and-composition">Library sizes and composition</a></li>
-  <li><a href="#heteroskedasticity" id="toc-heteroskedasticity" class="nav-link" data-scroll-target="#heteroskedasticity">Heteroskedasticity</a></li>
-  </ul></li>
-  <li><a href="#heteroskedasticity-1" id="toc-heteroskedasticity-1" class="nav-link" data-scroll-target="#heteroskedasticity-1">Heteroskedasticity</a>
+  <li><a href="#heteroscedasticity" id="toc-heteroscedasticity" class="nav-link" data-scroll-target="#heteroscedasticity">Heteroscedasticity</a>
   <ul class="collapse">
-  <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise"><strong>Exercise:</strong></a></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><strong>Discussion</strong> 🤔</a></li>
+  </ul></li>
   <li><a href="#gene-length" id="toc-gene-length" class="nav-link" data-scroll-target="#gene-length">Gene length</a></li>
   </ul></li>
   <li><a href="#introduction-to-the-dataset" id="toc-introduction-to-the-dataset" class="nav-link" data-scroll-target="#introduction-to-the-dataset">Introduction to the dataset</a></li>
@@ -243,9 +242,6 @@ ul.task-list li input[type="checkbox"] {
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
-<div class="workshop-banner">
-  WORK IN PROGRESS
-</div>
 
 
 
@@ -291,30 +287,25 @@ Key points 🗝️
 </section>
 <section id="what-are-the-main-challenges-or-decision-points" class="level2">
 <h2 class="anchored" data-anchor-id="what-are-the-main-challenges-or-decision-points">What are the main challenges or decision points?</h2>
-<p>Knowing what cut offs to use or whether outputs are good enough is a constant quesiton youll ask yourself. Not always possibel to knwo for sure the correct answer (enough biological replicates example). becuase gene expression is so dynamic, whats normal for your particualr tissue at a particualry tiem and x treatment is often hard to determine for sure. hence replicates and statistics. in rnaseq, n=3 biological replicates is not usually enough. more is always better, aim for a minimum of 5.</p>
+<p>Knowing what cut offs to use or whether outputs are good enough is a constant question you’ll ask yourself. It’s not always possible to know for sure the correct answer (for example, whether you have enough biological replicates to meaningfuly detect differential gene expression). Because gene expression is so dynamic, what’s normal for your particular tissue at a particular time under a given treatment is often hard or even impossible to determine. In biology we often aim for a minimum of n=3 replicates, in RNA-seq we recommend a minimum of n=5 biological replicates.</p>
 <section id="counting-or-quantifying" class="level3">
 <h3 class="anchored" data-anchor-id="counting-or-quantifying">Counting or quantifying</h3>
 <p>This is not an exhaustive overview of RNA-seq data, but as a reminder, the raw data we receive in the form of FASTA files is a series of reads from <em>somewhere</em> in the genome. Each read is an indication, or measurement, of gene expression. We must take these reads, identify where in the genome they originated from and then make a measurement of how frequently we observed those reads. The more reads that are mapped back to a specific location in the genome, the more highly expressed that region (gene) is.</p>
-<p>There are two major approaches to measure gene expression from reads: in the first method reads are aligned to a reference genome and are then ‘counted’ (e.g., using programs such as <a href="https://subread.sourceforge.net/featureCounts.html">featureCounts</a> or <a href="https://htseq.readthedocs.io/en/latest/htseqcount.html">HTSeq</a>), while in the second method reads are ‘quantified’ without the need to align to a reference (these are sometimes referred to as ‘pseudocounts’ or ‘pseudoalignment’; example programs include <a href="https://combine-lab.github.io/salmon/">Salmon</a> and <a href="https://pachterlab.github.io/kallisto/about">Kallisto</a>). There are arguments for each of these types; one major point of difference is if you are after gene-level resolution (count method) or transcript-level resolution (quantify method), but a full discussion of these and other approaches is beyond the scope of this workshop.</p>
+<p>There are two major approaches to measure gene expression from reads: in the first method reads are aligned to a reference genome and are then ‘counted’ (<em>e.g.,</em> using programs such as <a href="https://subread.sourceforge.net/featureCounts.html">featureCounts</a> or <a href="https://htseq.readthedocs.io/en/latest/htseqcount.html">HTSeq</a>), while in the second method reads are ‘quantified’ without the need to align to a reference (these are sometimes referred to as ‘pseudocounts’ or ‘pseudoalignment’; example programs include <a href="https://combine-lab.github.io/salmon/">Salmon</a> and <a href="https://pachterlab.github.io/kallisto/about">Kallisto</a>). There are arguments for each of these types; one major point of difference is if you are after gene-level resolution (count method) or transcript-level resolution (quantify method), but a full discussion of these and other approaches is beyond the scope of this workshop.</p>
 </section>
 <section id="library-sizes-and-composition" class="level3">
 <h3 class="anchored" data-anchor-id="library-sizes-and-composition">Library sizes and composition</h3>
 <p>Due to myriad biological and technical effects, each sample will have differing numbers of total reads (different library sizes). When we attempt to compare gene expression across samples, these different library sizes can cause genes to be over- or under-expressed. Before we can compare samples we must correct for library size differences.</p>
-<p>Additionally, we need to be aware of library composition. If a library has one (or a few) genes that are very highly expressed, they can be thought of as ‘taking up’ a high proportion of the total library of reads. If we compare this skewed library with another library, some genes may look down-regulated in the skewed library. Here is a great resource on <a href="https://hbctraining.github.io/Intro-to-DGE/lessons/02_DGE_count_normalization.html">different ways to normalise counts</a>, which can account for library size and/or composition, produced by the <a href="https://github.com/hbctraining/Intro-to-DGE">Harvard Chan Bioinformatics Core.</a></p>
+<p>Additionally, we need to be aware of library composition. If a library has one (or a few) genes that are very highly expressed, they can be thought of as ‘taking up’ a high proportion of the total library of reads. If we compare this skewed library with another library, some genes may look down-regulated in the skewed library. Here is a great resource on <a href="https://hbctraining.github.io/Intro-to-DGE/lessons/02_DGE_count_normalization.html">different ways to normalise counts</a>, which can account for library size and/or composition, produced by the <a href="https://github.com/hbctraining/Intro-to-DGE">Harvard Chan Bioinformatics Core.</a>.</p>
 </section>
-<section id="heteroskedasticity" class="level3">
-<h3 class="anchored" data-anchor-id="heteroskedasticity">Heteroskedasticity</h3>
-<p>Heteroskedasticity describes a situation where variance changes with the mean. In RNA-seq data the level of variance associated with each gene is somewhat dependent on the mean expression level of the gene. This is an issue since some statistical approaches (specifically, the Poisson distribution) assume homoskedasticity (that is, that variance is not associated with the mean).</p>
-<p>Two approaches to dealing with heteroskedasticity are common in the literature: transform the data to reduce (or remove) the mean-variance association or use a method that is robust to the mean-variance association (<a href="https://doi.org/10.1186/s13059-014-0550-8">DESeq2</a> with the Negative Binomial distribution).</p>
-</section>
-</section>
-<section id="heteroskedasticity-1" class="level2">
-<h2 class="anchored" data-anchor-id="heteroskedasticity-1">Heteroskedasticity</h2>
-<p><a href="https://en.wikipedia.org/wiki/Homoscedasticity_and_heteroscedasticity">Heteroskedasticity</a> is “heterogeneity of variance”. If the variance we observe is non-uniform across a range of values, we can describe the dataset as heteroskedastic. In RNA-seq, this means that variance depends on the mean expression of the gene. Wikipedia has a useful example:</p>
-<p><em>“A classic example of heteroscedasticity is that of income versus expenditure on meals. A wealthy person may eat inexpensive food sometimes and expensive food at other times. A poor person will almost always eat inexpensive food. Therefore, people with higher incomes exhibit greater variability in expenditures on food.”</em></p>
-<section id="exercise" class="level4">
-<h4 class="anchored" data-anchor-id="exercise"><strong>Exercise:</strong></h4>
-<p>Given the above example, do you expect genes with higher expression to have higher or lower variance than genes with low expression? That is, which will have higher variance - genes with high average expression or genes with low average expression?</p>
+<section id="heteroscedasticity" class="level3">
+<h3 class="anchored" data-anchor-id="heteroscedasticity">Heteroscedasticity</h3>
+<p><a href="https://en.wikipedia.org/wiki/Homoscedasticity_and_heteroscedasticity">Heteroscedasticity</a> describes a situation where variance changes with the mean, as opposed to homoscedasticity, where variance does not change with the mean. In RNA-seq data the level of variance associated with each gene is dependent on the mean expression level of the gene (<em>i.e,.</em> RNAseq data is heteroscedastic). This is an issue since some statistical approaches (specifically, the Poisson distribution) assume homoscedasticity (that is, that variance is not associated with the mean).</p>
+<p>Two approaches to dealing with heteroscedasticity are common in the literature: transform the data to reduce (or remove) the mean-variance association or use a method that is robust to the mean-variance association (<a href="https://doi.org/10.1186/s13059-014-0550-8">DESeq2</a> with the Negative Binomial distribution).</p>
+<p>This <a href="https://github.com/friedue/Notes/blob/master/RNA_heteroskedasticity.md">write-up</a> gives an in-depth explanation of heteroscedasticity and how we can think about it.</p>
+<section id="discussion" class="level4">
+<h4 class="anchored" data-anchor-id="discussion"><strong>Discussion</strong> 🤔</h4>
+<p>Do you expect genes with higher mean expression to have higher or lower variance than genes with low expression? That is, which will have <em>higher variance</em> - genes with high average expression or genes with low average expression?</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -328,18 +319,17 @@ Solution
 <div id="callout-2" class="callout-2-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>This can be a surprisingly complex question to answer, and depends on how we think about variance. If a gene has a high mean expression (<em>e.g.,</em> say 1000), then we can expect that the standard deviation will be a reasonably high number (<em>e.g.,</em> let’s say 20). If a gene has low mean expression (e.g., 10), then the standard deviation will be small (<em>e.g.,</em> 2). So, it is true to say that for genes with higher average expression, the standard deviation is greater.</p>
-<p>However, we also need to think about magnitude of variance, which we can do using the numbers from our above imaginary examples. For the gene with a mean expression of 1000 and sd of 20, going from 1000 to 1020 is not a big change (i.e., 1.02 fold change). For the gene with the low mean expression, going from 10 to 12 <em>is</em> a large change (i.e., 1.2 fold change).</p>
+<p>However, we also need to think about magnitude of variance, which we can do using the numbers from our above imaginary examples. For the gene with a mean expression of 1000 and sd of 20, going from 1000 to 1020 is not a big change (<em>i.e.,</em> 1.02 fold change). For the gene with the low mean expression, going from 10 to 12 <em>is</em> a large change (<em>i.e.,</em> 1.2 fold change).</p>
 <p>Our assumption then is that a large fold change, regardless of the actual read count change for that gene, has a meaningful biological effect.</p>
+<p>We will look more at heteroscedasticity when we begin to identify differentially expressed genes, but for now it is important to be aware of the concept.</p>
 </div>
 </div>
 </div>
-<p>This <a href="https://github.com/friedue/Notes/blob/master/RNA_heteroskedasticity.md">write-up</a> gives an in-depth explanation of heteroskedasticity and how we can think about it.</p>
-<p>We will look more at heteroskedasticity when we begin to identify differentially expressed genes, but for now it is important to be aware of the concept.</p>
+</section>
 </section>
 <section id="gene-length" class="level3">
 <h3 class="anchored" data-anchor-id="gene-length">Gene length</h3>
-<p>Does gene length matter? You might be aware that if a gene is longer, it is more likely to have reads mapped to it. This is important to be aware of, but when we are identifying differentially expressed genes we are always comparing genes to themselves. Therefore, gene length is not a factor when identifying differentially expressed genes.</p>
-<p>However, gene length does need to be taken into account when we carry out over-representation analysis.</p>
+<p>Does gene length matter? Yes it does! Sort of. The longer a gene is, the more likely it will have reads mapped to it. This is important to be aware of, but when we are identifying differentially expressed genes we are always comparing genes to themselves. Therefore, gene length is not a factor when identifying differentially expressed genes. However, gene length does need to be taken into account when we carry out over-representation analysis.</p>
 </section>
 </section>
 <section id="introduction-to-the-dataset" class="level2">

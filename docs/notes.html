@@ -30,7 +30,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./index.html" rel="next">
 <link href="./theme_images/GA-image-black-favicon.png" rel="icon" type="image/png">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -73,8 +72,6 @@ ul.task-list li input[type="checkbox"] {
 
 <link rel="stylesheet" href="styles.css">
 <meta property="og:title" content="Notes – RNA-seq data analysis workflow (NZ)">
-<meta property="og:description" content="">
-<meta property="og:image" content="images/carpentriesSummarisedExperiment.svg">
 <meta property="og:site_name" content="RNA-seq data analysis workflow (NZ)">
 </head>
 
@@ -87,7 +84,9 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./notes.html">Notes</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">
+      RNA-seq data analysis workflow (NZ)
+      </li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -115,12 +114,6 @@ ul.task-list li input[type="checkbox"] {
         </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./notes.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Notes</span></a>
-  </div>
-</li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
@@ -206,6 +199,12 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Functional analysis with a supported organism</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Supplementary/S3_heatmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gene expression heatmap</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -218,8 +217,7 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Contents</h2>
    
   <ul>
-  <li><a href="#conclusions" id="toc-conclusions" class="nav-link active" data-scroll-target="#conclusions">Conclusions</a></li>
-  <li><a href="#header-1" id="toc-header-1" class="nav-link" data-scroll-target="#header-1">header 1</a>
+  <li><a href="#header-1" id="toc-header-1" class="nav-link active" data-scroll-target="#header-1">header 1</a>
   <ul>
   <li><a href="#header-2" id="toc-header-2" class="nav-link" data-scroll-target="#header-2">header 2</a>
   <ul class="collapse">
@@ -234,9 +232,6 @@ ul.task-list li input[type="checkbox"] {
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
-<div class="workshop-banner">
-  WORK IN PROGRESS
-</div>
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -271,25 +266,9 @@ Summarised experiment objects - a special complex object type in R for biologist
 <div class="callout-body-container callout-body">
 <p>It’s worth noting that many newer R packages and workflows will require (or at least strongly encourage) you to use a “summarised experiment object”. If a vector is a one-dimensional data storage object, and a matrix is a two-dimensional data storage object, you can think of a summarised experiment object as a three-dimensional way of storing data. In a summarised experiment object where you have the genes on the y axis and the samples on the x axis with counts as the observations, the z axis could be a second matrix storing different observations. Summarised experiment objects can stack multiple data types in this way and build up a complex (but tidy) array of data. Summarised experiment objects are powerful but can be harder to mentally conceptualise and require more complex code to interact with the data they store.</p>
 <p><a href="https://carpentries-incubator.github.io/bioc-intro/60-next-steps.html#next-steps">Summarised experiment objects</a> are covered in the Carpentries Introduction to Data Analysis with R workshop.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/carpentriesSummarisedExperiment.svg" class="img-fluid figure-img"></p>
-<figcaption>The summarised experiment object, image from the Carpentries Incubator Introduction to Data Analysis with R workshop.</figcaption>
-</figure>
 </div>
 </div>
 </div>
-</div>
-<ul>
-<li>Need to add a heatmap example</li>
-</ul>
-<section id="conclusions" class="level1">
-<h1>Conclusions</h1>
-<p>Here we have presented the typical workflow in an RNA-seq analysis. The expectation is that the major steps we have highlighted are always required, and for each step we have demonstrated a single method.</p>
-<p>The most important takeway from this workshop is that each tool or method has underlying assumptions or processes which are often hidden from view. This is especially true for those of us who have a strong background in biology and are less well-grounded in statistics or computational data science. It will often be the case that you need to invest a significant amount of time in understanding and choosing the tools that are fit for your scientific purpose. In many cases it is not a case of choosing ‘the best’ method and is more a case of being aware of what sacrifices you are making a choice.</p>
-<p>We strongly recommend that analyses should be repeated with different tools or options and you take the time to assess the impact of these choices. In some cases, as was the case when we compared DESeq2 and Limma, results will be very similar and you gain confidence. In other cases you will need to decide which path to take, but you will be aware of the impact of your decisions.</p>
-<p>Finally, the most useful thing you can do is to connect with other people carrying out similar analyses or people in your area (physically, or field of research) who are knowledgeable.</p>
-</section>
 <section id="header-1" class="level1">
 <h1>header 1</h1>
 <section id="header-2" class="level2">
@@ -713,15 +692,6 @@ Summarised experiment objects - a special complex object type in R for biologist
     }
   });
   </script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
-  </div>
-  <div class="nav-page nav-page-next">
-      <a href="./index.html" class="pagination-link" aria-label="Home">
-        <span class="nav-page-text">Home</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
-  </div>
-</nav>
 </div> <!-- /content -->
 
 

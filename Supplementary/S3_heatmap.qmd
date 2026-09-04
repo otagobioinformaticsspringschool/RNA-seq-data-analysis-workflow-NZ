@@ -1,0 +1,145 @@
+---
+title: ""
+code-overflow: wrap
+---
+
+# Gene expression heatmap
+
+There are several ways to generate heatmaps in R. 
+
+* `geom_tile()` from the ggplot2 package
+* `heatmap()` from the base R stats package
+* `pheatmap()` from the pheatmap package
+* and other options such as `ComplexHeatmap` and `heatmaply`.
+
+
+## Read in data and transform
+
+First let's read in our data
+
+```{r}
+#| eval: false
+
+counts  <- read.table("DataFiles/counts.txt",  sep="\t", header=TRUE, row.names=1)
+```
+
+
+::: {.callout-note collapse="true"}
+# Read in data from Github instead
+
+```{r}
+counts <- read.table("https://raw.githubusercontent.com/GenomicsAotearoa/RNA-seq-data-analysis-workflow-NZ/refs/heads/main/data-files/counts.txt",  sep="\t", header=TRUE, row.names=1)
+```
+
+:::
+
+For all these plots, we will use the top 1000 genes with the highest mean counts across all samples. This is a somewhat arbitrary decision and you'll need to decide for your own data what genes you want to investigate. You may be interested in the *most highly expressed* top 100 or 1000 genes, or maybe the top 100 or 1000 *most variable* genes. 
+
+
+
+```{r}
+#| message: false
+
+library(tidyverse)
+
+counts_top1000 <- counts %>%
+  mutate(MeanCounts = rowMeans(across(where(is.numeric)))) |> 
+  arrange(desc(MeanCounts)) |>
+  slice_head(n=1000) |> 
+  select(-MeanCounts)
+
+head(counts_top1000)
+```
+
+We then need to convert the counts to long format for plotting with ggplot2. 
+
+```{r}
+
+
+counts_long_top1000 <- counts_top1000 |> 
+  rownames_to_column("Gene") |> 
+  pivot_longer(cols = -Gene, names_to = "Sample", values_to = "Counts")
+
+head(counts_long_top1000)
+
+```
+
+### Note on transforming counts for plotting
+We will also log2 transform the counts to make the colour scale more interpretable. You need to add `+1` to the counts before log2 transforming to avoid taking the log of zero. For visualisation, you will almost always want to log2 transform your counts, as the range of counts is often very large and the log2 transformation makes it easier to see patterns in the data. There are other transformations that can be used, such as the variance stabilising transformation (VST) or regularised log transformation (rlog) from the DESeq2 package, which are designed to stabilise the variance (this addresses heteroscedasticity, see [Background notes on heteroscedasticity](../background.qmd#heteroscedasticity) for more on this) across the range of counts.
+
+## ggplot2 heatmap with `geom_tile()`
+```{r}
+
+library(ggplot2)
+
+ggplot(counts_long_top1000, aes(
+  x = Sample,
+  y = Gene,
+  fill = log2(Counts + 1))) +
+  geom_tile() +
+  scale_fill_gradient2(
+    low="blue",
+    mid = "white",
+    high = "red",
+    midpoint = 10 # adjust to your own data scale
+  ) +
+  labs(x = "Sample", y = "Log Counts +1") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Genes are ordered alphabetically by default using ggplot, so there is preference to use different tools that cluster genes based on similar expression. 
+
+
+## `heatmap()`
+
+The `heatmap()` function from the base R stats package is another way to generate a heatmap, with clustering. It reorders genes using Euclidean distance to measure how similar their expression patterns are across samples, then repeatedly grouping the most similar genes together first. This builds a tree (the dendrogram shown alongside the heatmap), and reading gene order off that tree places genes with similar expression patterns next to each other. Genes that are co-expressed appear as visible blocks of colour. 
+
+
+```{r}
+
+my_colours1 <- colorRampPalette(c("blue", "white", "red"))(256)
+
+heatmap(log2(as.matrix(counts_top1000) + 1),
+        Rowv = TRUE,   
+        Colv = TRUE,      
+        labRow = NA,   
+        margins = c(8, 2), 
+        xlab = "Samples",
+        ylab = "Gene",
+        col = my_colours1)
+
+```
+
+
+## `pheatmap()`
+
+The `pheatmap()` function from the pheatmap package is another way to generate a heatmap, with clustering. It uses the same underlying clustering method as 
+`heatmap()` by default, but is generally easier to customise. 
+
+
+`scale = "row"` z-scores each gene individually. For every gene, it subtracts 
+the gene's mean expression and divides by its standard deviation across samples. 
+This means the heatmap shows each gene's expression *relative to its own average*, 
+rather than absolute expression level, so highly and lowly expressed genes 
+can be compared on the same colour scale. 
+
+As with any plot, you will need to make visual adjustments (colour, breaks, scaling) based on your specific data and the range of values you are working with.
+
+
+```{r}
+
+
+library(pheatmap)
+
+pheatmap(log2(as.matrix(counts_top1000)+1),
+         scale = "row", # Z-score normalisation across rows 
+         color = my_colours1,
+         show_rownames = FALSE, 
+         cluster_rows = TRUE,   
+         cluster_cols = TRUE,
+         angle_col = 45,        
+         fontsize_col = 8,
+         main = "Top 1000 genes")
+
+```

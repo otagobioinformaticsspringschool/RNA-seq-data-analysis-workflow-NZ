@@ -9,8 +9,6 @@ website:
   sidebar:
     style: "docked"
     contents:
-      - text: "Notes"
-        href: notes.qmd
       - text: "Home"
         href: index.qmd
       - text: "Background"
@@ -28,6 +26,7 @@ website:
         contents:
           - Supplementary/S1_hpc-job-scheduler.qmd
           - Supplementary/S2_functional.qmd
+          - Supplementary/S3_heatmap.qmd
 
 
     tools:
@@ -37,7 +36,6 @@ website:
 
 format:
   html:
-    include-before-body: banner.html
     mainfont: "Mukta"
     monofont: "monospace"
     fontsize: 20px

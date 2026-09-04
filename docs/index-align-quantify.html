@@ -153,12 +153,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./notes.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Notes</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Home</span></a>
   </div>
@@ -242,6 +236,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Functional analysis with a supported organism</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Supplementary/S3_heatmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Gene expression heatmap</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -275,9 +275,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./sequence-quality.html">Day One</a></li><li class="breadcrumb-item"><a href="./index-align-quantify.html">Quantifying Gene Expression</a></li></ol></nav></header>
-<div class="workshop-banner">
-  WORK IN PROGRESS
-</div>
 
 
 
@@ -408,17 +405,9 @@ DONE: Genome generation, EXITING</code></pre>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="va">name</span><span class="op">=</span><span class="va">$(</span><span class="fu">basename</span> <span class="va">$files</span> _R1_trimmed.fq.gz<span class="va">)</span> </span>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co"># run STAR to align reads to the genome    </span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="ex">STAR</span> <span class="dt">\</span></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>--runMode alignReads <span class="dt">\</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>--genomeDir <span class="va">$genomedir</span> <span class="dt">\</span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>--readFilesIn <span class="va">${trimmeddir}</span>/<span class="va">${name}</span>_R1_trimmed.fq.gz <span class="va">${trimmeddir}</span>/<span class="va">${name}</span>_R2_trimmed.fq.gz <span class="dt">\</span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>--readFilesCommand zcat <span class="dt">\</span></span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>--outSAMtype BAM SortedByCoordinate <span class="dt">\</span></span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>--outFileNamePrefix <span class="va">${name}</span> <span class="dt">\</span></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>--runThreadN 2 <span class="dt">\</span></span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>--quantMode GeneCounts</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="ex">STAR</span> <span class="at">--runMode</span> alignReads <span class="at">--genomeDir</span> <span class="va">$genomedir</span> <span class="at">--readFilesIn</span> <span class="va">${trimmeddir}</span>/<span class="va">${name}</span>_R1_trimmed.fq.gz <span class="va">${trimmeddir}</span>/<span class="va">${name}</span>_R2_trimmed.fq.gz <span class="at">--readFilesCommand</span> zcat <span class="at">--outSAMtype</span> BAM SortedByCoordinate <span class="at">--outFileNamePrefix</span> <span class="va">${name}</span> <span class="at">--runThreadN</span> 2 <span class="at">--quantMode</span> GeneCounts</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Flags in this script:</p>
 <ul>
 <li><p><code>--readFilesCommand zcat</code> : this flag with zcat argument allows STAR to process .gz files. Best to keep your reads as compressed files, but if they are not .gz then omit this flag.<br>

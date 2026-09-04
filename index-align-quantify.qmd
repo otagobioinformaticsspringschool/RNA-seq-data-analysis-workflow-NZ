@@ -155,15 +155,7 @@ do
 name=$(basename $files _R1_trimmed.fq.gz) 
 
 # run STAR to align reads to the genome    
-STAR \
---runMode alignReads \
---genomeDir $genomedir \
---readFilesIn ${trimmeddir}/${name}_R1_trimmed.fq.gz ${trimmeddir}/${name}_R2_trimmed.fq.gz \
---readFilesCommand zcat \
---outSAMtype BAM SortedByCoordinate \
---outFileNamePrefix ${name} \
---runThreadN 2 \
---quantMode GeneCounts
+STAR --runMode alignReads --genomeDir $genomedir --readFilesIn ${trimmeddir}/${name}_R1_trimmed.fq.gz ${trimmeddir}/${name}_R2_trimmed.fq.gz --readFilesCommand zcat --outSAMtype BAM SortedByCoordinate --outFileNamePrefix ${name} --runThreadN 2 --quantMode GeneCounts
 
 done
 

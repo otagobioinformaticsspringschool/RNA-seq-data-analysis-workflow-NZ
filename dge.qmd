@@ -387,11 +387,13 @@ It's good practice to save your topTable results as a plain text file so they ca
 ```{r}
 #| eval: false
 
-write.table(tt_TPM_vs_F, file = "tt_TPM_vs_F.tsv", sep = "\t", quote = FALSE, row.names = TRUE, col.names = NA)
+dir.create("results")
 
-write.table(tt_MT_vs_F, file = "tt_MT_vs_F.tsv", sep = "\t", quote = FALSE, row.names = TRUE, col.names = NA)
+write.table(tt_TPM_vs_F, file = "results/tt_TPM_vs_F.tsv", sep = "\t", quote = FALSE, row.names = TRUE, col.names = NA)
 
-write.table(tt_TPM_vs_MT, file = "tt_TPM_vs_MT.tsv", sep = "\t", quote = FALSE, row.names = TRUE, col.names = NA)
+write.table(tt_MT_vs_F, file = "results/tt_MT_vs_F.tsv", sep = "\t", quote = FALSE, row.names = TRUE, col.names = NA)
+
+write.table(tt_TPM_vs_MT, file = "results/tt_TPM_vs_MT.tsv", sep = "\t", quote = FALSE, row.names = TRUE, col.names = NA)
 ```
 
 `row.names = TRUE` keeps the gene identifiers (which are stored as row names in the topTable output) as the first column of the saved file. Using `sep = "\t"` writes a tab-separated (`.tsv`) file, and `quote = FALSE` avoids wrapping every value in quotation marks.
@@ -523,7 +525,8 @@ ggplot(plot_data, aes(x = logFC, y = negLogPval, color = category)) +
 #| eval: false
 
 # Save the plot (optional)
-ggsave("volcano_plot.png", width = 10, height = 8, dpi = 300)
+dir.create("plots")
+ggsave("plots/volcano_plot_tt_TPM_v_F.png", width = 10, height = 8, dpi = 300)
 ```
 
 
@@ -718,7 +721,7 @@ Want to save and output your full results now as a nice human readable table? Co
 
 res_F_vs_TPM_df <- res_F_vs_TPM |> as.data.frame()
 
-write.table(res_F_vs_TPM_df,  file = "deseq2_F-vs-TPM-results.tsv", sep = "\t", quote = FALSE, row.names = TRUE)
+write.table(res_F_vs_TPM_df,  file = "results/deseq2_F-vs-TPM-results.tsv", sep = "\t", quote = FALSE, row.names = TRUE)
 ```
 
 :::

@@ -150,6 +150,22 @@ load("results/dds.RData")
 
 ```
 
+
+::: {.callout-note collapse="true"}
+# Don't have the res_F_vs_TPM object?
+Pull in the data from the backup folder here:
+
+```{r}
+#| eval: false
+
+load("backup-files/deseq2-FvsTPM.RData")  
+
+```
+
+
+:::
+
+
 ```{r}
 
 DE_genes_UP <- as.data.frame(res_F_vs_TPM[res_F_vs_TPM$padj <= 0.05 & res_F_vs_TPM$log2FoldChange < -1,])
@@ -187,14 +203,23 @@ In this workshop we are not going to get [into the nitty gritty](https://genomic
 We'll focus instead on what these files should look like so you have an idea of what you need to generate. 
 
 ```{r}
+#| echo: false
 #| message: false
 
 geneLengths <-  read.delim("data-files/genelengths.txt", header = TRUE, sep = "\t")
 geneOntologies <- read.delim("data-files/geneontologies.txt", header = TRUE, sep = "\t")
 
-geneLengths |> head()
 ```
 
+```{r}
+#| eval: false
+#| message: false
+
+geneLengths <-  read.delim("DataFiles/genelengths.txt", header = TRUE, sep = "\t")
+geneOntologies <- read.delim("DataFiles/geneontologies.txt", header = TRUE, sep = "\t")
+
+geneLengths |> head()
+```
 
 
 
@@ -342,6 +367,8 @@ Note: You will frequently get a note that *"For XX genes, we could not find any 
 
 
 ```{r}
+#| message: false
+#| warning: false 
 
 GO.out <- goseq(data.pwf, gene2cat = splitgoannot)
 
@@ -551,3 +578,13 @@ Underrepresented GO terms can be just as interesting as overrepresented GO terms
 ### Additional resources
 
 * The Carpentries also provide a guide in an incubator (in development) lesson on [Gene Set Enrichment Analysis.](https://carpentries-incubator.github.io/bioc-rnaseq/instructor/07-gene-set-analysis.html) 
+
+## Conclusions
+
+Here we have presented the typical workflow in an RNA-seq analysis. The expectation is that the major steps we have highlighted are always required, and for each step we have demonstrated a single method (or two in the case of DGE). 
+
+The most important takeway from this workshop is that each tool or method has underlying assumptions or processes which are often hidden from view. This is especially true for those of us who have a strong background in biology and are less well-grounded in statistics or computational data science. It will often be the case that you need to invest a significant amount of time in understanding and choosing the tools that are fit for your scientific purpose. In many cases it is not a case of choosing 'the best' method and is more a case of being aware of what sacrifices you are making a choice. 
+
+We strongly recommend that analyses should be repeated with different tools or options and you take the time to assess the impact of these choices. In some cases, as was the case when we compared DESeq2 and Limma, results will be very similar and you gain confidence. In other cases you will need to decide which path to take, but you will be aware of the impact of your decisions. 
+
+Finally, the most useful thing you can do is to connect with other people carrying out similar analyses or people in your area (physically, or field of research) who are knowledgeable. 
