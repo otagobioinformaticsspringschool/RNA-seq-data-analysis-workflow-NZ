@@ -28,7 +28,7 @@ With the above formula in mind, what impact would *heteroscedasticity* have when
 
 ::: {.callout-tip collapse="true"}
 # SOLUTION
-Heteroscedasticity would violate the assumption of equal variances that the t-statistic relies on, meaning the standard error ${SE(\hat{\mu}_1 - \hat{\mu}_2)}$ no longer appropriately captures the variability between groups. This would produce unreliable test statistics and therefore untrustworthy p-values. Therefore you could no longer confidently determine whether an observed difference in gene expression between groups was genuine or simply due to chance.
+Heteroscedasticity would violate the assumption of equal variances that the t-statistic relies on, meaning the standard error ${SE(\hat{\mu}_1 - \hat{\mu}_2)}$ no longer appropriately captures the variability between groups. This would produce unreliable test statistics and therefore untrustworthy p-values. Therefore you could no longer confidently determine whether an observed difference in gene expression between groups was real or due to chance.
 
 :::
 
@@ -174,7 +174,7 @@ design
 
 Our design matrix includes **histology**, the variable we actually want to test, but also **batchname**. This second term is a ***covariate*** – a variable we don't care about testing directly, but which we suspect explains some of the variation in gene expression alongside histology. 
 
-Recall the test statistic formula from earlier: a large test statistic (and therefore a small, significant p-value) comes from a large difference in means relative to variability. If batch effects exist in our data but aren't included in the model, that variation gets absorbed into the "noise" the model can't explain, inflating the variability term and making real histology effects harder to detect. By adding batchname to our design, we're telling the model "some of the scatter in expression is explained by which batch a sample came from, not by its histology group" – this allows the model to separate that structured variation out of the residual error before testing for histology differences, giving us more statistical power to detect genuine biological effects. 
+Recall the test statistic formula from earlier: a large test statistic (and therefore a small, significant p-value) comes from a large difference in means relative to variability. If batch effects exist in our data but aren't included in the model, that variation gets absorbed into the "noise" the model can't explain, inflating the variability term and making real histology effects harder to detect. By adding batchname to our design, we're telling the model "some of the scatter in expression is explained by which batch a sample came from, not by its histology group". This allows the model to separate that structured variation out of the residual error before testing for histology differences, giving us more statistical power to detect real biological effects. 
 
 It's worth checking, however, that your covariates aren't confounded with your variable of interest, for example, if every F sample happened to come from a single batch, the model would have no way to distinguish a batch effect from a histology effect. 
 
@@ -396,12 +396,15 @@ write.table(tt_MT_vs_F, file = "results/tt_MT_vs_F.tsv", sep = "\t", quote = FAL
 write.table(tt_TPM_vs_MT, file = "results/tt_TPM_vs_MT.tsv", sep = "\t", quote = FALSE, row.names = TRUE, col.names = NA)
 ```
 
-`row.names = TRUE` keeps the gene identifiers (which are stored as row names in the topTable output) as the first column of the saved file. Using `sep = "\t"` writes a tab-separated (`.tsv`) file, and `quote = FALSE` avoids wrapping every value in quotation marks.
+
 
 ::: {.callout-warning collapse="true" appearance="minimal"}
-# 🤓 Why `col.names = NA`?
+# 🤓 What are the arguments above? 
 
-When `row.names = TRUE`, `write.table()` writes a header row with one column name *fewer* than the data rows below it (there's no header for the row-name column). This shifts every column header one position to the left relative to the data when you open the file in Excel or similar. Setting `col.names = NA` leaves the first header cell blank, so the row-name column lines up correctly under an empty header and all other headers stay aligned with their data.
+- `row.names = TRUE` keeps the gene identifiers (which are stored as row names in the topTable output) as the first column of the saved file.   
+- `sep = "\t"` writes a tab-separated (`.tsv`) file.  
+- `quote = FALSE` avoids wrapping every value in quotation marks.  
+- `col.names = NA`: When `row.names = TRUE`, `write.table()` writes a header row with one column name *fewer* than the data rows below it (there's no header for the row-name column). This shifts every column header one position to the left relative to the data when you open the file in Excel or similar. Setting `col.names = NA` leaves the first header cell blank, so the row-name column lines up correctly under an empty header and all other headers stay aligned with their data.  
 
 :::
 
@@ -681,7 +684,39 @@ We will create a new object to store the results in. We can access those results
 res_F_vs_TPM <- results(dds, contrast = c("histology", "F", "TPM")) 
 
 res_F_vs_TPM |> head()
+```
 
+
+::: {.callout-note collapse="true"}
+# Why use *log2* for fold change? 
+
+For RNAseq data, we always use log2 fold change (log2FC) rather than log10 or natural log transformations. You may remember we used log2 to transform our raw counts too for plotting in the [Exploratory Analysis section](exploratory.qmd). This is because the log2 scale is easier to intuitively interpret up- and down-regulation. A log2FC of 1 means the gene is expressed twice as much in one condition compared to another, while a log2FC of -1 means it is expressed half as much.   
+
+To visualise this further, take this example:
+
+| Count | log2(count) | log10(count) |
+|------:|------------:|--------------:|
+| 2     | 1        | 0.301          |
+| 4     | 2       | 0.602          |
+| 8     | 3       | 0.903          |
+| 100   | 6.644        | 2          |
+| 200   | 7.644        | 2.301          |
+
+Each doubling in count is represented by an increase in 1 on the log2 scale, while on the log10 scale, each doubling is represented by an increase of only 0.3. 
+
+Note that log2FC is the *difference* in log2(count) between two conditions, rather than the log2 of a single count. This naturally extends to negative log2FC values too: for example, a log2FC of -2 means the gene is expressed a quarter as much in one condition compared to another.
+
+| Comparison (count) | Fold change | log2FC | log10FC |
+|:-----------|------------:|-------:|--------:|
+| 100 → 200  | 2×          | 1  | 0.301   |
+| 100 → 400  | 4×          | 2  | 0.602   |
+| 100 → 50   | 0.5×        | −1 | −0.301  |
+| 100 → 25   | 0.25×       | −2 | −0.602  |
+
+:::
+
+
+```{r}
 res_F_vs_TPM |> summary()
 
 ```
@@ -765,6 +800,8 @@ The `?results` help info will show the default p adjustment method is `pAdjustMe
 The default BH method is Benjamini & Hochberg (or the FDR method), which is described [here in the R documentation](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/p.adjust). 
 
 :::
+
+
 
 
 ### Differentially expressed gene lists
