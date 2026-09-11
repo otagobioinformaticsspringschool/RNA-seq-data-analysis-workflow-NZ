@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>RNA-seq data analysis workflow (NZ)</title>
+<title>Otago Bioinformatics Spring School 2026 – RNA-seq data analysis workflow (NZ)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -72,7 +72,7 @@ ul.task-list li input[type="checkbox"] {
 
 
 <link rel="stylesheet" href="styles.css">
-<meta property="og:title" content="– RNA-seq data analysis workflow (NZ)">
+<meta property="og:title" content="Otago Bioinformatics Spring School 2026 – RNA-seq data analysis workflow (NZ)">
 <meta property="og:description" content="">
 <meta property="og:image" content="theme_images/main_image.png">
 <meta property="og:site_name" content="RNA-seq data analysis workflow (NZ)">
@@ -104,7 +104,7 @@ ul.task-list li input[type="checkbox"] {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">RNA-seq data analysis workflow (NZ)</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/GenomicsAotearoa/RNA-seq-data-analysis-workflow-NZ" title="Github" class="quarto-navigation-tool px-1" aria-label="Github"><i class="bi bi-github"></i></a>
+    <a href="https://github.com/otagobioinformaticsspringschool/RNA-seq-data-analysis-workflow-NZ" title="Github" class="quarto-navigation-tool px-1" aria-label="Github"><i class="bi bi-github"></i></a>
 </div>
     </div>
       </div>
@@ -127,67 +127,45 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Background</span></a>
   </div>
 </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Day One</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./sequence-quality.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Sequence Quality - FastQC, MultiQC and Trimmomatic</span></a>
+ <span class="menu-text">Sequence quality</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index-align-quantify.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Quantifying Gene Expression</span></a>
+ <span class="menu-text">Index, align, quantify</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./exploratory.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Exploratory Analysis</span></a>
+ <span class="menu-text">Exploratory analysis</span></a>
   </div>
 </li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Day Two</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./dge.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Identify Differentially Expressed Genes</span></a>
+ <span class="menu-text">Differential gene expression</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./functional-analysis.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Functional analysis</span></a>
   </div>
 </li>
-      </ul>
-  </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
  <span class="menu-text">Supplementary</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./Supplementary/S1_hpc-job-scheduler.html" class="sidebar-item-text sidebar-link">
@@ -220,10 +198,7 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#rna-seq-data-analysis" id="toc-rna-seq-data-analysis" class="nav-link active" data-scroll-target="#rna-seq-data-analysis">RNA-seq Data Analysis</a>
   <ul>
-  <li><a href="#getting-started-with-rna-seq-data-analysis" id="toc-getting-started-with-rna-seq-data-analysis" class="nav-link" data-scroll-target="#getting-started-with-rna-seq-data-analysis">Getting started with RNA-seq data analysis</a>
-  <ul class="collapse">
-  <li><a href="#background-knowledge" id="toc-background-knowledge" class="nav-link" data-scroll-target="#background-knowledge">Background knowledge</a></li>
-  </ul></li>
+  <li><a href="#workshop-schedule" id="toc-workshop-schedule" class="nav-link" data-scroll-target="#workshop-schedule">Workshop schedule</a></li>
   <li><a href="#whats-covered-in-this-workshop" id="toc-whats-covered-in-this-workshop" class="nav-link" data-scroll-target="#whats-covered-in-this-workshop">What’s covered in this workshop</a></li>
   <li><a href="#whats-not-covered-in-this-workshop" id="toc-whats-not-covered-in-this-workshop" class="nav-link" data-scroll-target="#whats-not-covered-in-this-workshop">What’s not covered in this workshop</a></li>
   <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a></li>
@@ -234,9 +209,25 @@ ul.task-list li input[type="checkbox"] {
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Otago Bioinformatics Spring School 2026</h1>
+</div>
 
 
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
 
 
 <section id="rna-seq-data-analysis" class="level1">
@@ -246,14 +237,59 @@ ul.task-list li input[type="checkbox"] {
 <p><img src="theme_images/main_image.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
 </figure>
 </div>
-<section id="getting-started-with-rna-seq-data-analysis" class="level2">
-<h2 class="anchored" data-anchor-id="getting-started-with-rna-seq-data-analysis">Getting started with RNA-seq data analysis</h2>
-<p>This workshop aims to get you started with analysing your own RNA-seq data by providing an example workflow. At each of the major steps in the workflow we will examine issues that could confound your analysis and consider how different available methods address these issues.</p>
-<p>Rather than prescribing what methods you should use, this workshop aims to make the user aware of the biological and statistical challenges involved in analysing RNA-seq data and asks how different methods address those challenges. By the end of this workshop you should be familiar with the general workflow of RNA-seq analysis and be ready to ask informed questions about the specific methods you should select going forward.</p>
-<section id="background-knowledge" class="level4">
-<h4 class="anchored" data-anchor-id="background-knowledge">Background knowledge</h4>
-<p>This workflow assumes you are familiar with transcriptomic and biological concepts. In particular, it assumes you are familar with the concept of sequencing libraries and with the data format (i.e., FASTA and FASTQ files). For more information on these topics, see the <a href="https://datacarpentry.github.io/wrangling-genomics/index.html">Data Carpentry lesson</a> which describes the FASTQ format (i.e., files that contain reads and quality scores for the bases in each read) and <a href="https://sapac.illumina.com/science/technology/next-generation-sequencing/beginners.html">NGS basics by Illumina</a>, which describes the full process of sample to data, and further details on chosing an <a href="https://sapac.illumina.com/techniques/sequencing/ngs-library-prep/rna.html">NGS RNA library preparation method</a>, which describes different Illumina kits for prepping your RNA sample into a sequenceable library.</p>
-</section>
+<section id="workshop-schedule" class="level2">
+<h2 class="anchored" data-anchor-id="workshop-schedule">Workshop schedule</h2>
+<p><strong>Thursday 19th November, 2026</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Approx time</th>
+<th>Item</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>09:30 - 09:50</td>
+<td><a href="./background.html">An overview of RNA-seq data analysis workflows</a></td>
+</tr>
+<tr class="even">
+<td>09:50 - 10:30</td>
+<td><a href="./sequence-quality.html">Sequence Quality</a></td>
+</tr>
+<tr class="odd">
+<td>10:30 - 10:50</td>
+<td>BREAK</td>
+</tr>
+<tr class="even">
+<td>10:50 - 12:15</td>
+<td><a href="./index-align-quantify.html">Index, align and quantifying gene expression</a></td>
+</tr>
+<tr class="odd">
+<td>12:15 - 13:00</td>
+<td>LUNCH</td>
+</tr>
+<tr class="even">
+<td>13:00 - 13:30</td>
+<td>RNA-seq presentation by Dr Stephanie Waller</td>
+</tr>
+<tr class="odd">
+<td>13:30 - 14:30</td>
+<td><a href="./dge.html">Identifying differentially expressed genes</a></td>
+</tr>
+<tr class="even">
+<td>14:30 - 14:50</td>
+<td>BREAK</td>
+</tr>
+<tr class="odd">
+<td>14:50 - 16:00</td>
+<td><a href="./functional-analysis.html">Functional analysis</a></td>
+</tr>
+<tr class="even">
+<td>16:30</td>
+<td>END OF DAY</td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="whats-covered-in-this-workshop" class="level2">
 <h2 class="anchored" data-anchor-id="whats-covered-in-this-workshop">What’s covered in this workshop</h2>
@@ -264,7 +300,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
 <li>Aligning paired-end reads to a publically available genome.<br>
 </li>
-<li>Identifying differentially expressed genes with limma and DEseq2.</li>
+<li>Identifying differentially expressed genes with DEseq2.</li>
 <li>Functional annotation using GOseq to investigate trends in expression.</li>
 </ul>
 </section>
@@ -277,11 +313,11 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<p>During the workshop, code will be run in real-time to demonstrate the analysis. This will be run on the REANNZ OpenOnDemand platform which already has all the required software and R packages installed.</p>
+<p>During the workshop, code will be run in real-time to demonstrate the analysis. This will be run on the REANNZ OpenOnDemand HPC platform which already has all the required software and R packages installed.</p>
 </section>
 <section id="attribution-notice" class="level2">
 <h2 class="anchored" data-anchor-id="attribution-notice">Attribution notice</h2>
-<p>This workshop is an updated version on an existing version of <a href="https://genomicsaotearoa.github.io/RNA-seq-data-analysis-workflow/">RNA-seq data analysis workflow</a> by Genomics Aotearoa. It was written by <a href="https://github.com/chloevdb">Chloé van der Burg</a> while working as the <a href="https://genomicsaotearoa.github.io/BioinformaticsTrainingProgramme/meetTheTeam.html#get-to-know-the-team">Bioinformatics Training Coordinator</a> at <a href="https://www.genomics-aotearoa.org.nz/">Genomics Aotearoa</a>. It incorporates, and takes inspiration from, various training materials produced by the <a href="https://github.com/hbctraining">Harvard Bioinformatics Core</a> and from The Carpentries, specifically their <a href="https://carpentries-incubator.github.io/bioc-rnaseq/index.html">RNA-seq analysis with Bioconductor workshop</a>, and online guides such as <a href="https://kasperdanielhansen.github.io/genbioconductor/html/limma.html">Kasper D. Hansen’s guide on limma</a> and <a href="https://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html">Love, Anders and Huber’s guide on DESeq2</a>.</p>
+<p>This workshop is based on an existing <a href="https://genomicsaotearoa.github.io/RNA-seq-data-analysis-workflow-NZ/">Genomics Aotearoa RNAseq workshop</a>, shortened to fit in one day. Further attribution context is described in that workshop.</p>
 </section>
 </section>
 <section id="section" class="level1" style="background: #e6f2e6; text-align:center;">

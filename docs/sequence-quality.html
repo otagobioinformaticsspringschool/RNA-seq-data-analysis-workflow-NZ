@@ -109,7 +109,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <link rel="stylesheet" href="styles.css">
 <meta property="og:title" content="– RNA-seq data analysis workflow (NZ)">
-<meta property="og:description" content="">
 <meta property="og:image" content="theme_images/qc_image_whiteleftborder.png">
 <meta property="og:site_name" content="RNA-seq data analysis workflow (NZ)">
 <meta property="og:image:alt" content="QC">
@@ -124,7 +123,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./sequence-quality.html">Day One</a></li><li class="breadcrumb-item"><a href="./sequence-quality.html">Sequence Quality - FastQC, MultiQC and Trimmomatic</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./sequence-quality.html">Sequence quality</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -141,7 +140,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div class="sidebar-title mb-0 py-0">
       <a href="./">RNA-seq data analysis workflow (NZ)</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/GenomicsAotearoa/RNA-seq-data-analysis-workflow-NZ" title="Github" class="quarto-navigation-tool px-1" aria-label="Github"><i class="bi bi-github"></i></a>
+    <a href="https://github.com/otagobioinformaticsspringschool/RNA-seq-data-analysis-workflow-NZ" title="Github" class="quarto-navigation-tool px-1" aria-label="Github"><i class="bi bi-github"></i></a>
 </div>
     </div>
       </div>
@@ -164,67 +163,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Background</span></a>
   </div>
 </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Day One</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./sequence-quality.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Sequence Quality - FastQC, MultiQC and Trimmomatic</span></a>
+ <span class="menu-text">Sequence quality</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index-align-quantify.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Quantifying Gene Expression</span></a>
+ <span class="menu-text">Index, align, quantify</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./exploratory.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Exploratory Analysis</span></a>
+ <span class="menu-text">Exploratory analysis</span></a>
   </div>
 </li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Day Two</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./dge.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Identify Differentially Expressed Genes</span></a>
+ <span class="menu-text">Differential gene expression</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./functional-analysis.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Functional analysis</span></a>
   </div>
 </li>
-      </ul>
-  </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
  <span class="menu-text">Supplementary</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./Supplementary/S1_hpc-job-scheduler.html" class="sidebar-item-text sidebar-link">
@@ -255,36 +232,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Contents</h2>
    
   <ul>
-  <li><a href="#sequence-quality---fastqc-multiqc-and-trimmomatic" id="toc-sequence-quality---fastqc-multiqc-and-trimmomatic" class="nav-link active" data-scroll-target="#sequence-quality---fastqc-multiqc-and-trimmomatic">Sequence Quality - FastQC, MultiQC and Trimmomatic</a>
+  <li><a href="#sequence-quality---fastqc-and-trimmomatic" id="toc-sequence-quality---fastqc-and-trimmomatic" class="nav-link active" data-scroll-target="#sequence-quality---fastqc-and-trimmomatic">Sequence Quality - FastQC and Trimmomatic</a>
   <ul>
   <li><a href="#quality-assessment-with-fastqc" id="toc-quality-assessment-with-fastqc" class="nav-link" data-scroll-target="#quality-assessment-with-fastqc">Quality Assessment with FastQC</a>
   <ul class="collapse">
   <li><a href="#generating-fastqc-reports" id="toc-generating-fastqc-reports" class="nav-link" data-scroll-target="#generating-fastqc-reports">Generating FastQC reports</a></li>
   <li><a href="#viewing-the-fastqc-results" id="toc-viewing-the-fastqc-results" class="nav-link" data-scroll-target="#viewing-the-fastqc-results">Viewing the FastQC results</a></li>
   </ul></li>
-  <li><a href="#multiqc---multi-sample-analysis" id="toc-multiqc---multi-sample-analysis" class="nav-link" data-scroll-target="#multiqc---multi-sample-analysis">MultiQC - multi-sample analysis</a></li>
   <li><a href="#cleaning-reads-with-trimmomatic" id="toc-cleaning-reads-with-trimmomatic" class="nav-link" data-scroll-target="#cleaning-reads-with-trimmomatic">Cleaning reads with Trimmomatic</a>
   <ul class="collapse">
   <li><a href="#adapter-trimming" id="toc-adapter-trimming" class="nav-link" data-scroll-target="#adapter-trimming">Adapter trimming</a></li>
   <li><a href="#quality-trimming" id="toc-quality-trimming" class="nav-link" data-scroll-target="#quality-trimming">Quality trimming</a></li>
   </ul></li>
-  <li><a href="#multiqc-update" id="toc-multiqc-update" class="nav-link" data-scroll-target="#multiqc-update">MultiQC update</a></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./sequence-quality.html">Day One</a></li><li class="breadcrumb-item"><a href="./sequence-quality.html">Sequence Quality - FastQC, MultiQC and Trimmomatic</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
 
-<section id="sequence-quality---fastqc-multiqc-and-trimmomatic" class="level1">
-<h1>Sequence Quality - FastQC, MultiQC and Trimmomatic</h1>
+<section id="sequence-quality---fastqc-and-trimmomatic" class="level1">
+<h1>Sequence Quality - FastQC and Trimmomatic</h1>
 <div style="display: flex; gap: 20px;">
 <p><img src="theme_images/qc_image_whiteleftborder.png" alt="QC" style="width:45%"> <img src="theme_images/cleaning_reads.png" alt="Clean reads" style="width:45%"></p>
 </div>
-<p>In this episode we will look at quality assessment of the sequencing data. We will begin with FastQC, a free program which will analyse raw sequence data and output a visual summary. Then we will introduce MultiQC, a useful tool which can be used to combine results from different software packages into a single, coherent report. Finally we will look at read cleaning.</p>
 <section id="quality-assessment-with-fastqc" class="level2">
 <h2 class="anchored" data-anchor-id="quality-assessment-with-fastqc">Quality Assessment with FastQC</h2>
 <p>Quality assessment of high throughput sequencing data has been covered in depth and involves measurements of a number of sequence traits. FastQC, made by <a href="https://www.bioinformatics.babraham.ac.uk/projects/fastqc/">Babraham Institute</a>, is one of many options available for assessing the quality and is the one we will look at today. The output of FastQC is a visual representation of sequence quality which, if required, can then be used to investigate certain traits in more depth. FastQC provides a handy three colour binning system: green ticks for high quality, orange exclamation marks for middling quality that may require a manual investigation, and red crosses for low quality.</p>
@@ -410,25 +384,6 @@ SOLUTION
 </section>
 </section>
 </section>
-<section id="multiqc---multi-sample-analysis" class="level2">
-<h2 class="anchored" data-anchor-id="multiqc---multi-sample-analysis">MultiQC - multi-sample analysis</h2>
-<p>The MultiQC application will create a report based on all documents in a given directory. MultiQC will take inputs from many different software applications, including fastQC. The report is a concise, clear document that can be used to track samples as they progress through various stages of the analysis.</p>
-<p>To generate the MultiQC report first navigate to the RNA_seq directory and create a new output directory called MultiQC, then copy all target files to that directory (initially target files will be the FastQC documents generated above). Finally, execute the multiqc command.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/RNA_seq/</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> MultiQC <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> <span class="va">$_</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-r</span> ../FastQC/<span class="pp">*</span> ./</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">multiqc</span> .</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Click on the <code>multiqc_report.html</code> file to open it (you may also need to click a ‘Trust HTML’ button).</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/multiqc-fastqc.png" class="img-fluid figure-img"></p>
-<figcaption>MultiQC report</figcaption>
-</figure>
-</div>
-<p>After each step in the analysis (<em>e.g.,</em> read trimming, alignment) we will copy over new reports and summaries to the MultiQC directory and re-run the multiqc command. New MultiQC reports will be generated encompassing the additional information.</p>
-</section>
 <section id="cleaning-reads-with-trimmomatic" class="level2">
 <h2 class="anchored" data-anchor-id="cleaning-reads-with-trimmomatic">Cleaning reads with Trimmomatic</h2>
 <p>In the previous section, we took a high-level look at the quality of each of our samples using FastQC. We visualised per-base quality graphs showing the distribution of read quality at each base across all reads in a sample and extracted information about which samples fail which quality checks. Some of our samples failed a few quality metrics used by FastQC. This doesn’t mean that our samples should be thrown out! It’s very common to have some quality metrics fail, and this may or may not be a problem for your downstream application.</p>
@@ -473,47 +428,32 @@ SOLUTION
 <blockquote class="blockquote">
 <p>Note: As a reminder, you should never modify your raw data (and should ideally have raw data backed up in a remote and secure location).</p>
 </blockquote>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/RNA_seq</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> Trimmed <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> <span class="va">$_</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="va">ADAPTERSDIR</span><span class="op">=</span><span class="st">"/opt/nesi/CS400_centos7_bdw/Trimmomatic/0.39-Java-1.8.0_144/adapters"</span> </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="va">FILEDIR</span><span class="op">=</span><span class="st">"../RawReads"</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="va">UNPAIREDDIR</span><span class="op">=</span><span class="st">"unpaired"</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">$UNPAIREDDIR</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> sample <span class="kw">in</span> <span class="va">${FILEDIR}</span>/<span class="pp">*</span>_R1.fq.gz</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="va">name</span><span class="op">=</span><span class="va">$(</span><span class="fu">basename</span> <span class="va">${sample}</span> _R1.fq.gz<span class="va">)</span> </span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="ex">trimmomatic</span> PE <span class="dt">\</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">${FILEDIR}</span>/<span class="va">${name}</span>_R1.fq.gz <span class="va">${FILEDIR}</span>/<span class="va">${name}</span>_R2.fq.gz <span class="dt">\</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">${name}</span>_R1_trimmed.fq.gz  <span class="va">${UNPAIREDDIR}</span>/<span class="va">${name}</span>_R1_unpaired.fq.gz <span class="dt">\</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">${name}</span>_R2_trimmed.fq.gz  <span class="va">${UNPAIREDDIR}</span>/<span class="va">${name}</span>_R2_unpaired.fq.gz <span class="dt">\</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        ILLUMINACLIP:<span class="va">${ADAPTERSDIR}</span>/TruSeq3-PE-2.fa:2:30:10 <span class="dt">\</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        LEADING:5 TRAILING:5 SLIDINGWINDOW:4:15 MINLEN:36 <span class="dt">\</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        <span class="dv">2</span><span class="op">&gt;</span> <span class="va">${name}</span>_trimmomatic.log</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</section>
-</section>
-<section id="multiqc-update" class="level2">
-<h2 class="anchored" data-anchor-id="multiqc-update">MultiQC update</h2>
-<p>We can now copy the log files from Trimmomatic into our MultiQC directory and re-run the multiqc command to generate an updated report which includes our read cleaning information.</p>
-<p>Navigate to the MultiQC directory, copy over the log files from the Trimmed directory and rerun the <code>multiqc</code> command.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ../MultiQC</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cp</span> ../Trimmed/<span class="pp">*</span>log .</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="ex">multiqc</span> .</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Alternatively, you can run FastQC on the trimmed files, add the FastQC results to the MultiQC dir and re-run <code>multiqc .</code> to generate a report that has fastqc results from both the raw reads and trimmed reads. You also have the option to run multiqc on specific dirs only, rather than everything within one dir (<em>e.g.,</em> <code>multiqc dir1 dir2</code>)</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/multiqc-fastqc-trimmomatic.png" class="img-fluid figure-img"></p>
-<figcaption>Updated MultiQC report</figcaption>
-</figure>
-</div>
-<p>We can now see the Trimmomatic metrics have been added to the new report.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/RNA_seq</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> Trimmed <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> <span class="va">$_</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">ADAPTERSDIR</span><span class="op">=</span><span class="st">"/opt/nesi/CS400_centos7_bdw/Trimmomatic/0.39-Java-1.8.0_144/adapters"</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="va">FILEDIR</span><span class="op">=</span><span class="st">"../RawReads"</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="va">UNPAIREDDIR</span><span class="op">=</span><span class="st">"unpaired"</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">$UNPAIREDDIR</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> sample <span class="kw">in</span> <span class="va">${FILEDIR}</span>/<span class="pp">*</span>_R1.fq.gz</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="va">name</span><span class="op">=</span><span class="va">$(</span><span class="fu">basename</span> <span class="va">${sample}</span> _R1.fq.gz<span class="va">)</span> </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="ex">trimmomatic</span> PE <span class="dt">\</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">${FILEDIR}</span>/<span class="va">${name}</span>_R1.fq.gz <span class="va">${FILEDIR}</span>/<span class="va">${name}</span>_R2.fq.gz <span class="dt">\</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">${name}</span>_R1_trimmed.fq.gz  <span class="va">${UNPAIREDDIR}</span>/<span class="va">${name}</span>_R1_unpaired.fq.gz <span class="dt">\</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">${name}</span>_R2_trimmed.fq.gz  <span class="va">${UNPAIREDDIR}</span>/<span class="va">${name}</span>_R2_unpaired.fq.gz <span class="dt">\</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        ILLUMINACLIP:<span class="va">${ADAPTERSDIR}</span>/TruSeq3-PE-2.fa:2:30:10 <span class="dt">\</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        LEADING:5 TRAILING:5 SLIDINGWINDOW:4:15 MINLEN:36 <span class="dt">\</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        <span class="dv">2</span><span class="op">&gt;</span> <span class="va">${name}</span>_trimmomatic.log</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<blockquote class="blockquote">
+<p>Tip: It is recommended to re-assess your fastq quality after trimming, by running FastQC on the trimmed files to and compare to pre-trimming.</p>
+</blockquote>
 
 
+</section>
 </section>
 </section>
 
@@ -929,8 +869,8 @@ SOLUTION
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./index-align-quantify.html" class="pagination-link" aria-label="Quantifying Gene Expression">
-        <span class="nav-page-text">Quantifying Gene Expression</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./index-align-quantify.html" class="pagination-link" aria-label="Index, align, quantify">
+        <span class="nav-page-text">Index, align, quantify</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

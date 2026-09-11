@@ -13,15 +13,16 @@ website:
         href: index.qmd
       - text: "Background"
         href: background.qmd
-      - section: "Day One"  
-        contents:
-          - sequence-quality.qmd
-          - index-align-quantify.qmd
-          - exploratory.qmd
-      - section: "Day Two" 
-        contents:
-          - dge.qmd
-          - functional-analysis.qmd
+      - text: "Sequence quality"
+        href:  sequence-quality.qmd
+      - text: "Index, align, quantify"
+        href:  index-align-quantify.qmd
+      - text: "Exploratory analysis"
+        href: exploratory.qmd
+      - text: "Differential gene expression"
+        href: dge.qmd
+      - text: "Functional analysis"
+        href: functional-analysis.qmd
       - section: "Supplementary" 
         contents:
           - Supplementary/S1_hpc-job-scheduler.qmd
@@ -32,7 +33,7 @@ website:
     tools:
       - icon: github
         text: Github
-        href: https://github.com/GenomicsAotearoa/RNA-seq-data-analysis-workflow-NZ
+        href: https://github.com/otagobioinformaticsspringschool/RNA-seq-data-analysis-workflow-NZ
 
 format:
   html:

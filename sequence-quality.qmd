@@ -3,14 +3,11 @@ title: ""
 code-overflow: wrap
 ---
 
-# Sequence Quality - FastQC, MultiQC and Trimmomatic
+# Sequence Quality - FastQC and Trimmomatic
 <div style="display: flex; gap: 20px;">
   <img src="theme_images/qc_image_whiteleftborder.png" alt="QC" style="width:45%">
   <img src="theme_images/cleaning_reads.png" alt="Clean reads" style="width:45%">
 </div>
-
-In this episode we will look at quality assessment of the sequencing data. We will begin with FastQC, a free program which will analyse raw sequence data and output a visual summary. Then we will introduce MultiQC, a useful tool which can be used to combine results from different software packages into a single, coherent report. Finally we will look at read cleaning. 
-
 
 
 ## Quality Assessment with FastQC
@@ -120,31 +117,6 @@ The [FastQC documentation](https://www.bioinformatics.babraham.ac.uk/projects/fa
 
 
 
-## MultiQC - multi-sample analysis
-
-The MultiQC application will create a report based on all documents in a given directory. MultiQC will take inputs from many different software applications, including fastQC. The report is a concise, clear document that can be used to track samples as they progress through various stages of the analysis.
-
-To generate the MultiQC report first navigate to the RNA_seq directory and create a new output directory called MultiQC, then copy all target files to that directory (initially target files will be the FastQC documents generated above). Finally, execute the multiqc command. 
-
-```bash
-cd ~/RNA_seq/
-
-mkdir MultiQC && cd $_
-
-```
-
-```bash
-cp -r ../FastQC/* ./
-
-multiqc .
-```
-
-Click on the `multiqc_report.html` file to open it (you may also need to click a 'Trust HTML' button).
-
-![MultiQC report](images/multiqc-fastqc.png)
-
-After each step in the analysis (*e.g.,* read trimming, alignment) we will copy over new reports and summaries to the MultiQC directory and re-run the multiqc command. New MultiQC reports will be generated encompassing the additional information.  
-
 
 ## Cleaning reads with Trimmomatic
 
@@ -221,26 +193,6 @@ done
 
 
 
-## MultiQC update
 
-We can now copy the log files from Trimmomatic into our MultiQC directory and re-run the multiqc command to generate an updated report which includes our read cleaning information. 
-
-Navigate to the MultiQC directory, copy over the log files from the Trimmed directory and rerun the `multiqc` command. 
-
-```bash
-cd ../MultiQC
-
-cp ../Trimmed/*log .
-
-multiqc .
-```
-
-Alternatively, you can run FastQC on the trimmed files, add the FastQC results to the MultiQC dir and re-run `multiqc .`  to generate a report that has fastqc results from both the raw reads and trimmed reads. You also have the option to run multiqc on specific dirs only, rather than everything within one dir (*e.g.,* `multiqc dir1 dir2`)
-
-
-![Updated MultiQC report](images/multiqc-fastqc-trimmomatic.png)
-
-We can now see the Trimmomatic metrics have been added to the new report. 
-
-
+> Tip: It is recommended to re-assess your fastq quality after trimming, by running FastQC on the trimmed files to and compare to pre-trimming.  
 

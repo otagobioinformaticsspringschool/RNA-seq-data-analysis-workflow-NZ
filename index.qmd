@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "Otago Bioinformatics Spring School 2026"
 ---
 
 # RNA-seq Data Analysis
@@ -7,15 +7,26 @@ title: ""
 ![](theme_images/main_image.png){width=60% fig-align="center"}
 
 
-## Getting started with RNA-seq data analysis
-
-This workshop aims to get you started with analysing your own RNA-seq data by providing an example workflow. At each of the major steps in the workflow we will examine issues that could confound your analysis and consider how different available methods address these issues. 
-
-Rather than prescribing what methods you should use, this workshop aims to make the user aware of the biological and statistical challenges involved in analysing RNA-seq data and asks how different methods address those challenges. By the end of this workshop you should be familiar with the general workflow of RNA-seq analysis and be ready to ask informed questions about the specific methods you should select going forward. 
+## Workshop schedule 
 
 
-#### Background knowledge
-This workflow assumes you are familiar with transcriptomic and biological concepts. In particular, it assumes you are familar with the concept of sequencing libraries and with the data format (i.e., FASTA and FASTQ files). For more information on these topics, see the [Data Carpentry lesson](https://datacarpentry.github.io/wrangling-genomics/index.html) which describes the FASTQ format (i.e., files that contain reads and quality scores for the bases in each read) and [NGS basics by Illumina](https://sapac.illumina.com/science/technology/next-generation-sequencing/beginners.html), which describes the full process of sample to data, and further details on chosing an [NGS RNA library preparation method](https://sapac.illumina.com/techniques/sequencing/ngs-library-prep/rna.html), which describes different Illumina kits for prepping your RNA sample into a sequenceable library. 
+**Thursday 19th November, 2026**
+
+| Approx time      | Item                                              |
+|------------------|---------------------------------------------------|
+| 09:30 - 09:50    |  [An overview of RNA-seq data analysis workflows](background.qmd)   |
+| 09:50 - 10:30    | [Sequence Quality](sequence-quality.qmd)  |
+| 10:30 - 10:50    | BREAK                                             |
+| 10:50 - 12:15    | [Index, align and quantifying gene expression](index-align-quantify.qmd)          |
+| 12:15 - 13:00    | LUNCH                                             |
+| 13:00 - 13:30    | RNA-seq presentation by Dr Stephanie Waller           |
+| 13:30 - 14:30    | [Identifying differentially expressed genes](dge.qmd)          |
+| 14:30 - 14:50    | BREAK                                             |
+| 14:50 - 16:00       | [Functional analysis](functional-analysis.qmd)               |
+| 16:30            |  END OF DAY                                       |
+
+
+
 
 
 ## What's covered in this workshop
@@ -23,7 +34,7 @@ This workflow assumes you are familiar with transcriptomic and biological concep
 - Full RNAseq workflow of a New Zealand endemic species using both bash and R tools.  
 - Illumina short-read quality assessment and pre-processing.  
 - Aligning paired-end reads to a publically available genome.  
-- Identifying differentially expressed genes with limma and DEseq2. 
+- Identifying differentially expressed genes with DEseq2. 
 - Functional annotation using GOseq to investigate trends in expression.    
 
 ## What's not covered in this workshop
@@ -34,12 +45,12 @@ This workflow assumes you are familiar with transcriptomic and biological concep
 
 ## Setup
 
-During the workshop, code will be run in real-time to demonstrate the analysis. This will be run on the REANNZ OpenOnDemand platform which already has all the required software and R packages installed. 
+During the workshop, code will be run in real-time to demonstrate the analysis. This will be run on the REANNZ OpenOnDemand HPC platform which already has all the required software and R packages installed. 
 
 
 ## Attribution notice
 
-This workshop is an updated version on an existing version of [RNA-seq data analysis workflow](https://genomicsaotearoa.github.io/RNA-seq-data-analysis-workflow/) by Genomics Aotearoa. It was written by [Chloé van der Burg](https://github.com/chloevdb) while working as the [Bioinformatics Training Coordinator](https://genomicsaotearoa.github.io/BioinformaticsTrainingProgramme/meetTheTeam.html#get-to-know-the-team) at [Genomics Aotearoa](https://www.genomics-aotearoa.org.nz/). It incorporates, and takes inspiration from, various training materials produced by the [Harvard Bioinformatics Core](https://github.com/hbctraining) and from The Carpentries, specifically their [RNA-seq analysis with Bioconductor workshop](https://carpentries-incubator.github.io/bioc-rnaseq/index.html), and online guides such as [Kasper D. Hansen's guide on limma](https://kasperdanielhansen.github.io/genbioconductor/html/limma.html) and [Love, Anders and Huber's guide on DESeq2](https://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html). 
+This workshop is based on an existing [Genomics Aotearoa RNAseq workshop](https://genomicsaotearoa.github.io/RNA-seq-data-analysis-workflow-NZ/), shortened to fit in one day. Further attribution context is described in that workshop. 
 
 
 ::: {style="background: #e6f2e6; text-align:center; padding: 1.5rem; border-radius: 8px;"}

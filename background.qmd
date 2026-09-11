@@ -14,7 +14,11 @@ code-overflow: wrap
 :::
 
 
+## Getting started with RNA-seq data analysis
 
+This workshop aims to get you started with analysing your own RNA-seq data by providing an example workflow. At each of the major steps in the workflow we will examine issues that could confound your analysis and consider how different available methods address these issues. 
+
+Rather than prescribing what methods you should use, this workshop aims to make the user aware of the biological and statistical challenges involved in analysing RNA-seq data and asks how different methods address those challenges. By the end of this workshop you should be familiar with the general workflow of RNA-seq analysis and be ready to ask informed questions about the specific methods you should select going forward. 
 
 ## The RNA-seq workflow overview
 

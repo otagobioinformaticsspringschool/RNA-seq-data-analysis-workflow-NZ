@@ -105,7 +105,7 @@ ul.task-list li input[type="checkbox"] {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">RNA-seq data analysis workflow (NZ)</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/GenomicsAotearoa/RNA-seq-data-analysis-workflow-NZ" title="Github" class="quarto-navigation-tool px-1" aria-label="Github"><i class="bi bi-github"></i></a>
+    <a href="https://github.com/otagobioinformaticsspringschool/RNA-seq-data-analysis-workflow-NZ" title="Github" class="quarto-navigation-tool px-1" aria-label="Github"><i class="bi bi-github"></i></a>
 </div>
     </div>
       </div>
@@ -128,67 +128,45 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Background</span></a>
   </div>
 </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Day One</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./sequence-quality.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Sequence Quality - FastQC, MultiQC and Trimmomatic</span></a>
+ <span class="menu-text">Sequence quality</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index-align-quantify.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Quantifying Gene Expression</span></a>
+ <span class="menu-text">Index, align, quantify</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./exploratory.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Exploratory Analysis</span></a>
+ <span class="menu-text">Exploratory analysis</span></a>
   </div>
 </li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Day Two</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./dge.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Identify Differentially Expressed Genes</span></a>
+ <span class="menu-text">Differential gene expression</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./functional-analysis.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Functional analysis</span></a>
   </div>
 </li>
-      </ul>
-  </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
  <span class="menu-text">Supplementary</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./Supplementary/S1_hpc-job-scheduler.html" class="sidebar-item-text sidebar-link">
@@ -221,6 +199,7 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#the-rna-seq-workflow" id="toc-the-rna-seq-workflow" class="nav-link active" data-scroll-target="#the-rna-seq-workflow">The RNA-seq workflow</a>
   <ul>
+  <li><a href="#getting-started-with-rna-seq-data-analysis" id="toc-getting-started-with-rna-seq-data-analysis" class="nav-link" data-scroll-target="#getting-started-with-rna-seq-data-analysis">Getting started with RNA-seq data analysis</a></li>
   <li><a href="#the-rna-seq-workflow-overview" id="toc-the-rna-seq-workflow-overview" class="nav-link" data-scroll-target="#the-rna-seq-workflow-overview">The RNA-seq workflow overview</a>
   <ul class="collapse">
   <li><a href="#core-steps-in-a-common-workflow" id="toc-core-steps-in-a-common-workflow" class="nav-link" data-scroll-target="#core-steps-in-a-common-workflow">Core steps in a common workflow:</a></li>
@@ -268,6 +247,11 @@ Key points 🗝️
 </ul>
 </div>
 </div>
+<section id="getting-started-with-rna-seq-data-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="getting-started-with-rna-seq-data-analysis">Getting started with RNA-seq data analysis</h2>
+<p>This workshop aims to get you started with analysing your own RNA-seq data by providing an example workflow. At each of the major steps in the workflow we will examine issues that could confound your analysis and consider how different available methods address these issues.</p>
+<p>Rather than prescribing what methods you should use, this workshop aims to make the user aware of the biological and statistical challenges involved in analysing RNA-seq data and asks how different methods address those challenges. By the end of this workshop you should be familiar with the general workflow of RNA-seq analysis and be ready to ask informed questions about the specific methods you should select going forward.</p>
+</section>
 <section id="the-rna-seq-workflow-overview" class="level2">
 <h2 class="anchored" data-anchor-id="the-rna-seq-workflow-overview">The RNA-seq workflow overview</h2>
 <p>We will assume that the aim of our RNA-seq experiment is to identify a set of genes which are differentially expressed between two or more groups, and to derive biologically meaningful information from our gene list(s).</p>
@@ -765,8 +749,8 @@ Solution
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./sequence-quality.html" class="pagination-link" aria-label="Sequence Quality - FastQC, MultiQC and Trimmomatic">
-        <span class="nav-page-text">Sequence Quality - FastQC, MultiQC and Trimmomatic</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./sequence-quality.html" class="pagination-link" aria-label="Sequence quality">
+        <span class="nav-page-text">Sequence quality</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

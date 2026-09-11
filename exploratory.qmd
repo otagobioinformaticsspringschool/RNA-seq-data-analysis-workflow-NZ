@@ -49,6 +49,7 @@ counts  <- read.table("DataFiles/counts.txt",  sep="\t", header=TRUE, row.names=
 
 
 
+
 ::: {.callout-note collapse="true"}
 # Want to load this dataset on your own computer?
 
@@ -59,9 +60,15 @@ If you are completing this workshop on your own local machine, run the code belo
 coldata <- read.table("https://raw.githubusercontent.com/GenomicsAotearoa/RNA-seq-data-analysis-workflow-NZ/refs/heads/main/data-files/coldata.txt", sep="\t", header=TRUE)
 counts  <- read.table("https://raw.githubusercontent.com/GenomicsAotearoa/RNA-seq-data-analysis-workflow-NZ/refs/heads/main/data-files/counts.txt",  sep="\t", header=TRUE, row.names=1)
 
+
 ```
 :::
 
+
+```{r}
+coldata <- coldata[match(colnames(counts), coldata$sample), ]
+identical(colnames(counts), coldata$sample)
+```
 
 
 Now let's take a look at the counts data.
@@ -84,7 +91,7 @@ The first column has all our sample names, which match exactly the column names 
 
 
 
-## Remove non-expressed genes (optional)
+## Remove lowly expressed genes (optional)
 
 If you are working in a complex organism, many genes will not be expressed in all tissue types. It can be worth checking to see how many genes have zero counts and opting to remove these from your data object.
 
@@ -98,46 +105,21 @@ summary(counts)
 ```
 
 
-Zero counts automatically removed during DEseq, but for visualisation need to deal with them. either remove very low counts or add 1 (when logging). 
-
-We'll cover ways to filter out lower counts 
-
+Zero count genes are automatically removed during differential gene expression, so are not a problem for downstream analysis. But for visualisation we likley need to deal with them. There will also likely be genes that are expressed in some samples, but not in others, and the zeros can cause issues with plotting there too.  It is common to remove genes with very low counts, but there are different approaches to chosing the threshold. For now, when plotting genes we need to log2 the counts, after adding 1 to all counts so that we don't log zero (which will result in an error or infinite value).  
 
 ## Visualising our data set
 
 ### Count distribution
 
+
 ```{r}
-
-
 # Convert counts data to long format for ggplot
 counts_long <- counts %>%
   as.data.frame() %>%
   tibble::rownames_to_column("Gene") %>%
   tidyr::pivot_longer(cols = -Gene, names_to = "sample", values_to = "Counts")
 
-# Create boxplot with ggplot2
-ggplot(counts_long, aes(x = sample, y = Counts)) +
-  geom_boxplot() +
-  labs(x = "Samples", y = "Counts") +
-  theme_minimal() 
-
-
-```
-
-
-
-This figure indicates we should consider logging our data (for the purpose of visualisations).
-
-Log2 transform the data, adding 1 to avoid log(0) errors.
-
-We use log2 for counts for RNAseq - more on why later!
-
-
-```{r}
-
-
-# create new df that includes counts in long form and all metadata in the coldata
+# Create new df that includes counts in long form and all metadata in the coldata
 counts_long_metadata <- counts_long |> 
   left_join(coldata, by = "sample")  |>
   mutate(sample = fct_reorder(sample, histology))

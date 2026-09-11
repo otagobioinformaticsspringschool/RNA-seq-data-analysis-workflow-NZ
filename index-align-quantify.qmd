@@ -12,7 +12,7 @@ In order to draw conclusions about gene expression from our reads, we need to fi
 
 The first approach to read quantification involves aligning reads to the genome first, and then counting the number of reads that are aligned to certain genomic features (*e.g.,* exons). This method may generally be referred to as the 'count' method, but it is still a form of quantification, and the output is by default at the gene level.  
 
-The second approach, which we will not do today, involves creating transcript expression estimates via pseudoalignment, often referred to informally as 'pseudocounts'. In this method, reads are *not* aligned to the genome. Instead, they are pseudoaligned to kmers within the transcriptome and their abundance is estimated. While the output for these tools (e.g., Kallisto, Salmon) are by default at a transcript level, they can be converted to a gene level expression estimate.  
+The second approach, which we will not do today, involves creating transcript expression estimates via pseudoalignment, often referred to informally as 'pseudocounts'. In this method, reads are *not* aligned to the genome. Instead, they are pseudoaligned to kmers within the transcriptome and their abundance is estimated. While the output for these tools (*e.g.,* Kallisto, Salmon) are by default at a transcript level, they can be converted to a gene level expression estimate.  
 
 In today's workflow we will demonstrate genome alignment and counting using STAR.
 
@@ -387,82 +387,4 @@ This file format should look like this:
 ![](images/counts-table-example.png)
 
 > Avoid Excel! Yes we used Excel here to show how the rows and columns should be formatted. However, many gene names get converted to dates in Excel. Best not to use it if you can. 
-
-
-
-### MultiQC 
-
-STAR output data can also be incorporated into the MultiQC report. 
-
-Navigate to your RNA_seq/MultiQC dir, copy all the Log.final.out files to the MultiQC dir and then run multiqc:
-
-```bash
-cd ~/RNA_seq/MultiQC
-
-cp ../Align/*Log.final.out .
-
-multiqc .
-```
-
-![MultiQC after alignment](images/multiqc-fastqc-trimmomatic-star.png)
-
-
-\
-
-***Now we are ready to move on to differential gene expression analysis!*** 
-
-
-## Extra: Converting SAM <-> BAM 
-
-SAM files or 'Sequence Alignment Map' are tab-delimited text files containing information for each individual read and its alignment to the genome. SAM files are human-readable, in that you can open them in a text editor or use cat/head on these files in shell. SAM files are large, so the first thing we do with them is convert them to BAM (Binary Alignment Map) files: compressed, binary versions of the file which reduce time and can themselves be indexed for efficiency when we interact with them (BAM are not human-readable). 
-
-If you want to do use different tools for downstream analyses of alignments, you may need to do some converting of SAM to BAM files. For example, read summarisation tools such as `featureCounts` and `htseq-count` require BAM files as input for counting reads per gene.
-
-You can convert the SAM file to the BAM format using the samtools program with the view command. Use the `-S` flag to specify the input is a SAM file, and the `-b` flag to specify BAM as the output. Here is an example for loop to convert all SAMs to BAMs. 
-
-```bash
-for filename in *.sam
-do
-base=$(basename ${filename} .sam)
-samtools view -S -b ${filename} -o ${base}.bam
-done
-```
-
-You'll also likely need to sort the BAM files, which mean future analysis steps are more efficient. From the samtools program use the sort command, with the `-o` flag to specify where the output file should go.
-
-```bash
-for filename in *.bam
-do
-base=$(basename ${filename} .bam)
-samtools sort -o ${base}_sorted.bam ${filename}
-done
-```
-
-To convert BAM to SAM:
-
-```bash
-for filename in *.bam
-do
-base=$(basename ${filename} .bam)
-samtools view -h ${filename} -o ${base}.sam
-done
-```
-
-
-## Extra: Read summarisation  
-
-Sequencing reads often need to be assigned to genomic features of interest after they are mapped to the reference genome. This process is often called read summarisation or read quantification. Read summarisation is required by a number of downstream analyses such as gene expression analysis and histone modification analysis. The output of read summarisation is a count table, in which the number of reads assigned to each feature in each library is recorded. In our case each feature is an exon. 
-
-In this workshop we used STAR with the flag `--quantMode GeneCounts`, which uses the software htseq-count to output reads, so we don't need to do this step separately. However it is possible to use a different software for read summarisation, such as the featureCounts tool, from the Subread package.
-
-FeatureCounts is generally faster than htseq-count, and is more efficient when you have many samples. The output is also a little more 'R-friendly' than the htseq-count output, but both can be manipulated in R to get them into the same format for downstream analyses. The paper for [featureCounts by Liao et al., 2014](https://academic.oup.com/nar/article/42/11/e108/1094278) compares the performance of featureCounts and htseq-count; these tools generally show good concordance but have nuanced differences for different applications. 
-
-The `featureCounts` command will require five different flags. Use the `-a` flag to specify the annotation file, in this case the .gtf file we used earlier. The `-o` flag names the output file (e.g., counts.txt), while the `-T` flag specifies the number of threads/CPUs used for mapping. The `-t` flag is used to control the feature type in the GTF annotation file, use exon (which is also the default). Finally, the `-g` flag specifies the attribute type in the GTF file. Use the `gene_id` option (again, the default). 
-
-```bash
-featureCounts -a /path/to/annotation.gtf -o counts.txt -T 2 -t exon -g gene_id /path/to/sorted.bam
-```
-
-These counts.txt are the equivalent to the ReadsPerGene.tab.out we generated earlier (slightly different ouptut format, but both contain the counts for how many reads mapped to each gene). 
-
 
