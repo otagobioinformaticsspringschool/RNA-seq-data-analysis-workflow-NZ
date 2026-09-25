@@ -3,7 +3,7 @@ title: ""
 code-overflow: wrap
 ---
 
-# Gene expression heatmap
+# Supp 2: Gene expression heatmap
 
 There are several ways to generate heatmaps in R. 
 
@@ -11,6 +11,8 @@ There are several ways to generate heatmaps in R.
 * `heatmap()` from the base R stats package
 * `pheatmap()` from the pheatmap package
 * and other options such as `ComplexHeatmap` and `heatmaply`.
+
+> Note: Heatmaps are a useful tool for spotting large-scale expression patterns, but they are also easy to misinterpret and can exaggerate differences. Proceed with caution and wear your critical thinking hat. 
 
 
 ## Read in data and transform

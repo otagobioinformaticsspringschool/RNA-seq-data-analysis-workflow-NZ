@@ -26,8 +26,8 @@ website:
       - section: "Supplementary" 
         contents:
           - Supplementary/S1_hpc-job-scheduler.qmd
-          - Supplementary/S2_functional.qmd
-          - Supplementary/S3_heatmap.qmd
+          - Supplementary/S2_heatmap.qmd
+          - Supplementary/S3_functional.qmd
 
 
     tools:

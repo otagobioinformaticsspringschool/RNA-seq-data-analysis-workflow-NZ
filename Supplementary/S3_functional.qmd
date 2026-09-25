@@ -3,11 +3,18 @@ title: ""
 code-overflow: wrap
 ---
 
-# Functional analysis with a supported organism
+# Supp 3: Functional analysis with a supported organism
 
 ### GOseq
 
-::: {.callout-warning collapse="true"}
+In this workshop we show an example of how to perform GOSeq if you *are not* working on a species that is a supported organism. 
+
+If you do work on a species with supported annotations (most model species), the pipeline you can use for running GOseq is much simpler and does not require you to make and supply your own gene lengths and GO annotations files. You can [check if your research organism is supported here.](https://bioconductor.org/packages/release/BiocViews.html#___OrgDb) 
+
+This example below comes from [our other RNAseq workshop](https://genomicsaotearoa.github.io/RNA-seq-data-analysis-workflow/) that uses a yeast dataset. 
+
+
+::: {.callout-warning collapse="false"}
 # A word of warning about defining your background gene list
 Here we use the whole genome to generate our background gene list. This approach may not always be appropriate, and it is up to you to decide what is the most biologically appropriate gene list to use as the background. For example, if you are comparing gene expression across samples from a tissue type that is known to be naturally high in apoptotic procesess, then using the whole genome as a background gene list may 'drown out' the signal. Instead, you may want to use all of the genes that are generally known to be expressed in that tissue as your background (e.g., this could be by using a set of control samples, or by using all genes detected as differentially expressed in all your samples together).
 :::
@@ -17,7 +24,6 @@ Load the goseq package, the dplyr package (if you haven't already), and use the 
 The code for *Saccharomyces cerevisiae* is sacCer.
 
 ```{r}
-#| eval: false
 #| message: false
 #| output: false
 # BiocManager::install("goseq")
@@ -40,9 +46,8 @@ Note #2: the tt object was created when we used limma to identify differentially
 tt is 7,127 rows, and has genes stored as row names, includes the logFC, and adj.P.Val columns.
 
 ```{r}
-#| eval: false
 
-load("tt.RData")
+load("data-files-supp/tt.RData")
 
 genes <- ifelse(tt$adj.P.Val <= 0.05, 1, 0)
 
@@ -57,7 +62,6 @@ Note #3: because tt is ordered (that is, all the genes with low p values are at 
 Another useful check is to use the `table()` function to ask how many genes fall into each category.
 
 ```{r}
-#| eval: false
 
 table(genes)
 ```
@@ -69,7 +73,6 @@ Most experiments will not have this level of differential expression.
 # IF you did want to include the logFC cutoff, you can use the code below...
 
 ```{r}
-#| eval: false
 
 genes2 <- ifelse(tt$adj.P.Val <= 0.05 & (abs(tt$logFC) > log2(2)), 1, 0)
 names(genes2) <- rownames(tt)
@@ -106,7 +109,6 @@ Note: you will frequently get a *Warning in pcls(G): initial point very close to
 
 
 ```{r}
-#| eval: false
 
 pwf <- nullp(genes, "sacCer1", "ensGene")
 
@@ -121,7 +123,6 @@ The pwf value will be less than 1, and indicates how much a gene should be 'coun
 We can predict that pwf and bias (length) are opposing values, and we can visualise that data:
 
 ```{r}
-#| eval: false
 
 par(mfrow=c(1,2))
 hist(pwf$bias.data,30)
@@ -135,8 +136,7 @@ We can now carry out our Fishers Exact test using the pwf value instead of the r
 We will use the `goseq()` function to perform this test, and output the over-representation data into an object.
 
 ```{r}
-#| eval: false
-
+#| message: false
 
 # BiocManager::install("org.Sc.sgd.db")
 # BiocManager::install("AnnotationDbi")
@@ -154,7 +154,6 @@ You might have noticed that the GO.wall object doesn't automatically perform an 
 We will then use the adjusted p-values as a filtering criteria, and include the columns that correspond to category, term, and ontology (using the `colnames()` function, we can see that these are columns 1, 6 and 7).
 
 ```{r}
-#| eval: false
 
 GO.wall.padj = p.adjust(GO.wall$over_represented_pvalue, method="fdr")
 
@@ -174,7 +173,6 @@ If you choose to apply this filter, re-make the GO.wall.sig object.
 Here we are filtering with a requirement that the category contains fewer than 500 genes. 
 
 ```{r}
-#| eval: false
 
 GO.wall.sig <- GO.wall[GO.wall.padj < 0.05 & GO.wall$numInCat < 500, c(1,6,7)]
 
@@ -188,7 +186,6 @@ The final step we will take here is to use the GO.db package to retrieve more de
 GO.db will use the unique identifier in the category column and provide more information.
 
 ```{r}
-#| eval: false
 
 library(GO.db)
 

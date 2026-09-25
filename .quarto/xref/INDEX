@@ -55,5 +55,11 @@
   },
   "Supplementary/S3_heatmap.qmd": {
     "S3_heatmap.html": "1fdc60c8"
+  },
+  "Supplementary/S2_heatmap.qmd": {
+    "S2_heatmap.html": "f2744e64"
+  },
+  "Supplementary/S3_functional.qmd": {
+    "S3_functional.html": "443d434a"
   }
 }

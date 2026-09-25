@@ -122,7 +122,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Supplementary/S1_hpc-job-scheduler.html">Supplementary</a></li><li class="breadcrumb-item"><a href="../Supplementary/S3_heatmap.html">Gene expression heatmap</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Supplementary/S1_hpc-job-scheduler.html">Supplementary</a></li><li class="breadcrumb-item"><a href="../Supplementary/S3_heatmap.html">Supp 2: Gene expression heatmap</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -204,19 +204,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Supplementary/S1_hpc-job-scheduler.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Working with a HPC Job Scheduler</span></a>
+ <span class="menu-text">Supp 1: Working with a HPC Job Scheduler</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Supplementary/S2_functional.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Functional analysis with a supported organism</span></a>
+ <span class="menu-text">Supp 3: Functional analysis with a supported organism</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../Supplementary/S3_heatmap.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Gene expression heatmap</span></a>
+ <span class="menu-text">Supp 2: Gene expression heatmap</span></a>
   </div>
 </li>
       </ul>
@@ -231,7 +231,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Contents</h2>
    
   <ul>
-  <li><a href="#gene-expression-heatmap" id="toc-gene-expression-heatmap" class="nav-link active" data-scroll-target="#gene-expression-heatmap">Gene expression heatmap</a>
+  <li><a href="#supp-2-gene-expression-heatmap" id="toc-supp-2-gene-expression-heatmap" class="nav-link active" data-scroll-target="#supp-2-gene-expression-heatmap">Supp 2: Gene expression heatmap</a>
   <ul>
   <li><a href="#read-in-data-and-transform" id="toc-read-in-data-and-transform" class="nav-link" data-scroll-target="#read-in-data-and-transform">Read in data and transform</a>
   <ul class="collapse">
@@ -245,13 +245,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Supplementary/S1_hpc-job-scheduler.html">Supplementary</a></li><li class="breadcrumb-item"><a href="../Supplementary/S3_heatmap.html">Gene expression heatmap</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Supplementary/S1_hpc-job-scheduler.html">Supplementary</a></li><li class="breadcrumb-item"><a href="../Supplementary/S3_heatmap.html">Supp 2: Gene expression heatmap</a></li></ol></nav></header>
 
 
 
 
-<section id="gene-expression-heatmap" class="level1">
-<h1>Gene expression heatmap</h1>
+<section id="supp-2-gene-expression-heatmap" class="level1">
+<h1>Supp 2: Gene expression heatmap</h1>
 <p>There are several ways to generate heatmaps in R.</p>
 <ul>
 <li><code>geom_tile()</code> from the ggplot2 package</li>
@@ -259,6 +259,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>pheatmap()</code> from the pheatmap package</li>
 <li>and other options such as <code>ComplexHeatmap</code> and <code>heatmaply</code>.</li>
 </ul>
+<blockquote class="blockquote">
+<p>Note: Heatmaps are a useful tool for spotting large-scale expression patterns, but they are also easy to misinterpret and can exaggerate differences. Proceed with caution and wear your critical thinking hat.</p>
+</blockquote>
 <section id="read-in-data-and-transform" class="level2">
 <h2 class="anchored" data-anchor-id="read-in-data-and-transform">Read in data and transform</h2>
 <p>First let’s read in our data</p>
@@ -831,8 +834,8 @@ LOC117813794       62</code></pre>
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../Supplementary/S2_functional.html" class="pagination-link" aria-label="Functional analysis with a supported organism">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Functional analysis with a supported organism</span>
+      <a href="../Supplementary/S2_functional.html" class="pagination-link" aria-label="Supp 3: Functional analysis with a supported organism">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Supp 3: Functional analysis with a supported organism</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

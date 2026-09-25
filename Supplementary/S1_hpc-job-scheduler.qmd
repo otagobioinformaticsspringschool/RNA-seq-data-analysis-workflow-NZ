@@ -3,7 +3,7 @@ title: ""
 code-overflow: wrap
 ---
 
-# Working with a HPC Job Scheduler 
+# Supp 1: Working with a HPC Job Scheduler 
 
 In this workshop, we have been running each step of fastqc, trimming, indexing, and aligning directly on the command line. This is not always best practise, for a few reasons, and what you will likely need to do is translate this code into a **script**. For one, it is easier to reproduce and automate your workflow when everything you do is in a script. But perhaps more importantly, when working on a HPC environment, your direct command line inputs are operating on the head node or log in node. Many of these software used require more CPUs/memory than can be allocated on the head node and therefore you need to submit your job to the HPC job scheduler (*e.g.,* SLURM or PBS) to run the job more efficiently on allocated compute resources. 
 
@@ -20,13 +20,7 @@ First, make a `samples.txt` file that contains the basename of the files. This w
 ls path/to/Trimmed/*_R1_trimmed.fq.gz | xargs -n1 basename | sed 's/_R1_trimmed\.fq\.gz//' > samples.txt
 ```
 
-::: {.callout-warning}
-
-# EDIT
-
-:::
-
-Note: this script assume you are currently in your alignment dir (where you want the star alignment results to go), which is where the `samples.txt` file will also go, and that your trimmed read files are in a directory called `../Trimmed` relative to your current directory. 
+Note: this script assumes you are currently in your alignment dir (where you want the star alignment results to go), which is where the `samples.txt` file will also go, and that your trimmed read files are in a directory called `../Trimmed` relative to your current directory. 
 
 
 ::: {.callout-note collapse="true" appearance="minimal"}

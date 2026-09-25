@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>s1_hpc-job-scheduler – RNA-seq data analysis workflow (NZ)</title>
+<title>s2_heatmap – RNA-seq data analysis workflow (NZ)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,8 +65,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../Supplementary/S2_heatmap.html" rel="next">
-<link href="../functional-analysis.html" rel="prev">
+<link href="../Supplementary/S3_functional.html" rel="next">
+<link href="../Supplementary/S1_hpc-job-scheduler.html" rel="prev">
 <link href="../theme_images/GA-image-black-favicon.png" rel="icon" type="image/png">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -110,6 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="– RNA-seq data analysis workflow (NZ)">
 <meta property="og:description" content="">
+<meta property="og:image" content="S2_heatmap_files/figure-html/unnamed-chunk-5-1.png">
 <meta property="og:site_name" content="RNA-seq data analysis workflow (NZ)">
 </head>
 
@@ -122,7 +123,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Supplementary/S1_hpc-job-scheduler.html">Supplementary</a></li><li class="breadcrumb-item"><a href="../Supplementary/S1_hpc-job-scheduler.html">Supp 1: Working with a HPC Job Scheduler</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Supplementary/S1_hpc-job-scheduler.html">Supplementary</a></li><li class="breadcrumb-item"><a href="../Supplementary/S2_heatmap.html">Supp 2: Gene expression heatmap</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -203,13 +204,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Supplementary/S1_hpc-job-scheduler.html" class="sidebar-item-text sidebar-link active">
+  <a href="../Supplementary/S1_hpc-job-scheduler.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Supp 1: Working with a HPC Job Scheduler</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Supplementary/S2_heatmap.html" class="sidebar-item-text sidebar-link">
+  <a href="../Supplementary/S2_heatmap.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Supp 2: Gene expression heatmap</span></a>
   </div>
 </li>
@@ -231,104 +232,200 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Contents</h2>
    
   <ul>
-  <li><a href="#supp-1-working-with-a-hpc-job-scheduler" id="toc-supp-1-working-with-a-hpc-job-scheduler" class="nav-link active" data-scroll-target="#supp-1-working-with-a-hpc-job-scheduler">Supp 1: Working with a HPC Job Scheduler</a></li>
+  <li><a href="#supp-2-gene-expression-heatmap" id="toc-supp-2-gene-expression-heatmap" class="nav-link active" data-scroll-target="#supp-2-gene-expression-heatmap">Supp 2: Gene expression heatmap</a>
+  <ul>
+  <li><a href="#read-in-data-and-transform" id="toc-read-in-data-and-transform" class="nav-link" data-scroll-target="#read-in-data-and-transform">Read in data and transform</a>
+  <ul class="collapse">
+  <li><a href="#note-on-transforming-counts-for-plotting" id="toc-note-on-transforming-counts-for-plotting" class="nav-link" data-scroll-target="#note-on-transforming-counts-for-plotting">Note on transforming counts for plotting</a></li>
+  </ul></li>
+  <li><a href="#ggplot2-heatmap-with-geom_tile" id="toc-ggplot2-heatmap-with-geom_tile" class="nav-link" data-scroll-target="#ggplot2-heatmap-with-geom_tile">ggplot2 heatmap with <code>geom_tile()</code></a></li>
+  <li><a href="#heatmap" id="toc-heatmap" class="nav-link" data-scroll-target="#heatmap"><code>heatmap()</code></a></li>
+  <li><a href="#pheatmap" id="toc-pheatmap" class="nav-link" data-scroll-target="#pheatmap"><code>pheatmap()</code></a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Supplementary/S1_hpc-job-scheduler.html">Supplementary</a></li><li class="breadcrumb-item"><a href="../Supplementary/S1_hpc-job-scheduler.html">Supp 1: Working with a HPC Job Scheduler</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Supplementary/S1_hpc-job-scheduler.html">Supplementary</a></li><li class="breadcrumb-item"><a href="../Supplementary/S2_heatmap.html">Supp 2: Gene expression heatmap</a></li></ol></nav></header>
 
 
 
 
-<section id="supp-1-working-with-a-hpc-job-scheduler" class="level1">
-<h1>Supp 1: Working with a HPC Job Scheduler</h1>
-<p>In this workshop, we have been running each step of fastqc, trimming, indexing, and aligning directly on the command line. This is not always best practise, for a few reasons, and what you will likely need to do is translate this code into a <strong>script</strong>. For one, it is easier to reproduce and automate your workflow when everything you do is in a script. But perhaps more importantly, when working on a HPC environment, your direct command line inputs are operating on the head node or log in node. Many of these software used require more CPUs/memory than can be allocated on the head node and therefore you need to submit your job to the HPC job scheduler (<em>e.g.,</em> SLURM or PBS) to run the job more efficiently on allocated compute resources.</p>
-<p>See here our GA workshop on <a href="https://genomicsaotearoa.github.io/BioinformaticsTrainingProgramme/portfolio.html#bash-script-hpc-job">Bash Scripting and HPC Job Scheduler</a> for more details on how to prepare, run and optimise a SLURM script.</p>
-<p><strong>Example only: Submitting STAR alignment to SLURM</strong></p>
-<p>Once we have confirmed the STAR alignment code works for our first sample, the next step would be to align all the samples to the genome. As this would take quite a while, we won’t do that in this workshop and we will instead supply the outputs for all samples. We could do all the alignments with a <em>for loop</em>, but as we have many samples and <em>for loops</em> run one sample at a time, this is not the most efficient way to do this. We need to write a slurm script as an array job and submit it to the HPC job scheduler (<em>i.e.,</em> SLURM on REANNZ) to allocate CPUs and memory for the job. We won’t be doing this in this workshop either, but you can see an example of a SLURM script below.</p>
-<p>First, make a <code>samples.txt</code> file that contains the basename of the files. This way we can extract the prefix we want for the outfiles in a way that works nicely with an array job.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> path/to/Trimmed/<span class="pp">*</span>_R1_trimmed.fq.gz <span class="kw">|</span> <span class="fu">xargs</span> <span class="at">-n1</span> basename <span class="kw">|</span> <span class="fu">sed</span> <span class="st">'s/_R1_trimmed\.fq\.gz//'</span> <span class="op">&gt;</span> samples.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Note: this script assumes you are currently in your alignment dir (where you want the star alignment results to go), which is where the <code>samples.txt</code> file will also go, and that your trimmed read files are in a directory called <code>../Trimmed</code> relative to your current directory.</p>
-<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<section id="supp-2-gene-expression-heatmap" class="level1">
+<h1>Supp 2: Gene expression heatmap</h1>
+<p>There are several ways to generate heatmaps in R.</p>
+<ul>
+<li><code>geom_tile()</code> from the ggplot2 package</li>
+<li><code>heatmap()</code> from the base R stats package</li>
+<li><code>pheatmap()</code> from the pheatmap package</li>
+<li>and other options such as <code>ComplexHeatmap</code> and <code>heatmaply</code>.</li>
+</ul>
+<blockquote class="blockquote">
+<p>Note: Heatmaps are a useful tool for spotting large-scale expression patterns, but they are also easy to misinterpret and can exaggerate differences. Proceed with caution and wear your critical thinking hat.</p>
+</blockquote>
+<section id="read-in-data-and-transform" class="level2">
+<h2 class="anchored" data-anchor-id="read-in-data-and-transform">Read in data and transform</h2>
+<p>First let’s read in our data</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>counts  <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"DataFiles/counts.txt"</span>,  <span class="at">sep=</span><span class="st">"</span><span class="sc">\t</span><span class="st">"</span>, <span class="at">header=</span><span class="cn">TRUE</span>, <span class="at">row.names=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
+<i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-samples.txt example –&gt;
+Read in data from Github instead
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
 <div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> samples.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<pre class="output"><code>SI16_1G_lib56
-SI16_21G_lib63
-SI16_22G_lib64
-SI16_23G_lib65
-SI16_2G_lib57
-SI16_3G_lib58
-SI18_15G_lib09
-SI18_16G_lib10
-SI18_18G_lib11
-SI18_22G_lib15
-SI18_30G_lib22
-SI18_35G_lib27
-SI18_36G_lib28
-SI18_48G_lib38
-SI18_52G_lib42</code></pre>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>counts <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"https://raw.githubusercontent.com/GenomicsAotearoa/RNA-seq-data-analysis-workflow-NZ/refs/heads/main/data-files/counts.txt"</span>,  <span class="at">sep=</span><span class="st">"</span><span class="sc">\t</span><span class="st">"</span>, <span class="at">header=</span><span class="cn">TRUE</span>, <span class="at">row.names=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
-<p>As an example, this below is what a slurm script may look like for running the STAR align step. Note the use of things like relative paths – you need to adjust the paths to work from the directory in which your script is submitted from.</p>
-<p>Slurm scripts are text files, and use the .sl extension by convention. You can use <code>nano</code> to create a script.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nano</span> star-align.sl </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Then paste in the below text into nano, save and exit. You may need to adjust the amount of memory, time and CPUs allocated for the job depending on the size of your data. As this is set up as an array job, each sample will be aligned in parallel in its own job (each with the amount of memory and CPUs specified), which is much more efficient than running a <em>for loop</em>.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --job-name=star_align_array</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --array=1-15 # adjust to number of samples you have</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH -A nesiprojectID</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --output=logs/star_%A_%a.out</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --error=logs/star_%A_%a.err</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --mem=20G</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --cpus-per-task=8</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#SBATCH --time=05:00:00</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load STAR/2.7.10b-GCC-11.3.0-alpha <span class="co"># current module version on REANNZ</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Set dir paths</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="va">TRIMMEDDIR</span><span class="op">=</span>/path/to/trimmed <span class="co"># contains your trimmed reads</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="va">OUTDIR</span><span class="op">=</span>/path/to/star_out <span class="co"># dir where you want your output files to go</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="va">GENOMEDIR</span><span class="op">=</span>/path/to/genome-files <span class="co"># contains your indexed genome</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Make logs dir for slurm out and err files</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">$OUTDIR</span> logs</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Set shell variables</span></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="va">sample</span><span class="op">=</span><span class="va">$(</span><span class="fu">sed</span> <span class="at">-n</span> <span class="st">"</span><span class="va">${SLURM_ARRAY_TASK_ID}</span><span class="st">p"</span> samples.txt<span class="va">)</span></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="va">r1</span><span class="op">=</span><span class="va">$TRIMMEDDIR</span>/<span class="va">${sample}</span>_R1_trimmed.fq.gz</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="va">r2</span><span class="op">=</span><span class="va">$TRIMMEDDIR</span>/<span class="va">${sample}</span>_R2_trimmed.fq.gz</span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="ex">STAR</span> <span class="dt">\</span></span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">--runMode</span> alignReads <span class="dt">\</span></span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">--runThreadN</span> <span class="va">$SLURM_CPUS_PER_TASK</span> <span class="dt">\</span></span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">--genomeDir</span> <span class="va">$GENOMEDIR</span> <span class="dt">\</span></span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">--readFilesIn</span> <span class="va">$r1</span> <span class="va">$r2</span> <span class="dt">\</span></span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">--readFilesCommand</span> zcat <span class="dt">\</span></span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">--outSAMtype</span> BAM SortedByCoordinate <span class="dt">\</span></span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">--outFileNamePrefix</span> <span class="va">$OUTDIR</span>/<span class="va">${sample}</span>_ <span class="dt">\</span></span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">--quantMode</span> GeneCounts </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Now submit the following script to SLURM to align each sample to the genome.</p>
-<p>To submit the script, from your working directory you would type:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sbatch</span> star-align.sl </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>To monitor the progress of the job, you would type:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">squeue</span> <span class="at">--me</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>and/or</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">sacct</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>For all these plots, we will use the top 1000 genes with the highest mean counts across all samples. This is a somewhat arbitrary decision and you’ll need to decide for your own data what genes you want to investigate. You may be interested in the <em>most highly expressed</em> top 100 or 1000 genes, or maybe the top 100 or 1000 <em>most variable</em> genes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>counts_top1000 <span class="ot">&lt;-</span> counts <span class="sc">%&gt;%</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">MeanCounts =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric)))) <span class="sc">|&gt;</span> </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(MeanCounts)) <span class="sc">|&gt;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n=</span><span class="dv">1000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>MeanCounts)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(counts_top1000)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             SI16_21G SI16_23G SI18_30G SI18_48G SI18_52G SI16_22G SI18_15G
+LOC117824100    90878    93835   201617   192109   208754   118881   297486
+LOC117808578    47570    43837    83492    86362   100109    56500   172466
+LOC117813792    46827    40519   101674    94830    94406    66460   157123
+LOC117811052    70222    42682   153290   102456   112977    38850   163757
+LOC117808583    56957    29498    93974    72641    65598    38054   109544
+LOC117813794    52655    44366    82687    83723    75311    63492   130811
+             SI18_16G SI18_18G SI18_22G SI16_1G SI16_2G SI16_3G SI18_47G
+LOC117824100   543596   454735   344393     295      41      77      614
+LOC117808578   262595   285553   192447     223      17      40      629
+LOC117813792   254879   242256   190315     182      59      37      295
+LOC117811052   182054   116132   205397     207      31      64       92
+LOC117808583   203055   193300   151140     187      11      28      395
+LOC117813794   178910   172457   129001     223      14      39      198
+             SI18_49G
+LOC117824100      130
+LOC117808578       97
+LOC117813792       97
+LOC117811052       30
+LOC117808583       93
+LOC117813794       62</code></pre>
+</div>
+</div>
+<p>We then need to convert the counts to long format for plotting with ggplot2.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>counts_long_top1000 <span class="ot">&lt;-</span> counts_top1000 <span class="sc">|&gt;</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"Gene"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>Gene, <span class="at">names_to =</span> <span class="st">"Sample"</span>, <span class="at">values_to =</span> <span class="st">"Counts"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(counts_long_top1000)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  Gene         Sample   Counts
+  &lt;chr&gt;        &lt;chr&gt;     &lt;int&gt;
+1 LOC117824100 SI16_21G  90878
+2 LOC117824100 SI16_23G  93835
+3 LOC117824100 SI18_30G 201617
+4 LOC117824100 SI18_48G 192109
+5 LOC117824100 SI18_52G 208754
+6 LOC117824100 SI16_22G 118881</code></pre>
+</div>
+</div>
+<section id="note-on-transforming-counts-for-plotting" class="level3">
+<h3 class="anchored" data-anchor-id="note-on-transforming-counts-for-plotting">Note on transforming counts for plotting</h3>
+<p>We will also log2 transform the counts to make the colour scale more interpretable. You need to add <code>+1</code> to the counts before log2 transforming to avoid taking the log of zero. For visualisation, you will almost always want to log2 transform your counts, as the range of counts is often very large and the log2 transformation makes it easier to see patterns in the data. There are other transformations that can be used, such as the variance stabilising transformation (VST) or regularised log transformation (rlog) from the DESeq2 package, which are designed to stabilise the variance (this addresses heteroscedasticity, see <a href="../background.html#heteroscedasticity">Background notes on heteroscedasticity</a> for more on this) across the range of counts.</p>
+</section>
+</section>
+<section id="ggplot2-heatmap-with-geom_tile" class="level2">
+<h2 class="anchored" data-anchor-id="ggplot2-heatmap-with-geom_tile">ggplot2 heatmap with <code>geom_tile()</code></h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(counts_long_top1000, <span class="fu">aes</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> Sample,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> Gene,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">fill =</span> <span class="fu">log2</span>(Counts <span class="sc">+</span> <span class="dv">1</span>))) <span class="sc">+</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient2</span>(</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">low=</span><span class="st">"blue"</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">mid =</span> <span class="st">"white"</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">high =</span> <span class="st">"red"</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">midpoint =</span> <span class="dv">10</span> <span class="co"># adjust to your own data scale</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Sample"</span>, <span class="at">y =</span> <span class="st">"Log Counts +1"</span>) <span class="sc">+</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="S2_heatmap_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Genes are ordered alphabetically by default using ggplot, so there is preference to use different tools that cluster genes based on similar expression.</p>
+</section>
+<section id="heatmap" class="level2">
+<h2 class="anchored" data-anchor-id="heatmap"><code>heatmap()</code></h2>
+<p>The <code>heatmap()</code> function from the base R stats package is another way to generate a heatmap, with clustering. It reorders genes using Euclidean distance to measure how similar their expression patterns are across samples, then repeatedly grouping the most similar genes together first. This builds a tree (the dendrogram shown alongside the heatmap), and reading gene order off that tree places genes with similar expression patterns next to each other. Genes that are co-expressed appear as visible blocks of colour.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>my_colours1 <span class="ot">&lt;-</span> <span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">"blue"</span>, <span class="st">"white"</span>, <span class="st">"red"</span>))(<span class="dv">256</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">heatmap</span>(<span class="fu">log2</span>(<span class="fu">as.matrix</span>(counts_top1000) <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">Rowv =</span> <span class="cn">TRUE</span>,   </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">Colv =</span> <span class="cn">TRUE</span>,      </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">labRow =</span> <span class="cn">NA</span>,   </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">margins =</span> <span class="fu">c</span>(<span class="dv">8</span>, <span class="dv">2</span>), </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">"Samples"</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">"Gene"</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">col =</span> my_colours1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="S2_heatmap_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="pheatmap" class="level2">
+<h2 class="anchored" data-anchor-id="pheatmap"><code>pheatmap()</code></h2>
+<p>The <code>pheatmap()</code> function from the pheatmap package is another way to generate a heatmap, with clustering. It uses the same underlying clustering method as <code>heatmap()</code> by default, but is generally easier to customise.</p>
+<p><code>scale = "row"</code> z-scores each gene individually. For every gene, it subtracts the gene’s mean expression and divides by its standard deviation across samples. This means the heatmap shows each gene’s expression <em>relative to its own average</em>, rather than absolute expression level, so highly and lowly expressed genes can be compared on the same colour scale.</p>
+<p>As with any plot, you will need to make visual adjustments (colour, breaks, scaling) based on your specific data and the range of values you are working with.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pheatmap)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pheatmap</span>(<span class="fu">log2</span>(<span class="fu">as.matrix</span>(counts_top1000)<span class="sc">+</span><span class="dv">1</span>),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">scale =</span> <span class="st">"row"</span>, <span class="co"># Z-score normalisation across rows </span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">color =</span> my_colours1,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">show_rownames =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">cluster_rows =</span> <span class="cn">TRUE</span>,   </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">cluster_cols =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">angle_col =</span> <span class="dv">45</span>,        </span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">fontsize_col =</span> <span class="dv">8</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">main =</span> <span class="st">"Top 1000 genes"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="S2_heatmap_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -738,13 +835,13 @@ SI18_52G_lib42</code></pre>
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../functional-analysis.html" class="pagination-link" aria-label="Functional analysis">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Functional analysis</span>
+      <a href="../Supplementary/S1_hpc-job-scheduler.html" class="pagination-link" aria-label="Supp 1: Working with a HPC Job Scheduler">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Supp 1: Working with a HPC Job Scheduler</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../Supplementary/S2_heatmap.html" class="pagination-link" aria-label="Supp 2: Gene expression heatmap">
-        <span class="nav-page-text">Supp 2: Gene expression heatmap</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../Supplementary/S3_functional.html" class="pagination-link" aria-label="Supp 3: Functional analysis with a supported organism">
+        <span class="nav-page-text">Supp 3: Functional analysis with a supported organism</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
