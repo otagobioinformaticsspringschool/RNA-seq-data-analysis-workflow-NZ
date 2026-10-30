@@ -220,6 +220,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Supp 3: Functional analysis with a supported organism</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Supplementary/S4_data-manipulation-ggplot2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Supp 4: Data manipulation for ggplot2</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -266,11 +272,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="generating-fastqc-reports" class="level3">
 <h3 class="anchored" data-anchor-id="generating-fastqc-reports">Generating FastQC reports</h3>
 <p>In a terminal window navigate to your RNA-seq directory. Ensure you have a sub-directory that contains your raw sequence files (RawReads). We’ll make a separate sub-directory in which to store quality control outputs and call this FastQC.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/RNA_seq </span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/obss_2026/RNA_seq </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> FastQC</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">fastqc</span> <span class="at">-o</span> FastQC/ RawReads/<span class="pp">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> FastQC</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load FastQC/0.12.1</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">fastqc</span> <span class="at">-o</span> FastQC/ RawReads/<span class="pp">*</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The FastQC tool will generate reports on all files within the directory Raw, and output them into the QC directory. You will see an output similar to:</p>
 <pre><code>    Started analysis of SI16_1G_lib56_R1.fq.gz
     application/gzip
@@ -428,26 +435,27 @@ SOLUTION
 <blockquote class="blockquote">
 <p>Note: As a reminder, you should never modify your raw data (and should ideally have raw data backed up in a remote and secure location).</p>
 </blockquote>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/RNA_seq</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> Trimmed <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> <span class="va">$_</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">ADAPTERSDIR</span><span class="op">=</span><span class="st">"/opt/nesi/CS400_centos7_bdw/Trimmomatic/0.39-Java-1.8.0_144/adapters"</span> </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="va">FILEDIR</span><span class="op">=</span><span class="st">"../RawReads"</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="va">UNPAIREDDIR</span><span class="op">=</span><span class="st">"unpaired"</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">$UNPAIREDDIR</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> sample <span class="kw">in</span> <span class="va">${FILEDIR}</span>/<span class="pp">*</span>_R1.fq.gz</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="va">name</span><span class="op">=</span><span class="va">$(</span><span class="fu">basename</span> <span class="va">${sample}</span> _R1.fq.gz<span class="va">)</span> </span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="ex">trimmomatic</span> PE <span class="dt">\</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">${FILEDIR}</span>/<span class="va">${name}</span>_R1.fq.gz <span class="va">${FILEDIR}</span>/<span class="va">${name}</span>_R2.fq.gz <span class="dt">\</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">${name}</span>_R1_trimmed.fq.gz  <span class="va">${UNPAIREDDIR}</span>/<span class="va">${name}</span>_R1_unpaired.fq.gz <span class="dt">\</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">${name}</span>_R2_trimmed.fq.gz  <span class="va">${UNPAIREDDIR}</span>/<span class="va">${name}</span>_R2_unpaired.fq.gz <span class="dt">\</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        ILLUMINACLIP:<span class="va">${ADAPTERSDIR}</span>/TruSeq3-PE-2.fa:2:30:10 <span class="dt">\</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        LEADING:5 TRAILING:5 SLIDINGWINDOW:4:15 MINLEN:36 <span class="dt">\</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        <span class="dv">2</span><span class="op">&gt;</span> <span class="va">${name}</span>_trimmomatic.log</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/obss_2026/RNA_seq</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> Trimmed <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> Trimmed</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load Trimmomatic/0.39-Java-1.8.0_144 </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="va">ADAPTERSDIR</span><span class="op">=</span><span class="st">"/opt/nesi/CS400_centos7_bdw/Trimmomatic/0.39-Java-1.8.0_144/adapters"</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="va">FILEDIR</span><span class="op">=</span><span class="st">"../RawReads"</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="va">UNPAIREDDIR</span><span class="op">=</span><span class="st">"unpaired"</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">$UNPAIREDDIR</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> sample <span class="kw">in</span> <span class="va">${FILEDIR}</span>/<span class="pp">*</span>_R1.fq.gz</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="va">name</span><span class="op">=</span><span class="va">$(</span><span class="fu">basename</span> <span class="va">${sample}</span> _R1.fq.gz<span class="va">)</span> </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="ex">trimmomatic</span> PE <span class="dt">\</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">${FILEDIR}</span>/<span class="va">${name}</span>_R1.fq.gz <span class="va">${FILEDIR}</span>/<span class="va">${name}</span>_R2.fq.gz <span class="dt">\</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">${name}</span>_R1_trimmed.fq.gz  <span class="va">${UNPAIREDDIR}</span>/<span class="va">${name}</span>_R1_unpaired.fq.gz <span class="dt">\</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">${name}</span>_R2_trimmed.fq.gz  <span class="va">${UNPAIREDDIR}</span>/<span class="va">${name}</span>_R2_unpaired.fq.gz <span class="dt">\</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        ILLUMINACLIP:<span class="va">${ADAPTERSDIR}</span>/TruSeq3-PE-2.fa:2:30:10 <span class="dt">\</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        LEADING:5 TRAILING:5 SLIDINGWINDOW:4:15 MINLEN:36 <span class="dt">\</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        <span class="dv">2</span><span class="op">&gt;</span> <span class="va">${name}</span>_trimmomatic.log</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <blockquote class="blockquote">
 <p>Tip: It is recommended to re-assess your fastq quality after trimming, by running FastQC on the trimmed files to and compare to pre-trimming.</p>
 </blockquote>

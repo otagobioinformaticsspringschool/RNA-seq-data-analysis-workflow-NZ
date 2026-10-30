@@ -16,9 +16,21 @@ Exploratory analysis is looking at the data. You are attempting to get a sense o
 
 If your data set was a physical problem (like a squeaky wheel or a well wrapped present) you'd physically explore it (pick it up, is it heavy, do I shake it?). Exploratory analysis is the data science equivalent.
 
-## Exploratory analysis
+### Set-up Instructions
 
-From here and for the rest of the workshop, we will be working within R. 
+From here and for the rest of the workshop, we will be working within R/RStudio
+
+1. Go back to your ondemand dashboard tab. If you have closed the tab, log back in to <https://ondemand.nesi.org.nz/public/>
+2. Click on the RStudio-Server application  
+3. Select **RStudio-Server Version: 2026.07.1-147** 
+4. Select **R Version: Bioconductor-3.23/R-4.6.0**
+5. Select **Number of hours: 8**
+6. Launch the server.  
+
+![](images/rstudio-setup.png)
+
+
+## Background 
 
 In the previous sections we generated counts for 3 samples. We are going to need a few more samples for the rest of this workshop when we explore gene expression, so we are loading in a counts file with 15 samples. 
 
@@ -34,14 +46,15 @@ We have 3 phenotype groups, each with 5 biological replicates:
 
 library(tidyverse)
 
-
 ```
 
 
-Run the code below to load the file:
+Run the code below to load the files:
 
 ```{r}
 #| eval: false
+
+setwd("~/obss_2026/RNA_seq")
 
 coldata <- read.table("DataFiles/coldata.txt", sep="\t", header=TRUE)
 counts  <- read.table("DataFiles/counts.txt",  sep="\t", header=TRUE, row.names=1)
@@ -53,7 +66,7 @@ counts  <- read.table("DataFiles/counts.txt",  sep="\t", header=TRUE, row.names=
 ::: {.callout-note collapse="true"}
 # Want to load this dataset on your own computer?
 
-If you are completing this workshop on your own local machine, run the code below to load the file from Github:
+If you are completing this workshop on your own local machine, run the code below to load the file from GitHub:
 
 ```{r}
 
@@ -64,11 +77,6 @@ counts  <- read.table("https://raw.githubusercontent.com/GenomicsAotearoa/RNA-se
 ```
 :::
 
-
-```{r}
-coldata <- coldata[match(colnames(counts), coldata$sample), ]
-identical(colnames(counts), coldata$sample)
-```
 
 
 Now let's take a look at the counts data.
@@ -106,6 +114,16 @@ summary(counts)
 
 
 Zero count genes are automatically removed during differential gene expression, so are not a problem for downstream analysis. But for visualisation we likley need to deal with them. There will also likely be genes that are expressed in some samples, but not in others, and the zeros can cause issues with plotting there too.  It is common to remove genes with very low counts, but there are different approaches to chosing the threshold. For now, when plotting genes we need to log2 the counts, after adding 1 to all counts so that we don't log zero (which will result in an error or infinite value).  
+
+To remove all rows with 0 counts (genes where no sample has a read mapping to it), you could run something like this:
+
+```{r}
+#| eval: FALSE
+
+```{r}
+# Demo code - don't need to run this
+counts_filtered <- counts[rowSums(counts) > 0, ]
+```
 
 ## Visualising our data set
 
@@ -183,9 +201,11 @@ A principal component analysis (PCA) is linear dimensionality technique that can
 
 In simple turns, we are making a plot that shows us how similar or different each sample is, taking in to account all of the gene expression. A PCA plot can help us see the biggest sources of biological variation and help determine which has more of an affect on the gene expression – whether that be the treatment type, the tissue type or something else (*e.g.,* an unintended batch effect or outliers).  
 
-First, we need to remove all genes with zero counts across all samples. 
+First, we need to remove all genes with low counts across all samples. We can apply a slightly stricter filtering threshold than the one we used earlier (`counts_filtered <- counts[rowSums(counts) > 0, ]`) where all genes with zero counts across all samples are removed. Below, this code will keep all genes where at least two columns (samples) have a count of 10 or more. This is arbitrary, you could chose to make it stricter or more lenient depending on your dataset and what you are trying to achieve. 
+ 
 ```{r}
-counts_filtered <- counts[rowSums(counts) > 0, ]
+counts_filtered <- counts[rowSums(counts >= 10) >= 2, ]
+
 ```
 
 Next the counts object needs to be flipped for `prcomp()` analysis.

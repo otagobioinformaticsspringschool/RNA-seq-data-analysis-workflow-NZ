@@ -61,5 +61,8 @@
   },
   "Supplementary/S3_functional.qmd": {
     "S3_functional.html": "443d434a"
+  },
+  "Supplementary/S4_data-manipulation-ggplot2.qmd": {
+    "S4_data-manipulation-ggplot2.html": "db16fb0c"
   }
 }

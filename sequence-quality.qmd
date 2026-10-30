@@ -21,9 +21,13 @@ If a sample has low quality scores in one or more aspects, this does not necessa
 In a terminal window navigate to your RNA-seq directory. Ensure you have a sub-directory that contains your raw sequence files (RawReads). We'll make a separate sub-directory in which to store quality control outputs and call this FastQC.
 
 ```bash
-cd ~/RNA_seq 
+cd ~/obss_2026/RNA_seq 
 
 mkdir FastQC
+```
+
+```bash
+module load FastQC/0.12.1
 
 fastqc -o FastQC/ RawReads/*
 ```
@@ -165,9 +169,13 @@ The `ADAPTERSDIR` is the path on REANNZ that contains the adapter files for Trim
 
 
 ```bash
-cd ~/RNA_seq
+cd ~/obss_2026/RNA_seq
 
-mkdir Trimmed && cd $_
+mkdir Trimmed && cd Trimmed
+```
+
+```bash
+module load Trimmomatic/0.39-Java-1.8.0_144 
 ```
 
 

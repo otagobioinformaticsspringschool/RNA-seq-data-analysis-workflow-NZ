@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>s3_heatmap – RNA-seq data analysis workflow (NZ)</title>
+<title>s4_data-manipulation-ggplot2 – RNA-seq data analysis workflow (NZ)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,7 +65,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../Supplementary/S2_functional.html" rel="prev">
+<link href="../Supplementary/S3_functional.html" rel="prev">
 <link href="../theme_images/GA-image-black-favicon.png" rel="icon" type="image/png">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -76,7 +76,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-2b26f57d8318b6eba2cd7cd1feee4645.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-182fece1ef6b8713be5fac70a3243d43.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -108,8 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <link rel="stylesheet" href="../styles.css">
 <meta property="og:title" content="– RNA-seq data analysis workflow (NZ)">
-<meta property="og:description" content="">
-<meta property="og:image" content="S3_heatmap_files/figure-html/unnamed-chunk-5-1.png">
+<meta property="og:image" content="S4_data-manipulation-ggplot2_files/figure-html/unnamed-chunk-8-1.png">
 <meta property="og:site_name" content="RNA-seq data analysis workflow (NZ)">
 </head>
 
@@ -122,7 +121,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Supplementary/S1_hpc-job-scheduler.html">Supplementary</a></li><li class="breadcrumb-item"><a href="../Supplementary/S3_heatmap.html">Supp 2: Gene expression heatmap</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Supplementary/S1_hpc-job-scheduler.html">Supplementary</a></li><li class="breadcrumb-item"><a href="../Supplementary/S4_data-manipulation-ggplot2.html">Supp 4: Data manipulation for ggplot2</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -209,14 +208,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Supplementary/S2_functional.html" class="sidebar-item-text sidebar-link">
+  <a href="../Supplementary/S2_heatmap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Supp 2: Gene expression heatmap</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../Supplementary/S3_functional.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Supp 3: Functional analysis with a supported organism</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../Supplementary/S3_heatmap.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Supp 2: Gene expression heatmap</span></a>
+  <a href="../Supplementary/S4_data-manipulation-ggplot2.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Supp 4: Data manipulation for ggplot2</span></a>
   </div>
 </li>
       </ul>
@@ -231,193 +236,293 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Contents</h2>
    
   <ul>
-  <li><a href="#supp-2-gene-expression-heatmap" id="toc-supp-2-gene-expression-heatmap" class="nav-link active" data-scroll-target="#supp-2-gene-expression-heatmap">Supp 2: Gene expression heatmap</a>
+  <li><a href="#supp-4-data-manipulation-for-ggplot2" id="toc-supp-4-data-manipulation-for-ggplot2" class="nav-link active" data-scroll-target="#supp-4-data-manipulation-for-ggplot2">Supp 4: Data manipulation for ggplot2</a>
   <ul>
-  <li><a href="#read-in-data-and-transform" id="toc-read-in-data-and-transform" class="nav-link" data-scroll-target="#read-in-data-and-transform">Read in data and transform</a>
+  <li><a href="#why-format-matters" id="toc-why-format-matters" class="nav-link" data-scroll-target="#why-format-matters">Why format matters</a></li>
+  <li><a href="#the-problem-a-lot-of-data-is-naturally-wide" id="toc-the-problem-a-lot-of-data-is-naturally-wide" class="nav-link" data-scroll-target="#the-problem-a-lot-of-data-is-naturally-wide">The problem: a lot of data is naturally wide</a></li>
+  <li><a href="#pivoting-with-tidyr" id="toc-pivoting-with-tidyr" class="nav-link" data-scroll-target="#pivoting-with-tidyr">Pivoting with <code>tidyr</code></a>
   <ul class="collapse">
-  <li><a href="#note-on-transforming-counts-for-plotting" id="toc-note-on-transforming-counts-for-plotting" class="nav-link" data-scroll-target="#note-on-transforming-counts-for-plotting">Note on transforming counts for plotting</a></li>
+  <li><a href="#creating-a-small-example-counts-matrix" id="toc-creating-a-small-example-counts-matrix" class="nav-link" data-scroll-target="#creating-a-small-example-counts-matrix">Creating a small example counts matrix</a></li>
+  <li><a href="#pivot_longer-wide-to-long" id="toc-pivot_longer-wide-to-long" class="nav-link" data-scroll-target="#pivot_longer-wide-to-long"><code>pivot_longer()</code>: wide to long</a></li>
+  <li><a href="#pivot_wider-long-back-to-wide" id="toc-pivot_wider-long-back-to-wide" class="nav-link" data-scroll-target="#pivot_wider-long-back-to-wide"><code>pivot_wider()</code>: long back to wide</a></li>
   </ul></li>
-  <li><a href="#ggplot2-heatmap-with-geom_tile" id="toc-ggplot2-heatmap-with-geom_tile" class="nav-link" data-scroll-target="#ggplot2-heatmap-with-geom_tile">ggplot2 heatmap with <code>geom_tile()</code></a></li>
-  <li><a href="#heatmap" id="toc-heatmap" class="nav-link" data-scroll-target="#heatmap"><code>heatmap()</code></a></li>
-  <li><a href="#pheatmap" id="toc-pheatmap" class="nav-link" data-scroll-target="#pheatmap"><code>pheatmap()</code></a></li>
+  <li><a href="#adding-sample-metadata" id="toc-adding-sample-metadata" class="nav-link" data-scroll-target="#adding-sample-metadata">Adding sample metadata</a></li>
+  <li><a href="#plotting-the-result" id="toc-plotting-the-result" class="nav-link" data-scroll-target="#plotting-the-result">Plotting the result</a></li>
   </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Supplementary/S1_hpc-job-scheduler.html">Supplementary</a></li><li class="breadcrumb-item"><a href="../Supplementary/S3_heatmap.html">Supp 2: Gene expression heatmap</a></li></ol></nav></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../Supplementary/S1_hpc-job-scheduler.html">Supplementary</a></li><li class="breadcrumb-item"><a href="../Supplementary/S4_data-manipulation-ggplot2.html">Supp 4: Data manipulation for ggplot2</a></li></ol></nav></header>
 
 
 
 
-<section id="supp-2-gene-expression-heatmap" class="level1">
-<h1>Supp 2: Gene expression heatmap</h1>
-<p>There are several ways to generate heatmaps in R.</p>
+<section id="supp-4-data-manipulation-for-ggplot2" class="level1">
+<h1>Supp 4: Data manipulation for ggplot2</h1>
+<section id="why-format-matters" class="level2">
+<h2 class="anchored" data-anchor-id="why-format-matters">Why format matters</h2>
+<p><code>ggplot2</code> is built around <strong>long format</strong> data. In long format, each row represents a single observation, and variables are stored in columns. This structure maps naturally onto ggplot2’s aesthetic system: one column per aesthetic (<code>x</code>, <code>y</code>, <code>colour</code>, <code>fill</code>, etc.).</p>
+<p>We’ll use gene count data as an example.</p>
+<p>A long format table looks like this:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>sample</th>
+<th>gene</th>
+<th>count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>sample1</td>
+<td>BRCA1</td>
+<td>142</td>
+</tr>
+<tr class="even">
+<td>sample1</td>
+<td>TP53</td>
+<td>87</td>
+</tr>
+<tr class="odd">
+<td>sample1</td>
+<td>MYC</td>
+<td>93</td>
+</tr>
+<tr class="even">
+<td>sample2</td>
+<td>BRCA1</td>
+<td>203</td>
+</tr>
+<tr class="odd">
+<td>sample2</td>
+<td>TP53</td>
+<td>61</td>
+</tr>
+<tr class="even">
+<td>sample2</td>
+<td>MYC</td>
+<td>64</td>
+</tr>
+</tbody>
+</table>
+<p>Each gene-by-sample combination gets its own row. This makes it straightforward to map <code>gene</code> to colour, <code>sample</code> to the x-axis, and <code>count</code> to the y-axis.</p>
+</section>
+<section id="the-problem-a-lot-of-data-is-naturally-wide" class="level2">
+<h2 class="anchored" data-anchor-id="the-problem-a-lot-of-data-is-naturally-wide">The problem: a lot of data is naturally wide</h2>
+<p>In contrast, data such as RNA-seq count matrices are typically stored in <strong>wide format</strong>, where each sample is its own column:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>gene</th>
+<th>sample1</th>
+<th>sample2</th>
+<th>sample3</th>
+<th>sample4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>BRCA1</td>
+<td>142</td>
+<td>203</td>
+<td>178</td>
+<td>95</td>
+</tr>
+<tr class="even">
+<td>TP53</td>
+<td>87</td>
+<td>61</td>
+<td>104</td>
+<td>77</td>
+</tr>
+<tr class="odd">
+<td>MYC</td>
+<td>93</td>
+<td>64</td>
+<td>401</td>
+<td>356</td>
+</tr>
+</tbody>
+</table>
+<p>This format is convenient for storage and inspection, but ggplot2 cannot directly use it. To plot this data, we need to reshape it from wide to long.</p>
+</section>
+<section id="pivoting-with-tidyr" class="level2">
+<h2 class="anchored" data-anchor-id="pivoting-with-tidyr">Pivoting with <code>tidyr</code></h2>
+<p>The <code>tidyr</code> package (part of the tidyverse) provides two key functions for reshaping data:</p>
 <ul>
-<li><code>geom_tile()</code> from the ggplot2 package</li>
-<li><code>heatmap()</code> from the base R stats package</li>
-<li><code>pheatmap()</code> from the pheatmap package</li>
-<li>and other options such as <code>ComplexHeatmap</code> and <code>heatmaply</code>.</li>
+<li><code>pivot_longer()</code> : wide → long (the one we use most)</li>
+<li><code>pivot_wider()</code> : long → wide</li>
 </ul>
-<blockquote class="blockquote">
-<p>Note: Heatmaps are a useful tool for spotting large-scale expression patterns, but they are also easy to misinterpret and can exaggerate differences. Proceed with caution and wear your critical thinking hat.</p>
-</blockquote>
-<section id="read-in-data-and-transform" class="level2">
-<h2 class="anchored" data-anchor-id="read-in-data-and-transform">Read in data and transform</h2>
-<p>First let’s read in our data</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>counts  <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"DataFiles/counts.txt"</span>,  <span class="at">sep=</span><span class="st">"</span><span class="sc">\t</span><span class="st">"</span>, <span class="at">header=</span><span class="cn">TRUE</span>, <span class="at">row.names=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="callout callout-style-default callout-note callout-titled">
+<section id="creating-a-small-example-counts-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="creating-a-small-example-counts-matrix">Creating a small example counts matrix</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>counts_wide <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene    =</span> <span class="fu">c</span>(<span class="st">"BRCA1"</span>, <span class="st">"TP53"</span>, <span class="st">"MYC"</span>, <span class="st">"GAPDH"</span>),</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">sample1 =</span> <span class="fu">c</span>(<span class="dv">142</span>, <span class="dv">87</span>, <span class="dv">312</span>, <span class="dv">1045</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">sample2 =</span> <span class="fu">c</span>(<span class="dv">203</span>, <span class="dv">61</span>, <span class="dv">289</span>, <span class="dv">987</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">sample3 =</span> <span class="fu">c</span>(<span class="dv">178</span>, <span class="dv">104</span>, <span class="dv">401</span>, <span class="dv">1123</span>),</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">sample4 =</span> <span class="fu">c</span>(<span class="dv">95</span>,  <span class="dv">77</span>, <span class="dv">356</span>, <span class="dv">1034</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>counts_wide</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   gene sample1 sample2 sample3 sample4
+1 BRCA1     142     203     178      95
+2  TP53      87      61     104      77
+3   MYC     312     289     401     356
+4 GAPDH    1045     987    1123    1034</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Note: The gene column is a <strong>column</strong>, not rownames. If you read in your data with the gene names as rownames, you may first need to run <code>counts_wide &lt;- counts_wide |&gt; rownames_to_column(var = "gene")</code> to move the rownames to a column.</p>
+</blockquote>
+</section>
+<section id="pivot_longer-wide-to-long" class="level3">
+<h3 class="anchored" data-anchor-id="pivot_longer-wide-to-long"><code>pivot_longer()</code>: wide to long</h3>
+<p><code>pivot_longer()</code> collapses multiple columns into two: one for the former column names (here, sample IDs) and one for the values (counts).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>counts_long <span class="ot">&lt;-</span> counts_wide <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols      =</span> <span class="sc">-</span>gene,                  <span class="co"># collapse all columns except gene</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to  =</span> <span class="st">"sample"</span>,               <span class="co"># new column for old column names</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"count"</span>                 <span class="co"># new column for the values</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>counts_long</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 16 × 3
+   gene  sample  count
+   &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt;
+ 1 BRCA1 sample1   142
+ 2 BRCA1 sample2   203
+ 3 BRCA1 sample3   178
+ 4 BRCA1 sample4    95
+ 5 TP53  sample1    87
+ 6 TP53  sample2    61
+ 7 TP53  sample3   104
+ 8 TP53  sample4    77
+ 9 MYC   sample1   312
+10 MYC   sample2   289
+11 MYC   sample3   401
+12 MYC   sample4   356
+13 GAPDH sample1  1045
+14 GAPDH sample2   987
+15 GAPDH sample3  1123
+16 GAPDH sample4  1034</code></pre>
+</div>
+</div>
+<p>Now each row is one gene–sample observation – exactly what ggplot2 expects.</p>
+</section>
+<section id="pivot_wider-long-back-to-wide" class="level3">
+<h3 class="anchored" data-anchor-id="pivot_wider-long-back-to-wide"><code>pivot_wider()</code>: long back to wide</h3>
+<p>If you need to go the other direction (<em>e.g.,</em> to export a count matrix or join tables), use <code>pivot_wider()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>counts_wide_again <span class="ot">&lt;-</span> counts_long <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from  =</span> <span class="st">"sample"</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> <span class="st">"count"</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>counts_wide_again</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 5
+  gene  sample1 sample2 sample3 sample4
+  &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+1 BRCA1     142     203     178      95
+2 TP53       87      61     104      77
+3 MYC       312     289     401     356
+4 GAPDH    1045     987    1123    1034</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="adding-sample-metadata" class="level2">
+<h2 class="anchored" data-anchor-id="adding-sample-metadata">Adding sample metadata</h2>
+<p>In a real RNA-seq analysis, you’ll also have a <strong>metadata table</strong> that maps sample IDs to experimental groups (<em>e.g.,</em> treatment, timepoint, tissue). After pivoting to long format, you can join metadata in using <code>left_join()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A simple metadata table</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>metadata <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">sample    =</span> <span class="fu">c</span>(<span class="st">"sample1"</span>, <span class="st">"sample2"</span>, <span class="st">"sample3"</span>, <span class="st">"sample4"</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">condition =</span> <span class="fu">c</span>(<span class="st">"control"</span>, <span class="st">"control"</span>, <span class="st">"treated"</span>, <span class="st">"treated"</span>),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">timepoint =</span> <span class="fu">c</span>(<span class="st">"T0"</span>, <span class="st">"T0"</span>, <span class="st">"T24"</span>, <span class="st">"T24"</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>metadata</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   sample condition timepoint
+1 sample1   control        T0
+2 sample2   control        T0
+3 sample3   treated       T24
+4 sample4   treated       T24</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Join metadata onto the long counts table</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>counts_annotated <span class="ot">&lt;-</span> counts_long <span class="sc">|&gt;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(metadata, <span class="at">by =</span> <span class="st">"sample"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>counts_annotated</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 16 × 5
+   gene  sample  count condition timepoint
+   &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;    
+ 1 BRCA1 sample1   142 control   T0       
+ 2 BRCA1 sample2   203 control   T0       
+ 3 BRCA1 sample3   178 treated   T24      
+ 4 BRCA1 sample4    95 treated   T24      
+ 5 TP53  sample1    87 control   T0       
+ 6 TP53  sample2    61 control   T0       
+ 7 TP53  sample3   104 treated   T24      
+ 8 TP53  sample4    77 treated   T24      
+ 9 MYC   sample1   312 control   T0       
+10 MYC   sample2   289 control   T0       
+11 MYC   sample3   401 treated   T24      
+12 MYC   sample4   356 treated   T24      
+13 GAPDH sample1  1045 control   T0       
+14 GAPDH sample2   987 control   T0       
+15 GAPDH sample3  1123 treated   T24      
+16 GAPDH sample4  1034 treated   T24      </code></pre>
+</div>
+</div>
+<p>Now each row carries both the count value and the experimental context for that sample – making it easy to map condition or timepoint to a ggplot2 aesthetic.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Read in data from Github instead
+<code>left_join()</code>
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
 <div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
+<p>It’s a good idea to use one of the <a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">dplyr <code>join()</code> functions</a> here (left_join typically being the most popular) to join the metadata to the counts long object. Left join will keep all observations in the “x” or left dataframe (our counts dataframe) and will automatically repeat values from the “y” dataframe (the metadata) where they match multiple times – this is important here as the same sample ID is repeated multiple times in our counts long object for each unique gene. We use <code>by = "sample"</code> argument as the column that exists in both dataframes and for most biological datasets we can reasonably expect to have metadata recorded by sample.</p>
+<p><strong><em>Handy tip:</em></strong> name the column the same in each dataframe to join it as the code above. If they are named differently (<em>e.g.,</em> counts is “sample” and metadata is “samplename”), you can instead write the function as below, where the name on the left corresponds to the column name in the first dataframe and the name on the right corresponds to the column name in the second dataframe:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>counts <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"https://raw.githubusercontent.com/GenomicsAotearoa/RNA-seq-data-analysis-workflow-NZ/refs/heads/main/data-files/counts.txt"</span>,  <span class="at">sep=</span><span class="st">"</span><span class="sc">\t</span><span class="st">"</span>, <span class="at">header=</span><span class="cn">TRUE</span>, <span class="at">row.names=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>counts_annotated <span class="ot">&lt;-</span> <span class="fu">left_join</span>(counts_long, metadata, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"sample"</span> <span class="ot">=</span> <span class="st">"samplename"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
 </div>
-<p>For all these plots, we will use the top 1000 genes with the highest mean counts across all samples. This is a somewhat arbitrary decision and you’ll need to decide for your own data what genes you want to investigate. You may be interested in the <em>most highly expressed</em> top 100 or 1000 genes, or maybe the top 100 or 1000 <em>most variable</em> genes.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>counts_top1000 <span class="ot">&lt;-</span> counts <span class="sc">%&gt;%</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">MeanCounts =</span> <span class="fu">rowMeans</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric)))) <span class="sc">|&gt;</span> </span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(MeanCounts)) <span class="sc">|&gt;</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n=</span><span class="dv">1000</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>MeanCounts)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(counts_top1000)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>             SI16_21G SI16_23G SI18_30G SI18_48G SI18_52G SI16_22G SI18_15G
-LOC117824100    90878    93835   201617   192109   208754   118881   297486
-LOC117808578    47570    43837    83492    86362   100109    56500   172466
-LOC117813792    46827    40519   101674    94830    94406    66460   157123
-LOC117811052    70222    42682   153290   102456   112977    38850   163757
-LOC117808583    56957    29498    93974    72641    65598    38054   109544
-LOC117813794    52655    44366    82687    83723    75311    63492   130811
-             SI18_16G SI18_18G SI18_22G SI16_1G SI16_2G SI16_3G SI18_47G
-LOC117824100   543596   454735   344393     295      41      77      614
-LOC117808578   262595   285553   192447     223      17      40      629
-LOC117813792   254879   242256   190315     182      59      37      295
-LOC117811052   182054   116132   205397     207      31      64       92
-LOC117808583   203055   193300   151140     187      11      28      395
-LOC117813794   178910   172457   129001     223      14      39      198
-             SI18_49G
-LOC117824100      130
-LOC117808578       97
-LOC117813792       97
-LOC117811052       30
-LOC117808583       93
-LOC117813794       62</code></pre>
-</div>
-</div>
-<p>We then need to convert the counts to long format for plotting with ggplot2.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>counts_long_top1000 <span class="ot">&lt;-</span> counts_top1000 <span class="sc">|&gt;</span> </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"Gene"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>Gene, <span class="at">names_to =</span> <span class="st">"Sample"</span>, <span class="at">values_to =</span> <span class="st">"Counts"</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(counts_long_top1000)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 3
-  Gene         Sample   Counts
-  &lt;chr&gt;        &lt;chr&gt;     &lt;int&gt;
-1 LOC117824100 SI16_21G  90878
-2 LOC117824100 SI16_23G  93835
-3 LOC117824100 SI18_30G 201617
-4 LOC117824100 SI18_48G 192109
-5 LOC117824100 SI18_52G 208754
-6 LOC117824100 SI16_22G 118881</code></pre>
-</div>
-</div>
-<section id="note-on-transforming-counts-for-plotting" class="level3">
-<h3 class="anchored" data-anchor-id="note-on-transforming-counts-for-plotting">Note on transforming counts for plotting</h3>
-<p>We will also log2 transform the counts to make the colour scale more interpretable. You need to add <code>+1</code> to the counts before log2 transforming to avoid taking the log of zero. For visualisation, you will almost always want to log2 transform your counts, as the range of counts is often very large and the log2 transformation makes it easier to see patterns in the data. There are other transformations that can be used, such as the variance stabilising transformation (VST) or regularised log transformation (rlog) from the DESeq2 package, which are designed to stabilise the variance (this addresses heteroscedasticity, see <a href="../background.html#heteroscedasticity">Background notes on heteroscedasticity</a> for more on this) across the range of counts.</p>
 </section>
-</section>
-<section id="ggplot2-heatmap-with-geom_tile" class="level2">
-<h2 class="anchored" data-anchor-id="ggplot2-heatmap-with-geom_tile">ggplot2 heatmap with <code>geom_tile()</code></h2>
+<section id="plotting-the-result" class="level2">
+<h2 class="anchored" data-anchor-id="plotting-the-result">Plotting the result</h2>
+<p>With the data in long format and metadata attached, we can go straight into ggplot2:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(counts_long_top1000, <span class="fu">aes</span>(</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> Sample,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> Gene,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">fill =</span> <span class="fu">log2</span>(Counts <span class="sc">+</span> <span class="dv">1</span>))) <span class="sc">+</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_gradient2</span>(</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">low=</span><span class="st">"blue"</span>,</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">mid =</span> <span class="st">"white"</span>,</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">high =</span> <span class="st">"red"</span>,</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">midpoint =</span> <span class="dv">10</span> <span class="co"># adjust to your own data scale</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Sample"</span>, <span class="at">y =</span> <span class="st">"Log Counts +1"</span>) <span class="sc">+</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>counts_annotated <span class="sc">|&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> condition, <span class="at">y =</span> count, <span class="at">fill =</span> condition)) <span class="sc">+</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>( <span class="sc">~</span> gene, <span class="at">scales =</span> <span class="st">"free_y"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="S3_heatmap_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Genes are ordered alphabetically by default using ggplot, so there is preference to use different tools that cluster genes based on similar expression.</p>
-</section>
-<section id="heatmap" class="level2">
-<h2 class="anchored" data-anchor-id="heatmap"><code>heatmap()</code></h2>
-<p>The <code>heatmap()</code> function from the base R stats package is another way to generate a heatmap, with clustering. It reorders genes using Euclidean distance to measure how similar their expression patterns are across samples, then repeatedly grouping the most similar genes together first. This builds a tree (the dendrogram shown alongside the heatmap), and reading gene order off that tree places genes with similar expression patterns next to each other. Genes that are co-expressed appear as visible blocks of colour.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>my_colours1 <span class="ot">&lt;-</span> <span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">"blue"</span>, <span class="st">"white"</span>, <span class="st">"red"</span>))(<span class="dv">256</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">heatmap</span>(<span class="fu">log2</span>(<span class="fu">as.matrix</span>(counts_top1000) <span class="sc">+</span> <span class="dv">1</span>),</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">Rowv =</span> <span class="cn">TRUE</span>,   </span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">Colv =</span> <span class="cn">TRUE</span>,      </span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">labRow =</span> <span class="cn">NA</span>,   </span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">margins =</span> <span class="fu">c</span>(<span class="dv">8</span>, <span class="dv">2</span>), </span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">xlab =</span> <span class="st">"Samples"</span>,</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">ylab =</span> <span class="st">"Gene"</span>,</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">col =</span> my_colours1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="S3_heatmap_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="pheatmap" class="level2">
-<h2 class="anchored" data-anchor-id="pheatmap"><code>pheatmap()</code></h2>
-<p>The <code>pheatmap()</code> function from the pheatmap package is another way to generate a heatmap, with clustering. It uses the same underlying clustering method as <code>heatmap()</code> by default, but is generally easier to customise.</p>
-<p><code>scale = "row"</code> z-scores each gene individually. For every gene, it subtracts the gene’s mean expression and divides by its standard deviation across samples. This means the heatmap shows each gene’s expression <em>relative to its own average</em>, rather than absolute expression level, so highly and lowly expressed genes can be compared on the same colour scale.</p>
-<p>As with any plot, you will need to make visual adjustments (colour, breaks, scaling) based on your specific data and the range of values you are working with.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pheatmap)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pheatmap</span>(<span class="fu">log2</span>(<span class="fu">as.matrix</span>(counts_top1000)<span class="sc">+</span><span class="dv">1</span>),</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">scale =</span> <span class="st">"row"</span>, <span class="co"># Z-score normalisation across rows </span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">color =</span> my_colours1,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">show_rownames =</span> <span class="cn">FALSE</span>, </span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">cluster_rows =</span> <span class="cn">TRUE</span>,   </span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">cluster_cols =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">angle_col =</span> <span class="dv">45</span>,        </span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>         <span class="at">fontsize_col =</span> <span class="dv">8</span>,</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">main =</span> <span class="st">"Top 1000 genes"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="S3_heatmap_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="S4_data-manipulation-ggplot2_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -834,7 +939,7 @@ LOC117813794       62</code></pre>
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../Supplementary/S2_functional.html" class="pagination-link" aria-label="Supp 3: Functional analysis with a supported organism">
+      <a href="../Supplementary/S3_functional.html" class="pagination-link" aria-label="Supp 3: Functional analysis with a supported organism">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Supp 3: Functional analysis with a supported organism</span>
       </a>          
   </div>

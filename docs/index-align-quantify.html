@@ -220,6 +220,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Supp 3: Functional analysis with a supported organism</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./Supplementary/S4_data-manipulation-ggplot2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Supp 4: Data manipulation for ggplot2</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -262,7 +268,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 <p>In order to draw conclusions about gene expression from our reads, we need to first identify which region of the genome reads originated from and then quantify the number of reads from that region. There are many tools available to carry out quantification, and we will not cover the arguments for and against each tool. We encourage you to carry out a literature search, and discuss with experienced individuals in your field, before committing to a particular quantification procedure. Here we will give a brief overview of two approaches with considerably different underlying methodology, give an example tool for each, and then demonstrate one tool for the purpose of progressing to the next stage of our workflow.</p>
-<p>The first approach to read quantification involves aligning reads to the genome first, and then counting the number of reads that are aligned to certain genomic features (<em>e.g.,</em> exons). This method may generally be referred to as the ‘count’ method, but it is still a form of quantification, and the output is by default at the gene level.</p>
+<p>The first approach to read quantification involves aligning reads to the genome first, and then counting the number of reads that are aligned to certain genomic features (<em>e.g.,</em> exons). This method may generally be referred to as the ‘count’ method, but it is still a form of quantification, and the output is by default at the gene level. This is the approach we are using today.</p>
 <p>The second approach, which we will not do today, involves creating transcript expression estimates via pseudoalignment, often referred to informally as ‘pseudocounts’. In this method, reads are <em>not</em> aligned to the genome. Instead, they are pseudoaligned to kmers within the transcriptome and their abundance is estimated. While the output for these tools (<em>e.g.,</em> Kallisto, Salmon) are by default at a transcript level, they can be converted to a gene level expression estimate.</p>
 <p>In today’s workflow we will demonstrate genome alignment and counting using STAR.</p>
 <p>Additional parameters for STAR are in the <a href="https://github.com/alexdobin/STAR#manual">manual</a> maintained in GitHub.</p>
@@ -272,7 +278,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="preparation-of-the-genome">Preparation of the genome</h3>
 <p>When carrying out alignment, the first requirement is a genome which has been indexed. Indexing is a process to organise the genome so that our alignment algorithms can match reads to the genome easily, without having to scan the entire genome.</p>
 <p>Navigate to the Genome directory and view the contents. You should see two files, a <code>.gtf</code> and a <code>.fna</code> file.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/RNA_seq/Genome</span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/obss_2026/RNA_seq/Genome</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="output"><code>GCF_009762535.1_fNotCel1.pri_genomic.fna  
@@ -287,7 +293,8 @@ GCF_009762535.1_fNotCel1.pri_genomic.gtf</code></pre>
 <li><code>--genomeSAindexNbases</code> this is optional: 14 is the default. You may get a warning with a suggestion to use a different number (you should then modify and rerun your script)</li>
 </ul>
 <p>Run this code below, and lets consider the following scenario as its running:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">STAR</span> <span class="at">--runMode</span> genomeGenerate <span class="at">--genomeDir</span> . <span class="at">--genomeFastaFiles</span> GCF_009762535.1_fNotCel1.pri_genomic.fna   <span class="at">--sjdbGTFfile</span> GCF_009762535.1_fNotCel1.pri_genomic.gtf  <span class="at">--sjdbOverhang</span> 124  <span class="at">--genomeSAindexNbases</span> 13 </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">module</span> load STAR/2.7.10b-GCC-11.3.0-alpha</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">STAR</span> <span class="at">--runMode</span> genomeGenerate <span class="at">--genomeDir</span> . <span class="at">--genomeFastaFiles</span> GCF_009762535.1_fNotCel1.pri_genomic.fna   <span class="at">--sjdbGTFfile</span> GCF_009762535.1_fNotCel1.pri_genomic.gtf  <span class="at">--sjdbOverhang</span> 124  <span class="at">--genomeSAindexNbases</span> 11 </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <section id="exercise-2-mins" class="level5">
 <h5 class="anchored" data-anchor-id="exercise-2-mins">EXERCISE 🧠🏋️‍♀️ (2 mins)</h5>
 <p>Scenario: During the course of conducting your research project you have generated multiple RNA-seq datasets from the same species. You have previously generated an indexed genome for your species when you were working with 100bp paired-end reads. Your new samples are 150bp single-end reads. Can you use the same indexed genome files? What flag/s and argument/s do you need to change if not?</p>
@@ -304,13 +311,13 @@ SOLUTION
 <div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>You need to change the <code>--sjdbOverhang</code> flag and regenerate the genome index. With 150bp reads, this will need to be <code>--sjdbOverhang 149</code>. The paired-end/single-end-ness of the data does not matter – <a href="https://en.wikipedia.org/wiki/Red_herring">a red herring!</a></p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">STAR</span> <span class="dt">\</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>--runMode genomeGenerate <span class="dt">\</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>--genomeDir . <span class="dt">\</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>--genomeFastaFiles GCF_009762535.1_fNotCel1.pri_genomic.fna <span class="dt">\</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>--sjdbGTFfile GCF_009762535.1_fNotCel1.pri_genomic.gtf <span class="dt">\</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>--sjdbOverhang <span class="op">&lt;</span>int<span class="op">&gt;</span> <span class="dt">\ </span> <span class="co"># change</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="ex">--genomeSAindexNbases</span> 14  <span class="co"># not change</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">STAR</span> <span class="dt">\</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>--runMode genomeGenerate <span class="dt">\</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>--genomeDir . <span class="dt">\</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>--genomeFastaFiles GCF_009762535.1_fNotCel1.pri_genomic.fna <span class="dt">\</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>--sjdbGTFfile GCF_009762535.1_fNotCel1.pri_genomic.gtf <span class="dt">\</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>--sjdbOverhang <span class="op">&lt;</span>int<span class="op">&gt;</span> <span class="dt">\ </span> <span class="co"># change</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="ex">--genomeSAindexNbases</span> 11  <span class="co"># not change</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
@@ -350,7 +357,7 @@ transcriptInfo.tab</code></pre>
 </div>
 </div>
 <p>You can ignore most of these (unless you need to troubleshoot later), but you should check the last two lines of the Log.out file to confirm that the genome was indexed successfully.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> <span class="at">-n</span> 2 Log.out</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> <span class="at">-n</span> 2 Log.out</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="output"><code>Jun 10 15:17:54 ..... finished successfully
 DONE: Genome generation, EXITING</code></pre>
 </section>
@@ -366,23 +373,23 @@ DONE: Genome generation, EXITING</code></pre>
 </ul>
 <p>Once we have that information we are ready to align our sequences. First, navigate to the RNA_seq/align directory, and run <code>STAR --runMode alignReads</code> on one sample. We will use some shell variables to set our dirs and file names and the minimum flags we need run the alignment and write sorted BAM alignment output files.</p>
 <p>Let’s first make a new dir in RNA_seq called Align</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/RNA_seq</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> Align <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> <span class="va">$_</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Let’s run the script (this will take <strong>approximately 12 minutes to run</strong>), and as it’s going, talk about some of the flags we used:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Set shell variables</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="va">genomedir</span><span class="op">=</span><span class="st">"../Genome"</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="va">trimmeddir</span><span class="op">=</span><span class="st">"../Trimmed"</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> files <span class="kw">in</span> <span class="va">$trimmeddir</span>/<span class="pp">*</span>R1_trimmed.fq.gz</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="va">name</span><span class="op">=</span><span class="va">$(</span><span class="fu">basename</span> <span class="va">$files</span> _R1_trimmed.fq.gz<span class="va">)</span> </span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co"># run STAR to align reads to the genome    </span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="ex">STAR</span> <span class="at">--runMode</span> alignReads <span class="at">--genomeDir</span> <span class="va">$genomedir</span> <span class="at">--readFilesIn</span> <span class="va">${trimmeddir}</span>/<span class="va">${name}</span>_R1_trimmed.fq.gz <span class="va">${trimmeddir}</span>/<span class="va">${name}</span>_R2_trimmed.fq.gz <span class="at">--readFilesCommand</span> zcat <span class="at">--outSAMtype</span> BAM SortedByCoordinate <span class="at">--outFileNamePrefix</span> <span class="va">${name}</span> <span class="at">--runThreadN</span> 2 <span class="at">--quantMode</span> GeneCounts</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/RNA_seq</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> Align <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> Align</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Let’s run the script (this will take <strong>approximately 15 minutes to run</strong>), and as it’s going, talk about some of the flags we used:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Set shell variables</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="va">genomedir</span><span class="op">=</span><span class="st">"../Genome"</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="va">trimmeddir</span><span class="op">=</span><span class="st">"../Trimmed"</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> files <span class="kw">in</span> <span class="va">$trimmeddir</span>/<span class="pp">*</span>R1_trimmed.fq.gz</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="cf">do</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="va">name</span><span class="op">=</span><span class="va">$(</span><span class="fu">basename</span> <span class="va">$files</span> _R1_trimmed.fq.gz<span class="va">)</span> </span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co"># run STAR to align reads to the genome    </span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="ex">STAR</span> <span class="at">--runMode</span> alignReads <span class="at">--genomeDir</span> <span class="va">$genomedir</span> <span class="at">--readFilesIn</span> <span class="va">${trimmeddir}</span>/<span class="va">${name}</span>_R1_trimmed.fq.gz <span class="va">${trimmeddir}</span>/<span class="va">${name}</span>_R2_trimmed.fq.gz <span class="at">--readFilesCommand</span> zcat <span class="at">--outSAMtype</span> BAM SortedByCoordinate <span class="at">--outFileNamePrefix</span> <span class="va">${name}</span> <span class="at">--runThreadN</span> 2 <span class="at">--quantMode</span> GeneCounts</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Flags in this script:</p>
 <ul>
 <li><p><code>--readFilesCommand zcat</code> : this flag with zcat argument allows STAR to process .gz files. Best to keep your reads as compressed files, but if they are not .gz then omit this flag.<br>
@@ -438,7 +445,7 @@ SI16_1G_ReadsPerGene.out.tab
 SI16_1G_SJ.out.tab</code></pre>
 <p>The Log.final.out file will not appear if the mapping is interrupted part way or errors.</p>
 <p>To check it ran properly, run:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> <span class="at">-n</span> 1 <span class="pp">*</span>Log.out</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> <span class="at">-n</span> 1 <span class="pp">*</span>Log.out</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>The last line of the file/s should read:</p>
 <pre class="output"><code>==&gt; SI16_1G_lib56Log.out &lt;==
 ALL DONE!
@@ -539,7 +546,7 @@ SOLUTION
 <h3 class="anchored" data-anchor-id="gene-counts">Gene counts</h3>
 <p>When we run a STAR alignment with the <code>--quantMode GeneCounts</code> flag, it generates a file called <code>ReadsPerGene.out.tab</code>. This file contains the number of reads that were assigned to each gene in the genome. The counts coincide with those produced by <code>htseq-count</code> with default parameters. You could alternatively run <a href="https://htseq.readthedocs.io/en/master/htseqcount.html">htseq-count</a> separately on the sorted BAM files (Aligned.sortedByCoord.out.bam) to get the same counts, or you could choose to use a different counting tool such as <code>featureCounts</code> (featureCounts comes from the <a href="https://subread.sourceforge.net/">Subread package</a>, which can also be implemented in R using Rsubread).</p>
 <p>You can view the first few lines of this file using the <code>head</code> command. The output we’ve shown here is from the original sample.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> SI16_1G_lib56ReadsPerGene.out.tab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> SI16_1G_lib56ReadsPerGene.out.tab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="output"><code>N_unmapped  1004352 1004352 1004352
 N_multimapping  267008  267008  267008
 N_noFeature 441161  9761099 474701
