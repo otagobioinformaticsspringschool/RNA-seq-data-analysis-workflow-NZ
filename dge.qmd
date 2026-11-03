@@ -20,7 +20,7 @@ In the interest of time, in this workshop we will not get into T-tests, P-values
 
 ## T-tests and p-values
 
-The statistical approach to this question is to begin with the null hypothesis (that there is no difference between the two groups) and test whether or not you can reject the null.
+The statistical approach to this question is to begin with the null hypothesis (that there is no difference between the two groups) and test whether or not you can reject the null hypothesis.
 
 To test whether or not we can reject the null hypothesis we can calculate a test statistic:
 
@@ -92,9 +92,9 @@ Since this issue is caused by an artificially low standard error (unreliable var
 
 In summary:  
 
-- The “standard” P-value of 0.05 is not sufficient – 5% results in too many genes that will be false positives (*i.e.,* genes that look like they are DE, but they are not).  
-- We need to use a correction - usually FDR, also called Benjamini and Hochberg correction, but if you want to be more strict use FWER.  
-- We must correct for heteroscedasticity, *i.e.,*  variance is dependent on the mean.  
+- **The “standard” P-value cut-off of 0.05 is not sufficient** – 5% results in too many genes that will be false positives (*i.e.,* genes that look like they are DE, but they are not).  
+- We need to use a **p-value correction** - usually FDR, also called Benjamini and Hochberg correction, but if you want to be more strict use FWER.  
+- We must correct for **heteroscedasticity**, *i.e.,*  variance is dependent on the mean.  
 
 
 

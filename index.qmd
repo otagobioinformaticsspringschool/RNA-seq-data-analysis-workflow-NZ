@@ -14,8 +14,8 @@ title: "Otago Bioinformatics Spring School 2026"
 
 | Approx time      | Item                                              |
 |------------------|---------------------------------------------------|
-| 09:30 - 09:50    |  [An overview of RNA-seq data analysis workflows](background.qmd)   |
-| 09:50 - 10:30    | [Sequence Quality](sequence-quality.qmd)  |
+| 09:30 - 09:45    |  [An overview of RNA-seq data analysis workflows](background.qmd)   |
+| 09:45 - 10:30    | [Sequence Quality](sequence-quality.qmd)  |
 | 10:30 - 10:50    | BREAK                                             |
 | 10:50 - 12:15    | [Index, align and quantifying gene expression](index-align-quantify.qmd)          |
 | 12:15 - 13:00    | LUNCH                                             |
@@ -39,7 +39,7 @@ title: "Otago Bioinformatics Spring School 2026"
 
 ## What's not covered in this workshop
 
-- Submitting and optimising HPC scheduled jobs (see Bash scripting and HPC Job Scheduler workshop)
+- Submitting and optimising HPC scheduled jobs (see [Bash scripting and HPC Job Scheduler](https://genomicsaotearoa.github.io/BioinformaticsTrainingProgramme/portfolio.html#bash-script-hpc-job) workshop)
 - Extensive data manipulation and plotting in R, beyond the basics.  
 
 
