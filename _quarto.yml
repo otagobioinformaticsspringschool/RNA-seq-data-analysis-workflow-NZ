@@ -23,6 +23,8 @@ website:
         href: dge.qmd
       - text: "Functional analysis"
         href: functional-analysis.qmd
+      - text: "Conclusions and resources"
+        href: conclusions.qmd
       - section: "Supplementary" 
         contents:
           - Supplementary/S1_hpc-job-scheduler.qmd

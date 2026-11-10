@@ -156,12 +156,18 @@ ggplot(counts_long_metadata, aes(
 
 
 
+RNAseq raw count data can typically range from the 10s to 100,000s of reads mapped to a gene, which is why we should transform our data for visualisation. A good option for this is logging our data, which we've done here. We use log2 for counts for RNAseq - more on why later! We also needed to add 1 to all the counts first - to avoid log(0) issues. 
+
 The log count boxplots reveal there may be some differences between our three sample groups. The average counts for the TPM (terminal phase males) group *appear* (we have not done any statistical analysis yet!) to be higher than the other two sample groups, F (female) and MT (mid-transitioning). 
 
-This is *not* a count of how many genes are expressed per sample, this is the distribution of gene expression in each sample.
+A common question to ask at this point is, are the differences we can see between our sample groups a true biological effect, or is this an experimental artifact? Often, we will not know the answer to this question. For now, it is enough to be aware of these differences and to keep them in mind moving forward.
+
+Note: This is *not* a count of how many genes are expressed per sample, this is the distribution of gene expression in each sample. So, on average, when looking at all genes, the TPM (male) samples have higher counts than the other two groups. This could be a biological effect, or it could be an artifact of library size differences (see below).
 
 
-A common question to ask at this point is, are the differences we can see between our two sample groups a true biological effect, or is this an experimental artifact? Often, we will not know the answer to this question. For now, it is enough to be aware of these differences and to keep them in mind moving forward.
+
+
+
 
 ### Library size
 

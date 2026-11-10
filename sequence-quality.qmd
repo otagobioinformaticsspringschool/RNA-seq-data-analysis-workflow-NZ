@@ -157,9 +157,9 @@ The order that trimmomatic expects input and output files in a specific order, a
   - `10` : simpleClipThreshold: specifies how accurate the match between any adapter etc. sequence must be against a read.  
 - `LEADING:5` : Remove leading (5') low quality or N bases (below quality 3)   
 - `TRAILING:5` : Remove trailing (3') low quality or N bases (below quality 3)  
-- `SLIDINGWINDOW:4:15` :   
-- `MINLEN:36` : Drop reads below the 36 bases long (common threshold, but can adjust for your own data).    
-- `2> ${name}_trimmomatic.log` :  standard output redirected to log file. Optional, but can be used as input for multiqc.
+- `SLIDINGWINDOW:4:15` :   First number indicates number of bases to average across (window size  = 4 bases), second number specifies the minimum average quality score (15) required. If the average quality drops below this threshold, the read is trimmed at that point. Trimmomatic scans from the 5' end to 3' end, so the remaining 3' end is discarded if the sliding window falls below the threshold.
+- `MINLEN:36` : Drop reads below 36 bases long (common threshold, but can adjust for your own data). If the sliding window (described above) trimming results in a read that is shorter than this threshold, the read will be discarded.   
+- `2> ${name}_trimmomatic.log` :  standard error redirected to log file. Optional, but can be used as input for multiqc.
 
 The `ADAPTERSDIR` is the path on REANNZ that contains the adapter files for Trimmomatic. You will need to adjust this path if you are using a different system. You can supply your own file containing the adapters if you wish. 
 

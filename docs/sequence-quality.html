@@ -193,6 +193,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Functional analysis</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./conclusions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Conclusions and resources</span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
@@ -425,11 +431,10 @@ SOLUTION
 </p></li>
 <li><p><code>TRAILING:5</code> : Remove trailing (3’) low quality or N bases (below quality 3)<br>
 </p></li>
-<li><p><code>SLIDINGWINDOW:4:15</code> :<br>
+<li><p><code>SLIDINGWINDOW:4:15</code> : First number indicates number of bases to average across (window size = 4 bases), second number specifies the minimum average quality score (15) required. If the average quality drops below this threshold, the read is trimmed at that point. Trimmomatic scans from the 5’ end to 3’ end, so the remaining 3’ end is discarded if the sliding window falls below the threshold.</p></li>
+<li><p><code>MINLEN:36</code> : Drop reads below 36 bases long (common threshold, but can adjust for your own data). If the sliding window (described above) trimming results in a read that is shorter than this threshold, the read will be discarded.<br>
 </p></li>
-<li><p><code>MINLEN:36</code> : Drop reads below the 36 bases long (common threshold, but can adjust for your own data).<br>
-</p></li>
-<li><p><code>2&gt; ${name}_trimmomatic.log</code> : standard output redirected to log file. Optional, but can be used as input for multiqc.</p></li>
+<li><p><code>2&gt; ${name}_trimmomatic.log</code> : standard error redirected to log file. Optional, but can be used as input for multiqc.</p></li>
 </ul>
 <p>The <code>ADAPTERSDIR</code> is the path on REANNZ that contains the adapter files for Trimmomatic. You will need to adjust this path if you are using a different system. You can supply your own file containing the adapters if you wish.</p>
 <blockquote class="blockquote">

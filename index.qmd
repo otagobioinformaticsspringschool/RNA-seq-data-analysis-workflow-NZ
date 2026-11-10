@@ -12,18 +12,22 @@ title: "Otago Bioinformatics Spring School 2026"
 
 **Thursday 19th November, 2026**
 
-| Approx time      | Item                                              |
-|------------------|---------------------------------------------------|
-| 09:30 - 09:45    |  [An overview of RNA-seq data analysis workflows](background.qmd)   |
-| 09:45 - 10:30    | [Sequence Quality](sequence-quality.qmd)  |
-| 10:30 - 10:50    | BREAK                                             |
-| 10:50 - 12:15    | [Index, align and quantifying gene expression](index-align-quantify.qmd)          |
-| 12:15 - 13:00    | LUNCH                                             |
-| 13:00 - 13:30    | RNA-seq presentation by Dr Stephanie Waller           |
-| 13:30 - 14:30    | [Identifying differentially expressed genes](dge.qmd)          |
-| 14:30 - 14:50    | BREAK                                             |
-| 14:50 - 16:00       | [Functional analysis](functional-analysis.qmd)               |
-| 16:30            |  END OF DAY                                       |
+| Approx time      | Item                                              | Instructor / Speaker |
+|------------------|---------------------------------------------------|-----------------|
+| 09:30 - 09:45    |  [An overview of RNA-seq data analysis workflows](background.qmd)   | Chloe |
+| 09:45 - 10:30    | [Sequence Quality](sequence-quality.qmd)  | Chloe |
+| 10:30 - 10:50    | BREAK                                             |  |
+| 10:50 - 11:50    | [Index, align and quantifying gene expression](index-align-quantify.qmd)          | Murray |
+| 11:50 - 12:15   | [Exploratory analysis](exploratory.qmd)        | Murray |
+| 12:15 - 13:00    | LUNCH                                             |  |
+| 13:00 - 13:30    | RNA-seq presentation         |  Dr Stephanie Waller     |
+| 13:30 - 13:50  | [Exploratory analysis](exploratory.qmd) *cont'd*        | Murray |
+| 13:50 - 14:30    | [Identifying differentially expressed genes](dge.qmd)          |   Chloe |
+| 14:30 - 14:50    | BREAK                                             |   |
+| 14:50 - 15:10       | [Identifying differentially expressed genes](dge.qmd) *cont'd*               |  Chloe |
+| 15:10 - 16:00       | [Functional analysis](functional-analysis.qmd)               |  Chloe |
+| 16:00 - 16:30         |  Buffer time                                      |   |
+| 16:30            |  END OF DAY                                       |   |
 
 
 

@@ -136,7 +136,7 @@ Unless corrected for, gene length will bias your over-representation analysis.
 
 
 #### Create gene lists 
-The first thing we need to do is create a vector of our gene lists.  We must split our differentially expressed genes into upregulated and downregulated genes for each condition. In this example we are going to use an adjusted pvalue of 0.05 and a logFC of 1 as our cutoffs, but you can decide for your own data if you want to be more or less stringent. We'll use the DESeq results, but you could chose to use the limma results or the genes that overlap both methods.  
+The first thing we need to do is create a vector of our gene lists.  We must split our differentially expressed genes into upregulated and downregulated genes for each condition. In this example we are going to use only the upregulated genes in males, and using an adjusted pvalue of 0.05 and a logFC of 1 as our cutoffs, but you can decide for your own data if you want to be more or less stringent. We'll use the DESeq results, but you could chose to use the limma results or the genes that overlap both methods.  
 
 ```{r}
 #| echo: false
@@ -147,37 +147,62 @@ library(tidyverse)
 
 load("results/deseq2-FvsTPM.RData")
 load("results/dds.RData")
+res_F_vs_TPM <- res_F_vs_TPM  |> na.omit()
+resPadjLogFC_F_vs_TPM <- res_F_vs_TPM[res_F_vs_TPM$padj <= 0.05 & res_F_vs_TPM$log2FoldChange < -1,]
+
 
 ```
 
 
+
+```{r}
+
+# Create vector of gene names by pulling out the rownames
+DE_genes_UP <-  rownames(resPadjLogFC_F_vs_TPM)
+
+length(DE_genes_UP)
+```
+
 ::: {.callout-note collapse="true"}
-# Don't have the res_F_vs_TPM object?
-Pull in the data from the backup folder here:
+# Don't have the resPadjLogFC_F_vs_TPM  object?
+
 
 ```{r}
 #| eval: false
 
+# Pull in the data from the backup folder here:
 load("backup-files/deseq2-FvsTPM.RData")  
 
+# omit rows with NAs
+res_F_vs_TPM <- res_F_vs_TPM  |> na.omit()
+
+# recreate filtered results that only has genes upregulated in TPM (downregulated in F)
+resPadjLogFC_F_vs_TPM <- res_F_vs_TPM[res_F_vs_TPM$padj <= 0.05 & res_F_vs_TPM$log2FoldChange < -1,]
 ```
 
 
 :::
 
+::: {.callout-note collapse="true"}
+# How to do the equivalent for the downregulated genes
 
 ```{r}
+#| eval: false
 
-DE_genes_UP <- as.data.frame(res_F_vs_TPM[res_F_vs_TPM$padj <= 0.05 & res_F_vs_TPM$log2FoldChange < -1,])
+# load in original results object
+load("backup-files/deseq2-FvsTPM.RData")  
+
+# omit rows with NAs
+res_F_vs_TPM <- res_F_vs_TPM  |> na.omit()
+
+# filter out downregulated genes (upregulated in F) 
 DE_genes_DOWN <- as.data.frame(res_F_vs_TPM[res_F_vs_TPM$padj <= 0.05 & res_F_vs_TPM$log2FoldChange > 1,])
 
-# Convert to vector of gene names by pulling out the rownames
-DE_genes_UP <-  rownames(DE_genes_UP)
+# convert to vector of gene names by pulling out the rownames
 DE_genes_DOWN <- rownames(DE_genes_DOWN)
-
-length(DE_genes_UP)
-length(DE_genes_DOWN)
 ```
+:::
+
 
 
 #### Create background gene list
@@ -254,7 +279,7 @@ nrow(geneLengths) == nrow(counts(dds)) # usually true if no filtering for low co
 #### Prepare data for GOSeq
 
 
-Generate GO mapping structure, final object splitgoannot list 
+Generate GO mapping structure, final object splitgoannot is a list. Load in gene lengths, final object length.vector is a named vector 
 
 ```{r}
 # split go annotations into a large list
@@ -262,11 +287,8 @@ splitgoannot <-  strsplit(geneOntologies[,2], split=',')
 
 # add the gene names to the list
 names(splitgoannot) <-  as.vector(geneOntologies[,1])
-```
 
-Load in gene lengths, final object length.vector is a named vector 
-
-```{r}
+# set up the gene lengths as a named vector
 length.vector <- setNames(geneLengths$Length, geneLengths$GeneID)
 
 # Force length.vector gene names to be in the same order as the background - important!
@@ -276,13 +298,17 @@ length.vector <- length.vector[background]
 > Note - gene lengths must be whole numbers. Use `as.integer(round(genelengths$Length))` if you have decimal places.
 
 
-Create a binary vector of genes which are differentially expressed or not, final object genes is a named vector.
+Create a binary vector of genes which are differentially expressed or not, final object genes is a named vector. You need to recreate DE.vector each time you change the DE gene list, and it must be in the same order as the background gene list.
 
 ```{r}
 DE.vector <- background  %in%  DE_genes_UP 
 DE.vector <-  DE.vector * 1 
 names(DE.vector) <-  background
 
+```
+
+```{r}
+#| eval: false
 
 # Last tests - important! Both need to be TRUE.
 # If these are not both true you need to go back and debug.  
@@ -291,7 +317,14 @@ identical(names(length.vector), names(DE.vector))
 
 ```
 
+By the end of these steps, you should have four objects ready for GOSeq:
 
+-  `DE.vector` - a binary named vector of genes which are differentially expressed or not, in the same order as the background gene list.
+-  `length.vector` - a named vector of gene lengths, in the same order as the background gene list.
+-  `splitgoannot` - a list of gene ontologies for each gene
+-  `background` - a vector of all genes in your defined background
+
+Note that all of these objects all have **all of the genes in your background gene list**, not just the differentially expressed genes. This is important for the GOSeq analysis to work correctly. 
 
 
 #### Methodology
@@ -486,6 +519,8 @@ GSEA takes an alternative approach to the previous section in that it does not t
 
 This approach has the advantage of not relying on our somewhat arbitrary cutoff thresholds (*e.g.,* a gene with a p-value 0.0501 probably should still contribute to what we think is happening to a pathway). 
 
+The Carpentries also provide a guide in an incubator (in development) lesson on [Gene Set Enrichment Analysis.](https://carpentries-incubator.github.io/bioc-rnaseq/instructor/07-gene-set-analysis.html) 
+
 ### ClusterProfiler for plotting
 
 ClusterProfiler is a widely used package with the support to create *excellent* figures ([check these out](https://yulab-smu.top/biomedical-knowledge-mining-book/enrichplot.html)). 
@@ -574,18 +609,3 @@ emapplot(cp_result_sim,
 
 Underrepresented GO terms can be just as interesting as overrepresented GO terms. It can give you a good idea of what functions are depleted in your sample/s, compared to your background. 
 
-
-### Additional resources
-
-* The Carpentries also provide a guide in an incubator (in development) lesson on [Gene Set Enrichment Analysis.](https://carpentries-incubator.github.io/bioc-rnaseq/instructor/07-gene-set-analysis.html) 
-
-## Conclusions
-
-Here we have presented the typical workflow in an RNA-seq analysis. The expectation is that the major steps we have highlighted are always required, and for each step we have demonstrated a single method.
-
-
-The most important takeway from this workshop is that each tool or method has underlying assumptions or processes which are often hidden from view. This is especially true for those of us who have a strong background in biology and are less well-grounded in statistics or computational data science. It will often be the case that you need to invest a significant amount of time in understanding and choosing the tools that are fit for your scientific purpose. In many cases it is not a case of choosing 'the best' method and is more a case of being aware of what sacrifices you are making a choice. 
-
-We strongly recommend that analyses should be repeated with different tools or options and you take the time to assess the impact of these choices. In some cases, you may compare two tools and the results will be very similar and you gain confidence. In other cases you will need to decide which path to take, but you will be aware of the impact of your decisions. This is especially important for DGE - we recommend performing analysis with two separate tools (*e.g.,* DESeq2 and edgeR/Limma) and comparing the differential gene list overlap. 
-
-Finally, the most useful thing you can do is to connect with other people carrying out similar analyses or people in your area (physically, or field of research) who are knowledgeable. 
