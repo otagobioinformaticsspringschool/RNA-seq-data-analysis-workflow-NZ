@@ -135,8 +135,13 @@ Unless corrected for, gene length will bias your over-representation analysis.
 
 
 
-#### Create gene lists 
-The first thing we need to do is create a vector of our gene lists.  We must split our differentially expressed genes into upregulated and downregulated genes for each condition. In this example we are going to use only the upregulated genes in males, and using an adjusted pvalue of 0.05 and a logFC of 1 as our cutoffs, but you can decide for your own data if you want to be more or less stringent. We'll use the DESeq results, but you could chose to use the limma results or the genes that overlap both methods.  
+#### Create gene list 
+
+The first thing we need to do is create a vector of our gene list.  We must split our differentially expressed genes into upregulated and downregulated genes for each condition when performing GOSeq, which we did in the previous lesson. In this example below, we are using only the upregulated genes in males (compared to F), and using an adjusted pvalue of equal or less than 0.05 and a logFC of more than 1 as our cutoffs, but you can decide for your own data if you want to be more or less stringent. This example also uses only the DESeq results, but you could chose to use the limma results, or the genes that overlap in both methods.  
+
+You should use genes from your own filtered object that you created earlier!
+
+
 
 ```{r}
 #| echo: false
@@ -164,7 +169,7 @@ length(DE_genes_UP)
 ```
 
 ::: {.callout-note collapse="true"}
-# Don't have the resPadjLogFC_F_vs_TPM  object?
+# Don't have the resPadjLogFC_F_vs_TPM object?
 
 
 ```{r}
@@ -184,7 +189,7 @@ resPadjLogFC_F_vs_TPM <- res_F_vs_TPM[res_F_vs_TPM$padj <= 0.05 & res_F_vs_TPM$l
 :::
 
 ::: {.callout-note collapse="true"}
-# How to do the equivalent for the downregulated genes
+# How to do the equivalent for the downregulated genes in TPM
 
 ```{r}
 #| eval: false
@@ -203,7 +208,7 @@ DE_genes_DOWN <- rownames(DE_genes_DOWN)
 ```
 :::
 
-
+> Going forward, all information about the log2FC and p-values calculated during DGE are discarded. We decide these cut-offs for filtering our genes before doing GOseq and then we proceed with a vector of just the gene names.
 
 #### Create background gene list
 

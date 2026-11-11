@@ -255,7 +255,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#caveats" id="toc-caveats" class="nav-link" data-scroll-target="#caveats">Caveats</a></li>
   <li><a href="#goseq" id="toc-goseq" class="nav-link" data-scroll-target="#goseq">GOseq</a>
   <ul class="collapse">
-  <li><a href="#create-gene-lists" id="toc-create-gene-lists" class="nav-link" data-scroll-target="#create-gene-lists">Create gene lists</a></li>
+  <li><a href="#create-gene-list" id="toc-create-gene-list" class="nav-link" data-scroll-target="#create-gene-list">Create gene list</a></li>
   <li><a href="#create-background-gene-list" id="toc-create-background-gene-list" class="nav-link" data-scroll-target="#create-background-gene-list">Create background gene list</a></li>
   <li><a href="#load-in-gene-lengths-and-gene-ontologies-files" id="toc-load-in-gene-lengths-and-gene-ontologies-files" class="nav-link" data-scroll-target="#load-in-gene-lengths-and-gene-ontologies-files">Load in gene lengths and gene ontologies files</a></li>
   <li><a href="#prepare-data-for-goseq" id="toc-prepare-data-for-goseq" class="nav-link" data-scroll-target="#prepare-data-for-goseq">Prepare data for GOSeq</a></li>
@@ -383,9 +383,10 @@ odds ratio
 <h3 class="anchored" data-anchor-id="goseq">GOseq</h3>
 <p>We will begin with a method called GOseq, which was developed as part of one of the publications initially identifying the gene length bias. An illustration from the <a href="https://genomebiology.biomedcentral.com/articles/10.1186/gb-2010-11-2-r14">full paper</a> is below, demonstrating the relationship between differential gene expression and gene length and between differential expression and number of reads. <img src="images/GOseq_bias.png" class="img-fluid" alt="Young et al., (2010) demonstrates bias due to gene length and expression"></p>
 <p>There is a strong positive correlation between differential gene expression and both total gene length and number of reads. Unless corrected for, gene length will bias your over-representation analysis.</p>
-<section id="create-gene-lists" class="level4">
-<h4 class="anchored" data-anchor-id="create-gene-lists">Create gene lists</h4>
-<p>The first thing we need to do is create a vector of our gene lists. We must split our differentially expressed genes into upregulated and downregulated genes for each condition. In this example we are going to use only the upregulated genes in males, and using an adjusted pvalue of 0.05 and a logFC of 1 as our cutoffs, but you can decide for your own data if you want to be more or less stringent. We’ll use the DESeq results, but you could chose to use the limma results or the genes that overlap both methods.</p>
+<section id="create-gene-list" class="level4">
+<h4 class="anchored" data-anchor-id="create-gene-list">Create gene list</h4>
+<p>The first thing we need to do is create a vector of our gene list. We must split our differentially expressed genes into upregulated and downregulated genes for each condition when performing GOSeq, which we did in the previous lesson. In this example below, we are using only the upregulated genes in males (compared to F), and using an adjusted pvalue of equal or less than 0.05 and a logFC of more than 1 as our cutoffs, but you can decide for your own data if you want to be more or less stringent. This example also uses only the DESeq results, but you could chose to use the limma results, or the genes that overlap in both methods.</p>
+<p>You should use genes from your own filtered object that you created earlier!</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create vector of gene names by pulling out the rownames</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>DE_genes_UP <span class="ot">&lt;-</span>  <span class="fu">rownames</span>(resPadjLogFC_F_vs_TPM)</span>
@@ -426,7 +427,7 @@ Don’t have the resPadjLogFC_F_vs_TPM object?
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-How to do the equivalent for the downregulated genes
+How to do the equivalent for the downregulated genes in TPM
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -448,6 +449,9 @@ How to do the equivalent for the downregulated genes
 </div>
 </div>
 </div>
+<blockquote class="blockquote">
+<p>Going forward, all information about the log2FC and p-values calculated during DGE are discarded. We decide these cut-offs for filtering our genes before doing GOseq and then we proceed with a vector of just the gene names.</p>
+</blockquote>
 </section>
 <section id="create-background-gene-list" class="level4">
 <h4 class="anchored" data-anchor-id="create-background-gene-list">Create background gene list</h4>

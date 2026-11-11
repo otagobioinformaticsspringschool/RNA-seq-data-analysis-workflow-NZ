@@ -12,6 +12,8 @@ title: "Otago Bioinformatics Spring School 2026"
 
 **Thursday 19th November, 2026**
 
+[Pre-workshop survey](https://forms.cloud.microsoft/r/53bxLbQDKY)
+
 | Approx time      | Item                                              | Instructor / Speaker |
 |------------------|---------------------------------------------------|-----------------|
 | 09:30 - 09:45    |  [An overview of RNA-seq data analysis workflows](background.qmd)   | Chloe |

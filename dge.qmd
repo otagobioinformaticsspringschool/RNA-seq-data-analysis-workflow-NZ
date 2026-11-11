@@ -395,6 +395,7 @@ Hover with your mouse over the points above to see pop up boxes with gene names,
 
 ```{r}
 #| message: false
+#| eval: false
 
 
 library(ggiraph)
@@ -412,7 +413,7 @@ interactive_plot <- interactive_plot |>
 interactive_plot
 ```
 
-
+![Image of interactive plot with the information for gene snx10a shown by hovering over the data point](images/interactive-ggplot-hover.png)
 
 ```{r}
 #| eval: false
@@ -421,6 +422,31 @@ interactive_plot
 dir.create("plots")
 ggsave("plots/volcano_plot_F_vs_TPM.png", width = 10, height = 8, dpi = 300)
 ```
+
+
+::: {.callout-note collapse="true"}
+# Interactive plot in browser
+
+```{r}
+#| message: false
+
+
+library(ggiraph)
+library(plotly)
+
+# Convert ggplot to an interactive plotly object
+interactive_plot <- ggplotly(p, tooltip = c("text", "x", "y", "colour"))
+
+# Customise hover text
+interactive_plot <- interactive_plot |> 
+  layout(hoverlabel = list(bgcolor = "white"),
+         hovermode = "closest")
+
+# Display the interactive plot
+interactive_plot
+```
+
+:::
 
 
 ::: {.callout-warning collapse="true" appearance="minimal"}
@@ -484,7 +510,7 @@ Hints:
 
 * View the dataframe using `View(as.data.frame(results_object_name))`
 * Create the contrast as a new object and call it `res_TPM_vs_F`
-* You also don't need to re-do the filtering step above, we can compare the two full results directly. 
+* You don't need to re-do the filtering step above, we can compare the two full results directly. 
 
 
 ::: {.callout-tip collapse="true"}
@@ -503,7 +529,7 @@ View(as.data.frame(res_TPM_vs_F))
 :::
 
 
-##### Sanity check 😵‍💫
+#### Sanity check 😵‍💫
 
 
 Confused about which genes are up or down regulated in which condition? Let's sanity check our results by looking at the raw counts of one of our genes. Take the first gene in the dataframe for both the `res_F_vs_TPM` and `res_TPM_vs_F` objects. 
@@ -532,12 +558,95 @@ Above we have rearranged and pulled out the raw counts for just the gene "LOC117
 * In `res_F_vs_TPM`, positive or negative log2FC are for genes up or down regulated in females (when comparing to males)  
 * In `res_TPM_vs_F`, positive or negative log2FC are for genes up or down regulated in males (when comparing to females)
 
+### **Choose your own adventure** 👣 - pick a comparison for functional analysis (5 mins) 
 
-## Identifying differentially expressed genes using LIMMA
+Our workshop data consists of 3 sample groups, with 5 samples each:
+
+- F = female gonad samples 
+- MT = mid-transitioning gonad samples  
+- TPM = terminal phase male gonad samples  
+
+![Figure 3. Histological stages of gonadal development in spotty wrasse: A) initial phase female; C) mid transitioning fish; E) terminal phase male; Abbreviations: atretic oocyte (AO), gonadal lumen (Lum), previtellogenic oocyte (PvO), stromal cells (SC), sperm collecting duct (SCD), spermatocytes (Spc), spermatid (Spt), spermatozoa (Spz), tunica albuginea (TAl), yellow-brown body (YBB). Scale bars = 200 µm.](images/spotty-f-mt-tpm-histology.png)
+
+
+What comparison are you interested in investigating further? Genes upregulated in males, compared to mid-transitioning? Genes downregulated in females, compared to male? What questions do you have about the biology of the fish that you want to investigate further?
+
+Your task is to make a filtered results object that contains the genes you are interested in. You'll need to generate the contrast you need from `dds`, filter out up- or down-regulated only genes from the contrast object using log2FC and adjusted P-value cut off and finally sanity check yourself by checking the original raw counts with one of the genes in your table (to make sure you got it right!)
+
+Note that for functional analyisis, we are only going to need the list of gene names themselves. So if you take the genes from a "flipped" contrast, the actual log2FC sign will not matter once we start functional analysis. 
+
+*Extra for experts: chose a different adjustment for p-value rather than the default "BH".* 
+
+
+::: {.callout-tip collapse=true}
+# SOLUTION
+
+Let's say we want to look at all genes upregulated in MT group, vs F. 
+
+Pull out contrast:
+
+```{r}
+res_MT_vs_F <- results(dds, contrast = c("histology", "MT", "F"))
+```
+
+Or extra for experts:
+
+```{r}
+#| eval: false 
+
+res_MT_vs_F <- results(dds, contrast = c("histology", "MT", "F"), pAdjustMethod = "bonferroni")
+```
+
+
+Filter out only genes upregulated in MT (log2FC > 1) and passing adjusted p-value <= 0.05
+
+```{r}
+res_MT_vs_F  <- res_MT_vs_F  |> na.omit()
+
+resPadjLogFC_MT_vs_F <- res_MT_vs_F[res_MT_vs_F$padj <= 0.05 & res_MT_vs_F$log2FoldChange > 1,]
+
+# Get dimensions
+resPadjLogFC_MT_vs_F  |> dim() 
+```
+
+Sanity check! We are expecting our gene to have higher raw counts in MT samples:
+
+```{r}
+
+# Chose gene from your filtered object
+gene <- "LOC117818116"
+
+t(counts[gene,]) |> 
+  as.data.frame() |> 
+  tibble::rownames_to_column("sample") |> 
+  left_join(coldata, by="sample") |> 
+  select(sample,all_of(gene), histology) |> 
+  filter(histology %in% c("F", "MT")) # Change to your groups!
+
+```
+
+
+
+
+
+:::
+
+
+
+## Identifying differentially expressed genes using limma
+
+
+We may not have time for this section during the Spring School, but notes and code are provided below. 
+
+
+::: {.callout-tip collapse="true" appearance="minimal"}
+
+
+## Identifying differentially expressed genes using limma 🧬📈📉
 
 Limma involves data transformation and log scales to account for the data being in a non-normal distribution.
 
-Limma will create one of the special objects mentioned earlier in this workshop to store data. For Limma, this will be called a Digital Gene Expression object (DGE object). We will use the edgeR package to create this DGE object using thwo functions from the `edgeR` package – `DGEList()` and `normLibSizes()` (previously called `calcNormFactors()`).
+Limma will create one of the special objects mentioned earlier in this workshop to store data. For Limma, this will be called a Digital Gene Expression object (DGE object). We will use the edgeR package to create this DGE object using two functions from the `edgeR` package – `DGEList()` and `normLibSizes()` (previously called `calcNormFactors()`).
 
 Load the libraries required for running limma, create a dge object where we specify counts (here you specify the matrix that contains your counts, in our case our object is already called counts). Then calculate normalisation factors, which will be used to adjust for library size differences. 
 
@@ -1081,10 +1190,13 @@ interactive_plot
 
 Hover with your mouse over the points above to see pop up boxes with gene names, category, logFC and negLogPval. You can also zoom in and out, and pan around the plot to explore the data.
 
+:::
+
+
 ## Differentially expressed gene lists
 
 
-To recap, we've now produced two lists of differentially expressed genes - one produced with the Limma method (called `sigGenesLimma_TPM_vs_F`{style="color:black"}), one with DESeq2 (called `resPadjLogFC_F_vs_TPM`{style="color:black"}). In both cases we used the same threshold for statistical significance (adjusted p-value \< 0.05, using the FDR correction) and biological significance (logFC more than 1 or less than negative 1, which is equivalent to a doubling or halving gene expression). 
+To recap, we've now produced two lists of differentially expressed genes - one produced with the Limma method (called `sigGenesLimma_TPM_vs_F`{style="color:black"}), one with DESeq2 (called `resPadjLogFC_F_vs_TPM`{style="color:black"}). In both cases we used the same threshold for statistical significance (adjusted p-value \< 0.05, using the FDR correction) and biological significance (logFC more than 1 or less than negative 1, which is equivalent to a doubling or halving gene expression). The contrasts were generated in opposite directions, but the genes that are in both are all upregulated in TPM. 
 
 ```{r}
 #| echo: false

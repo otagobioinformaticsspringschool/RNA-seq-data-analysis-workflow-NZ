@@ -33,8 +33,12 @@ Assuming this is the case, there are many methods that can be applied to this ty
 4. Identifying differentially expressed genes
 5. Over-representation analysis
 
+Here is a general workflow of the RNAseq pipeline:
 
-As you will see, for some steps there are multiple tools that take a functionally similar approach (*e.g.,* quality assessment and adapter removal). For other steps, especially for quantification and identification of differentially expressed genes, there are different methodologies available. These methodologies take different routes to address complex biological, computational and statistical questions. A key takeaway from this workshop is that it is not always possible to identify a "best" tool - *you must be willing and able to identify the strengths and weaknesses of available tools and decide, based on your question and experiment, which tool is most appropriate for you*. 
+![](images/rnaseq_workflowdiagram_fullwSTAR.png)
+*Figure 1. Full workflow diagram of RNAseq pipeline* 
+
+As you will see, for almost all steps there are multiple tools and methodologies available. These methodologies take different routes to address complex biological, computational and statistical questions. A key takeaway from this workshop is that it is not always possible to identify a "best" tool - *you must be willing and able to identify the strengths and weaknesses of available tools and decide, based on your question and experiment, which tool is most appropriate for you*. The literature contains many benchmarking papers that compare and contrast many different tools that are designed to achieve a single step in this pipeline, e.g., all tools designed to align reads to a genome. 
 
 Let's look at some peculiar features of RNA-seq data and identify the challenges these raise for us as data analysts. 
 
@@ -93,7 +97,8 @@ Does gene length matter? Yes it does! Sort of. The longer a gene is, the more li
 
 The example datasets in this workshop come from a New Zealand wrasse species (*Notolabrus celidotus*), known as "spotty" or "paketi" in Te Reo Māori. Spotty is endemic to New Zealand and is found abundantly along the entire coastline. They are protogynous sequential hermaphrodites, meaning individuals can change sex from female to male. During adult sex change, the gonads transition from a functional female phenotype with mature ovarian tissue, through a series of early-, mid- and late-transitional stages, to a functional male phenotype with sperm-producing gonad tissue. This change is also accompanied by physiological, neurological and morphological changes in the fish. 
 
-The workshop data comprise of 15 gonad transcriptomes from three of these phenotypes – adult female ("F"), mid-transitional ("MT") and terminal phase male ("TPM"). The raw RNA-seq reads are available on the NCBI SRA under [BioProject PRJNA631152](https://www.ncbi.nlm.nih.gov/bioproject/631152).
+The workshop data comprise of 15 gonad transcriptomes from three of these phenotypes – adult female ("F"), mid-transitional ("MT") and terminal phase male ("TPM"). The raw RNA-seq reads are available on the NCBI SRA under [BioProject PRJNA631152](https://www.ncbi.nlm.nih.gov/bioproject/631152). The libraries were generated using the Illumina TruSeq stranded mRNA library prep kit and sequenced with 125bp PE (paired end) chemistry.  
+
  
  \
 
@@ -104,7 +109,7 @@ The workshop data comprise of 15 gonad transcriptomes from three of these phenot
       <img src="images/spotty-pic.JPG" alt="Spotty wrasse" style="width:400px; height:300px; object-fit:cover; border-radius:30%;">
     </td>
     <td style="border: none; padding-left:20px; text-align: justify;">
-      <i>Figure 1. A female spotty wrasse in Dunedin Harbour</i><br>
+      <i>Figure 2. A female spotty wrasse in Dunedin Harbour</i><br>
       <br>
     </td>
   </tr>
